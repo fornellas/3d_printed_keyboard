@@ -4,3 +4,6 @@
 [submodule "u8glib"]
 	path = u8glib
 	url = https://github.com/olikraus/u8glib.git
+[submodule "teensy_loader_cli"]
+	path = teensy_loader_cli
+	url = https://github.com/PaulStoffregen/teensy_loader_cli.git

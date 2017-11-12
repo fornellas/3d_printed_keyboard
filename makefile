@@ -1,25 +1,15 @@
-#
-#             LUFA Library
-#     Copyright (C) Dean Camera, 2017.
-#
-#  dean [at] fourwalledcubicle [dot] com
-#           www.lufa-lib.org
-#
-# --------------------------------------
-#         LUFA Project Makefile.
-# --------------------------------------
-
 # Run "make help" for target help.
 
-MCU          = at90usb1287
+MCU          = at90usb1286
 ARCH         = AVR8
-BOARD        = USBKEY
-F_CPU        = 8000000
+F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
 TARGET       = Keyboard
 SRC          = $(TARGET).c Descriptors.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
 LUFA_PATH    = lufa/LUFA
+TEENSY_LOADER_PATH = teensy_loader_cli
+TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 LD_FLAGS     =
 
@@ -41,3 +31,18 @@ include $(DMBS_PATH)/gcc.mk
 include $(DMBS_PATH)/hid.mk
 include $(DMBS_PATH)/avrdude.mk
 include $(DMBS_PATH)/atprogram.mk
+
+# Teensy Loader CLI
+$(TEENSY_LOADER):
+	cd $(TEENSY_LOADER_PATH) && make
+
+all: $(TEENSY_LOADER)
+
+clean_teensy_loader:
+	cd $(TEENSY_LOADER_PATH) && make clean
+
+clean: clean_teensy_loader
+
+# Load Hex to Teensy
+load: $(TARGET).hex $(TEENSY_LOADER)
+	$(TEENSY_LOADER) -mmcu=$(MCU) -w -v $(TARGET).hex
