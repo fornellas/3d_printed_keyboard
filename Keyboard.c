@@ -73,6 +73,8 @@ int main(void)
 	{
 		HID_Device_USBTask(&Keyboard_HID_Interface);
 		USB_USBTask();
+		// TODO ScanKeys + Send KeyboardReport
+		Display_Update(); // FIXME
 	}
 }
 
@@ -99,7 +101,9 @@ void SetupHardware()
 #endif
 
 	/* Hardware Initialization */
-	// TODO setup u8glib
+	SPI_Init(SPI_MODE_MASTER);
+	Display_Init();
+	ScanKeys_Init();
 	USB_Init();
 }
 

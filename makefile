@@ -6,11 +6,25 @@ F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
 TARGET       = Keyboard
-SRC          = $(TARGET).c Descriptors.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
 LUFA_PATH    = lufa/LUFA
+U8GLIB_CSRC_PATH  = u8glib/csrc
+U8GLIB_SFNTSRC_PATH  = u8glib/sfntsrc
+SRC          = \
+	$(TARGET).c \
+	Descriptors.c \
+	Display.c \
+	ScanKeys.c \
+	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
+	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \
+	$(LUFA_SRC_USB) \
+	$(LUFA_SRC_USBCLASS)
 TEENSY_LOADER_PATH = teensy_loader_cli
 TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
-CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
+CC_FLAGS     = \
+	-DUSE_LUFA_CONFIG_HEADER \
+	-IConfig/ \
+	-I$(U8GLIB_CSRC_PATH) \
+	-I$(U8GLIB_SFNTSRC_PATH)
 LD_FLAGS     =
 
 # Default target

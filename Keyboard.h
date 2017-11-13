@@ -42,8 +42,11 @@
 		#include <avr/power.h>
 
 		#include "Descriptors.h"
+		#include "Display.h"
+		#include "ScanKeys.h"
 
 		#include <LUFA/Drivers/USB/USB.h>
+		#include <LUFA/Drivers/Peripheral/SPI.h>
 
 	/* Function Prototypes: */
 		void SetupHardware(void);
