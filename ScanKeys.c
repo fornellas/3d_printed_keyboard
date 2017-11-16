@@ -19,29 +19,30 @@ void ScanKeys_Init(void)
   ScanKeys_Init_Right();
 }
 
-void ScanKeys_Read_Left(void (*key_read_callback)(uint8_t row, uint8_t column))
+void ScanKeys_Read_Left(void (*scan_keys_callback)(struct ScanKeys_Address, void *data), void *data)
 {
+  struct ScanKeys_Address address;
+
   for(uint8_t column=0;column<7;column++) {
     PORTC &= ~(1<<column); // set column low
     for(uint8_t row=0;row<7;row++) {
       if(!(PINA&(1<<row))) {
-        (*key_read_callback)(
-          row + 1,
-          column + 1
-        );
+        address.row = row + 1;
+        address.column = column + 1;
+        (*scan_keys_callback)(address, data);
       }
     }
     PORTC |= 1<<column; // set column high
   }
 }
 
-void ScanKeys_Read_Right(void (*key_read_callback)(uint8_t row, uint8_t column))
+void ScanKeys_Read_Right(void (*scan_keys_callback)(struct ScanKeys_Address, void *data), void *data)
 {
   // TODO
 }
 
-void ScanKeys_Read(void (*key_read_callback)(uint8_t row, uint8_t column))
+void ScanKeys_Read(void (*scan_keys_callback)(struct ScanKeys_Address, void *data), void *data)
 {
-  ScanKeys_Read_Left(key_read_callback);
-  ScanKeys_Read_Right(key_read_callback);
+  ScanKeys_Read_Left(scan_keys_callback, data);
+  ScanKeys_Read_Right(scan_keys_callback, data);
 }

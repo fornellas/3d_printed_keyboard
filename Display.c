@@ -13,13 +13,13 @@ void Display_Init(void)
   );
 }
 
-uint8_t row;
-uint8_t column;
-
-void key_read_callback(uint8_t _row, uint8_t _column)
+void ScanKeys_Callback(struct ScanKeys_Address address, void *data)
 {
-  row = _row;
-  column = _column;
+  struct ScanKeys_Address *send_address;
+
+  send_address = (struct ScanKeys_Address *)data;
+  send_address->row = address.row;
+  send_address->column = address.column;
 }
 
 void Display_Write_Centered(int8_t x_offset, int8_t y_offset, ...){
@@ -52,11 +52,12 @@ void Display_Update(void)
 {
   char *str_row[11];
   char *str_column[11];
+  struct ScanKeys_Address address;
 
-  row = 0;
-  column = 0;
+  address.row = 0;
+  address.column = 0;
 
-  ScanKeys_Read(&key_read_callback);
+  ScanKeys_Read(&ScanKeys_Callback, (void *)&address);
 
   u8g_FirstPage(&u8g);
   do {
@@ -64,8 +65,8 @@ void Display_Update(void)
     u8g_SetFont(&u8g, u8g_font_helvB12);
     Display_Write_Centered(
       0, 0,
-      utoa(row, str_row, 10),
-      utoa(column, str_column, 10),
+      utoa(address.row, str_row, 10),
+      utoa(address.column, str_column, 10),
       NULL
     );
   } while(u8g_NextPage(&u8g));

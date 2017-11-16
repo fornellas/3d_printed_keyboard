@@ -3,7 +3,13 @@
 
 #include <avr/io.h>
 
+struct ScanKeys_Address {
+  uint8_t row;
+  uint8_t column;
+};
+
 void ScanKeys_Init(void);
-void ScanKeys_Read(void (*key_read_callback)(uint8_t row, uint8_t column));
+void ScanKeys_Read(void (*scan_keys_callback)(struct ScanKeys_Address, void *data), void *data);
+
 
 #endif
