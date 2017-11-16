@@ -1,5 +1,7 @@
 #include "ScanKeys.h"
 
+#define SCAN_MATRIX_LEFT_COLUMNS 7
+
 void ScanKeys_Init_Left(void)
 {
   DDRA &= ~0b01111111; // Rows as input...
@@ -23,12 +25,12 @@ void ScanKeys_Read_Left(void (*scan_keys_callback)(struct ScanKeys_Address, void
 {
   struct ScanKeys_Address address;
 
-  for(uint8_t column=0;column<7;column++) {
+  for(uint8_t column=0;column<SCAN_MATRIX_LEFT_COLUMNS;column++) {
     PORTC &= ~(1<<column); // set column low
-    for(uint8_t row=0;row<7;row++) {
+    for(uint8_t row=0;row<SCAN_MATRIX_ROWS;row++) {
       if(!(PINA&(1<<row))) {
-        address.row = row + 1;
-        address.column = column + 1;
+        address.row = row;
+        address.column = SCAN_MATRIX_LEFT_COLUMNS - column - 1;
         (*scan_keys_callback)(address, data);
       }
     }

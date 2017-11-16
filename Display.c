@@ -42,7 +42,7 @@ void Display_Write_Centered(int8_t x_offset, int8_t y_offset, ...){
     u8g_SetFontRefHeightAll(&u8g);
     int8_t font_height=(u8g_GetFontLineSpacing(&u8g));
     int8_t line_y_offset=-font_height/2*(lines-1);
-    u8g_DrawStr(&u8g, x, y+line_y_offset+font_height*l+2*l, str);
+    u8g_DrawStr(&u8g, x, y+line_y_offset+font_height*l+2*l, (const char *)str);
     l++;
   }
   va_end(ap);
@@ -54,8 +54,8 @@ void Display_Update(void)
   char *str_column[11];
   struct ScanKeys_Address address;
 
-  address.row = 0;
-  address.column = 0;
+  address.row = 0xFF;
+  address.column = 0xFF;
 
   ScanKeys_Read(&ScanKeys_Callback, (void *)&address);
 
@@ -63,11 +63,13 @@ void Display_Update(void)
   do {
     u8g_DrawFrame(&u8g, 0, 0, 128, 64);
     u8g_SetFont(&u8g, u8g_font_helvB12);
-    Display_Write_Centered(
-      0, 0,
-      utoa(address.row, str_row, 10),
-      utoa(address.column, str_column, 10),
-      NULL
-    );
+    if(0xFF != address.row) {
+      Display_Write_Centered(
+        0, 0,
+        utoa(address.row, str_row, 10),
+        utoa(address.column, str_column, 10),
+        NULL
+      );
+    }
   } while(u8g_NextPage(&u8g));
 }

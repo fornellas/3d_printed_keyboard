@@ -35,6 +35,7 @@
  */
 
 #include "Keyboard.h"
+#include "Keymap.h"
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
@@ -148,6 +149,14 @@ void EVENT_USB_Device_StartOfFrame(void)
 	HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
 }
 
+void Generate_USB_KeyboardReport_Data(struct ScanKeys_Address address, void *data)
+{
+	USB_KeyboardReport_Data_t* KeyboardReport;
+
+	KeyboardReport = (USB_KeyboardReport_Data_t*)data;
+	KeyboardReport->KeyCode[0] = pgm_read_byte_near(&(qwerty[address.row][address.column]));
+}
+
 /** HID class driver callback function for the creation of HID reports to the host.
  *
  *  \param[in]     HIDInterfaceInfo  Pointer to the HID class interface configuration structure being referenced
@@ -166,7 +175,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 {
 	USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
 
-	// TODO Scan all keys and update KeyboardReport with pressed keys
+	ScanKeys_Read(&Generate_USB_KeyboardReport_Data, (void *)KeyboardReport);
 
 	*ReportSize = sizeof(USB_KeyboardReport_Data_t);
 	return false;
