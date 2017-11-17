@@ -68,7 +68,7 @@ const uint16_t PROGMEM keymap_qwerty[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KE
   // Left
   ____,                      ____, ____, ____, ____, ____, ____,
   K(GRAVE_ACCENT_AND_TILDE), ____, ____, ____, ____, ____, ____,
-  ____,                      K(Q), K(W), K(E), K(R), K(Y),
+  ____,                      K(Q), K(W), K(E), K(R), K(T),
   ____,                      K(A), K(S), K(D), K(F), K(G), ____,
                              K(Z), K(X), K(C), K(V), K(B),
   ____,                      ____, ____, ____,       ____,
