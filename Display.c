@@ -1,4 +1,7 @@
 #include "Display.h"
+#include "ScanKeys.h" // FIXME
+#include <u8g.h>
+#include <stdarg.h>  // FIXME
 
 u8g_t u8g;
 
@@ -13,13 +16,18 @@ void Display_Init(void)
   );
 }
 
-void ScanKeys_Callback(struct ScanKeys_Address address, void *data)
+void ScanKeys_Callback(struct Key key, void *data)
 {
-  struct ScanKeys_Address *send_address;
+  struct Key *send_key;
 
-  send_address = (struct ScanKeys_Address *)data;
-  send_address->row = address.row;
-  send_address->column = address.column;
+  if(key.state) {
+    send_key = (struct Key *)data;
+    send_key->row = key.row;
+    send_key->column = key.column;
+    send_key->state = key.state;
+    send_key->just_pressed = key.just_pressed;
+    send_key->just_released = key.just_released;
+  }
 }
 
 void Display_Write_Centered(int8_t x_offset, int8_t y_offset, ...){
@@ -52,22 +60,21 @@ void Display_Update(void)
 {
   char *str_row[11];
   char *str_column[11];
-  struct ScanKeys_Address address;
+  struct Key key;
 
-  address.row = 0xFF;
-  address.column = 0xFF;
+  key.state = 0;
 
-  ScanKeys_Read(&ScanKeys_Callback, (void *)&address);
+  ScanKeys_Read(&ScanKeys_Callback, (void *)&key);
 
   u8g_FirstPage(&u8g);
   do {
     u8g_DrawFrame(&u8g, 0, 0, 128, 64);
-    u8g_SetFont(&u8g, u8g_font_helvB12);
-    if(0xFF != address.row) {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    if(key.state) {
       Display_Write_Centered(
         0, 0,
-        utoa(address.row, str_row, 10),
-        utoa(address.column, str_column, 10),
+        utoa(key.row, str_row, 10),
+        utoa(key.column, str_column, 10),
         NULL
       );
     }

@@ -1,7 +1,7 @@
 #ifndef _KEYMAP_H_
 #define _KEYMAP_H_
 
-#include <LUFA/Drivers/USB/Class/Common/HIDClassCommon.h>
+#include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
 #include "ScanKeys.h"
 
@@ -19,6 +19,7 @@
 #define ____ (KEY_FN_PASS << 8)
 
 #define KEYMAP( \
+  /* Left */ \
   k0x0, k0x1, k0x2, k0x3, k0x4, k0x5, k0x6, \
   k1x0, k1x1, k1x2, k1x3, k1x4, k1x5, k1x6, \
   k2x0, k2x1, k2x2, k2x3, k2x4, k2x5, \
@@ -26,7 +27,7 @@
         k4x1, k4x2, k4x3, k4x4, k4x5, \
   k5x0, k5x1, k5x2, k5x3,       k5x5, \
   k6x0, k6x1,       k6x3, \
-  \
+  /* Right */ \
   k0x7, k0x8, k0x9, k0x10, k0x11, k0x12, k0x13, k0x14, k0x15, \
   k1x7, k1x8, k1x9, k1x10, k1x11, k1x12, k1x13, k1x14, k1x15, \
         k2x8, k2x9, k2x10, k2x11, k2x12, k2x13, k2x14, k2x15, \
