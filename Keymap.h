@@ -47,6 +47,7 @@
 
 enum keymap_layers {
   QWERTY_LAYER,
+  DVORAK_LAYER,
   COMMON_LAYER,
   END_LAYER,
 };
@@ -69,6 +70,24 @@ const uint16_t PROGMEM keymaps[][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
           K(N), K(M), K(COMMA_AND_LESS_THAN_SIGN), K(DOT_AND_GREATER_THAN_SIGN), K(SLASH_AND_QUESTION_MARK), K(BACKSLASH_AND_PIPE),                                                      ____,
           ____,       ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
                       ____,                        ____,                         ____,                       ____,                                                                       ____
+  ),
+  [DVORAK_LAYER] = KEYMAP(
+    // Left
+    ____,                      ____,                   ____,                         ____,                         ____, ____, ____,
+    K(GRAVE_ACCENT_AND_TILDE), ____, ____, ____, ____, ____,                         ____,
+    ____,                      K(APOSTROPHE_AND_QUOTE), K(COMMA_AND_LESS_THAN_SIGN), K(DOT_AND_GREATER_THAN_SIGN), K(P), K(Y),
+    ____,                      K(A),                    K(O),                        K(E),                         K(U), K(I), ____,
+                               K(SEMICOLON_AND_COLON),  K(Q),                        K(J),                         K(K), K(X),
+    ____,                      ____,                    ____,                        ____,                               ____,
+    ____,                      ____,                                                 ____,
+    // Right
+    ____, ____, ____, ____, ____, ____, ____,                                 ____,                                 ____,
+    ____, ____, ____, ____, ____, ____, K(OPENING_BRACKET_AND_OPENING_BRACE), K(CLOSING_BRACKET_AND_CLOSING_BRACE), ____,
+          K(F), K(G), K(C), K(R), K(L), K(SLASH_AND_QUESTION_MARK),           K(EQUAL_AND_PLUS),                    ____,
+    ____, K(D), K(H), K(T), K(N), K(S), K(MINUS_AND_UNDERSCORE),              ____,                                 ____,
+          K(B), K(M), K(W), K(V), K(Z), K(BACKSLASH_AND_PIPE),                                                      ____,
+          ____,       ____, ____, ____, ____,                                 ____,                                 ____,
+                      ____, ____, ____, ____,                                                                       ____
   ),
   [COMMON_LAYER] = KEYMAP(
     // Left
