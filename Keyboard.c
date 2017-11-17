@@ -74,7 +74,6 @@ int main(void)
 	{
 		HID_Device_USBTask(&Keyboard_HID_Interface);
 		USB_USBTask();
-		// TODO ScanKeys + Send KeyboardReport
 		Display_Update(); // FIXME
 	}
 }
@@ -111,13 +110,13 @@ void SetupHardware()
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
-	// TODO u8glib: USB Enumerating
+	// TODO Display: USB Enumerating
 }
 
 /** Event handler for the library USB Disconnection event. */
 void EVENT_USB_Device_Disconnect(void)
 {
-	// TODO u8glib: USB Not Ready
+	// TODO Display: USB Not Ready
 }
 
 /** Event handler for the library USB Configuration Changed event. */
@@ -129,11 +128,11 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 
 	USB_Device_EnableSOFEvents();
 
-	// TODO u8glib:
+	// TODO Display:
 	// if(ConfigSuccess) {
-	// 	// TODO u8glib: USB Ready
+	// 	// TODO Display: USB Ready
 	// } else {
-	// 	// TODO u8glib: USB Error
+	// 	// TODO Display: USB Error
 	// }
 }
 
@@ -149,12 +148,65 @@ void EVENT_USB_Device_StartOfFrame(void)
 	HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
 }
 
+void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
+{
+  switch(KeyCode){
+    case HID_KEYBOARD_SC_LEFT_CONTROL:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTCTRL;
+			break;
+    case HID_KEYBOARD_SC_LEFT_SHIFT:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTSHIFT;
+			break;
+    case HID_KEYBOARD_SC_LEFT_ALT:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTALT;
+			break;
+    case HID_KEYBOARD_SC_LEFT_GUI:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTGUI;
+			break;
+    case HID_KEYBOARD_SC_RIGHT_CONTROL:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_RIGHTCTRL;
+			break;
+    case HID_KEYBOARD_SC_RIGHT_SHIFT:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_RIGHTSHIFT;
+			break;
+    case HID_KEYBOARD_SC_RIGHT_ALT:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_RIGHTALT;
+			break;
+    case HID_KEYBOARD_SC_RIGHT_GUI:
+			KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_RIGHTGUI;
+			break;
+    default:
+      for(uint8_t i=0 ; i < 6 ; i++)
+				if(KeyboardReport->KeyCode[i] == KeyCode)
+          goto end;
+      for(uint8_t i=0 ; i < 6 ; i++){
+        if(KeyboardReport->KeyCode[i] == 0){
+          KeyboardReport->KeyCode[i] = KeyCode;
+          break;
+        }
+      }
+			end:
+      break;
+  }
+}
+
 void Generate_USB_KeyboardReport_Data(struct ScanKeys_Address address, void *data)
 {
 	USB_KeyboardReport_Data_t* KeyboardReport;
+	uint16_t key_value;
 
 	KeyboardReport = (USB_KeyboardReport_Data_t*)data;
-	KeyboardReport->KeyCode[0] = pgm_read_byte_near(&(qwerty[address.row][address.column]));
+	key_value = pgm_read_byte_near(&(keymap_qwerty[address.row][address.column]));
+	switch(GET_KEY_FN(key_value)){
+		case KEY_FN_REG:
+			Add_KeyCode_to_USB_KeyboardReport_Data(KeyboardReport, GET_KEY_CODE(key_value));
+			break;
+		case KEY_FN_NONE:
+			break;
+		case KEY_FN_PASS:
+			break;
+	}
+
 }
 
 /** HID class driver callback function for the creation of HID reports to the host.
