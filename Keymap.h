@@ -15,8 +15,17 @@
 
 #define KEY_FN_PASS 2
 #define ____ (KEY_FN_PASS << 8)
+#define _TBD ____
+
+#define KEY_FN_ENABLE_LAYER 3
+#define ENABLE(l) ((KEY_FN_ENABLE_LAYER<<8) | (1<<l))
+#define ENABLE2(l1, l2) ((KEY_FN_ENABLE_LAYER<<8) | (1<<l1) | (1<<l2))
+
+#define IS_LAYER(k, l) ((k&0xFF) & (1<<l))
 
 enum keymap_layers {
+  FN_LAYER,
+  KEYPAD_LAYER,
   QWERTY_LAYER,
   DVORAK_LAYER,
   COMMON_LAYER,

@@ -31,12 +31,50 @@
 }
 
 const uint8_t layer_initial_state[LAYER_COUNT] = {
+  [FN_LAYER] = KEYMAP_START_DISABLED,
+  [KEYPAD_LAYER] = KEYMAP_START_DISABLED,
   [QWERTY_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_LAYER] = KEYMAP_START_ENABLED,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
+  [FN_LAYER] = KEYMAP(
+    // Left
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, K(INSERT),
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+          _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD,       _TBD,
+    _TBD, _TBD,       _TBD,
+    // Right
+    K(INSERT), _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+               _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+               _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,       _TBD,
+               _TBD,       _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+                           _TBD, _TBD, _TBD, _TBD,       _TBD
+  ),
+  [KEYPAD_LAYER] = KEYMAP(
+    // Left
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+          _TBD, _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD,       _TBD,
+    _TBD, _TBD,       _TBD,
+    // Right
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
+          _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
+    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
+          _TBD, _TBD, _TBD, _TBD, K(KEYPAD_5), _TBD,       _TBD,
+          _TBD,       _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
+                      _TBD, _TBD, _TBD,        _TBD,       _TBD
+  ),
   [QWERTY_LAYER] = KEYMAP(
     // Left
     ____,                      ____, ____, ____, ____, ____, ____,
@@ -75,13 +113,13 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
   ),
   [COMMON_LAYER] = KEYMAP(
     // Left
-    K(ESCAPE),       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
-    ____,            K(1_AND_EXCLAMATION), K(2_AND_AT),    K(3_AND_HASHMARK), K(4_AND_DOLLAR), K(5_AND_PERCENTAGE), K(BACKSPACE),
-    K(TAB),          ____,                 ____,           ____,              ____,            ____,
-    K(LEFT_SHIFT),   ____,                 ____,           ____,              ____,            ____,                K(ENTER),
-                     ____,                 ____,           ____,              ____,            ____,
-    K(LEFT_CONTROL), K(MEDIA_PLAY),        K(APPLICATION), TODO,                               K(SPACE),
-    TODO,            K(LEFT_GUI),                          K(LEFT_ALT),
+    K(ESCAPE),                       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
+    ____,                            K(1_AND_EXCLAMATION), K(2_AND_AT),    K(3_AND_HASHMARK), K(4_AND_DOLLAR), K(5_AND_PERCENTAGE), K(BACKSPACE),
+    K(TAB),                          ____,                 ____,           ____,              ____,            ____,
+    K(LEFT_SHIFT),                   ____,                 ____,           ____,              ____,            ____,                K(ENTER),
+                                     ____,                 ____,           ____,              ____,            ____,
+    K(LEFT_CONTROL),                 K(MEDIA_PLAY),        K(APPLICATION), TODO,                               K(SPACE),
+    ENABLE2(FN_LAYER, KEYPAD_LAYER), K(LEFT_GUI),                          K(LEFT_ALT),
     // Right
     K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           TODO,
     K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK), K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
