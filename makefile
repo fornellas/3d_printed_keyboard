@@ -14,6 +14,8 @@ SRC          = \
 	Descriptors.c \
 	Display.c \
 	GenerateKeyboardReport.c \
+	Keymap.c \
+	LayoutState.c \
 	ScanKeys.c \
 	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
 	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \

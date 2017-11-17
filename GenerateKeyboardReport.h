@@ -3,7 +3,6 @@
 
 #include "ScanKeys.h"
 
-void GenerateKeyboardReport_Init(void);
 void GenerateKeyboardReport(struct Key key, void *data);
 
 #endif

@@ -1,8 +1,7 @@
 #include "GenerateKeyboardReport.h"
+#include "LayoutState.h"
 #include "Keymap.h"
-#include "EEPROM_Addresses.h"
-
-uint8_t layer_state[END_LAYER - 1];
+#include <LUFA/Drivers/USB/USB.h>
 
 void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
 {
@@ -46,23 +45,6 @@ void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardR
   }
 }
 
-void GenerateKeyboardReport_Init()
-{
-  for(uint8_t i=0 ; i < END_LAYER ; i++) {
-    switch(layer_initial_state[i]){
-      case KEYMAP_START_ENABLED:
-        layer_state[i] = 1;
-        break;
-      case KEYMAP_START_DISABLED:
-        layer_state[i] = 0;
-        break;
-      case KEYMAP_START_LOAD:
-        layer_state[i] = eeprom_read_byte((const uint8_t *)EEPROM_LAYOUT_STATES+i);
-        break;
-    }
-  }
-}
-
 void GenerateKeyboardReport(struct Key key, void *data)
 {
   USB_KeyboardReport_Data_t* KeyboardReport;
@@ -70,8 +52,8 @@ void GenerateKeyboardReport(struct Key key, void *data)
 
   KeyboardReport = (USB_KeyboardReport_Data_t*)data;
 
-  for(uint8_t i=0 ; i < END_LAYER ; i++) {
-    if(!layer_state[i])
+  for(uint8_t i=0 ; i < LAYER_COUNT ; i++) {
+    if(!LayoutState_Get(i))
       continue;
 
     key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
