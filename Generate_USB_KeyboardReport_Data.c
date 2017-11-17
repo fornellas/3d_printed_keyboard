@@ -49,18 +49,23 @@ void Generate_USB_KeyboardReport_Data(struct Key key, void *data)
   uint16_t key_value;
 
   KeyboardReport = (USB_KeyboardReport_Data_t*)data;
-  if(!key.state)
-    return;
-  key_value = pgm_read_byte_near(&(keymap_qwerty[key.row][key.column]));
-  switch(GET_KEY_FN(key_value)){
-    case KEY_FN_REG:
-      if(key.state)
-         Add_KeyCode_to_USB_KeyboardReport_Data(KeyboardReport, GET_KEY_CODE(key_value));
-      break;
-    case KEY_FN_NONE:
-      break;
-    case KEY_FN_PASS:
-      break;
-  }
 
+  for(uint8_t i ; i < END_LAYER ; i++) {
+
+    key_value = pgm_read_byte_near(&(keymaps[i][key.row][key.column]));
+
+    switch(GET_KEY_FN(key_value)){
+      case KEY_FN_REG:
+        if(key.state)
+           Add_KeyCode_to_USB_KeyboardReport_Data(KeyboardReport, GET_KEY_CODE(key_value));
+        break;
+      case KEY_FN_NONE:
+        goto finish;
+        break;
+      case KEY_FN_PASS:
+        break;
+    }
+    next: ;
+  }
+  finish: ;
 }

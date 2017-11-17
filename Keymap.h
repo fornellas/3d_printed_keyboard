@@ -45,43 +45,52 @@
   {k6x0, k6x1, NONE, k6x3, NONE, NONE, NONE, NONE, NONE, NONE, k6x10, k6x11, k6x12, k6x13, NONE,  k6x15}, \
 }
 
-const uint16_t PROGMEM keymap_common[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
-  // Left
-  K(ESCAPE),       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
-  ____,            K(1_AND_EXCLAMATION), K(2_AND_AT),    K(3_AND_HASHMARK), K(4_AND_DOLLAR), K(5_AND_PERCENTAGE), K(BACKSPACE),
-  K(TAB),          ____,                 ____,           ____,              ____,            ____,
-  K(LEFT_SHIFT),   ____,                 ____,           ____,              ____,            ____,                K(ENTER),
-                   ____,                 ____,           ____,              ____,            ____,
-  K(LEFT_CONTROL), K(MEDIA_PLAY),        K(APPLICATION), TODO,                               K(SPACE),
-  TODO,            K(LEFT_GUI),                          K(LEFT_ALT),
-  // Right
-  K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           TODO,
-  K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK), K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
-                ____,           ____,               ____,              ____,                         ____,                         ____,           ____,             TODO,
-  K(ENTER),     ____,           ____,               ____,              ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
-                ____,           ____,               ____,              ____,                         ____,                         ____,                             TODO,
-                K(SPACE),                           TODO,              K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
-                                                    K(RIGHT_ALT),      K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
-);
+enum keymap_layers {
+  QWERTY_LAYER,
+  COMMON_LAYER,
+  END_LAYER,
+};
 
-const uint16_t PROGMEM keymap_qwerty[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
-  // Left
-  ____,                      ____, ____, ____, ____, ____, ____,
-  K(GRAVE_ACCENT_AND_TILDE), ____, ____, ____, ____, ____, ____,
-  ____,                      K(Q), K(W), K(E), K(R), K(T),
-  ____,                      K(A), K(S), K(D), K(F), K(G), ____,
-                             K(Z), K(X), K(C), K(V), K(B),
-  ____,                      ____, ____, ____,       ____,
-  ____,                      ____,       ____,
-  // Right
-  ____, ____, ____, ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
-  ____, ____, ____, ____,                        ____,                         ____,                       K(MINUS_AND_UNDERSCORE),              K(EQUAL_AND_PLUS),                    ____,
-        K(Y), K(U), K(I),                        K(O),                         K(P),                       K(OPENING_BRACKET_AND_OPENING_BRACE), K(CLOSING_BRACKET_AND_CLOSING_BRACE), ____,
-  ____, K(H), K(J), K(K),                        K(L),                         K(SEMICOLON_AND_COLON),     K(APOSTROPHE_AND_QUOTE),              ____,                                 ____,
-        K(N), K(M), K(COMMA_AND_LESS_THAN_SIGN), K(DOT_AND_GREATER_THAN_SIGN), K(SLASH_AND_QUESTION_MARK), K(BACKSLASH_AND_PIPE),                                                      ____,
-        ____,       ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
-                    ____,                        ____,                         ____,                       ____,                                                                       ____
-);
+const uint16_t PROGMEM keymaps[][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
+  [QWERTY_LAYER] = KEYMAP(
+    // Left
+    ____,                      ____, ____, ____, ____, ____, ____,
+    K(GRAVE_ACCENT_AND_TILDE), ____, ____, ____, ____, ____, ____,
+    ____,                      K(Q), K(W), K(E), K(R), K(T),
+    ____,                      K(A), K(S), K(D), K(F), K(G), ____,
+                               K(Z), K(X), K(C), K(V), K(B),
+    ____,                      ____, ____, ____,       ____,
+    ____,                      ____,       ____,
+    // Right
+    ____, ____, ____, ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
+    ____, ____, ____, ____,                        ____,                         ____,                       K(MINUS_AND_UNDERSCORE),              K(EQUAL_AND_PLUS),                    ____,
+          K(Y), K(U), K(I),                        K(O),                         K(P),                       K(OPENING_BRACKET_AND_OPENING_BRACE), K(CLOSING_BRACKET_AND_CLOSING_BRACE), ____,
+    ____, K(H), K(J), K(K),                        K(L),                         K(SEMICOLON_AND_COLON),     K(APOSTROPHE_AND_QUOTE),              ____,                                 ____,
+          K(N), K(M), K(COMMA_AND_LESS_THAN_SIGN), K(DOT_AND_GREATER_THAN_SIGN), K(SLASH_AND_QUESTION_MARK), K(BACKSLASH_AND_PIPE),                                                      ____,
+          ____,       ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
+                      ____,                        ____,                         ____,                       ____,                                                                       ____
+  ),
+  [COMMON_LAYER] = KEYMAP(
+    // Left
+    K(ESCAPE),       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
+    ____,            K(1_AND_EXCLAMATION), K(2_AND_AT),    K(3_AND_HASHMARK), K(4_AND_DOLLAR), K(5_AND_PERCENTAGE), K(BACKSPACE),
+    K(TAB),          ____,                 ____,           ____,              ____,            ____,
+    K(LEFT_SHIFT),   ____,                 ____,           ____,              ____,            ____,                K(ENTER),
+                     ____,                 ____,           ____,              ____,            ____,
+    K(LEFT_CONTROL), K(MEDIA_PLAY),        K(APPLICATION), TODO,                               K(SPACE),
+    TODO,            K(LEFT_GUI),                          K(LEFT_ALT),
+    // Right
+    K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           TODO,
+    K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK), K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
+                  ____,           ____,               ____,              ____,                         ____,                         ____,           ____,             TODO,
+    K(ENTER),     ____,           ____,               ____,              ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
+                  ____,           ____,               ____,              ____,                         ____,                         ____,                             TODO,
+                  K(SPACE),                           TODO,              K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
+                                                      K(RIGHT_ALT),      K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
+  ),
+};
+
+
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
 //   // Left
