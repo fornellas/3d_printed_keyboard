@@ -7,15 +7,15 @@
 
 #define GET_KEY_FN(k) ((0xFF00 & k) >> 8)
 
-#define KEY_FN_REG 0UL
+#define KEY_FN_REG 0
 #define K(name)  (HID_KEYBOARD_SC_ ## name)
 #define GET_KEY_CODE(k) (k & 0xFF)
 
-#define KEY_FN_NONE 1UL
+#define KEY_FN_NONE 1
 #define NONE (KEY_FN_NONE << 8)
 #define TODO NONE
 
-#define KEY_FN_PASS 2UL
+#define KEY_FN_PASS 2
 #define ____ (KEY_FN_PASS << 8)
 
 #define KEYMAP( \
@@ -46,10 +46,22 @@
 }
 
 enum keymap_layers {
-  QWERTY_LAYER,
   DVORAK_LAYER,
   COMMON_LAYER,
+  QWERTY_LAYER,
   END_LAYER,
+};
+
+enum keymaps_enabled {
+  KEYMAP_START_ENABLED,
+  KEYMAP_START_DISABLED,
+  KEYMAP_START_LOAD,
+};
+
+uint8_t keymaps_enabled[] = {
+  [QWERTY_LAYER] = KEYMAP_START_LOAD,
+  [DVORAK_LAYER] = KEYMAP_START_LOAD,
+  [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
 const uint16_t PROGMEM keymaps[][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
@@ -108,8 +120,6 @@ const uint16_t PROGMEM keymaps[][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
                                                       K(RIGHT_ALT),      K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
   ),
 };
-
-
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
 //   // Left

@@ -1,4 +1,4 @@
-#include "Generate_USB_KeyboardReport_Data.h"
+#include "GenerateKeyboardReport.h"
 #include "Keymap.h"
 
 void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
@@ -43,21 +43,23 @@ void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardR
   }
 }
 
-void Generate_USB_KeyboardReport_Data(struct Key key, void *data)
+void GenerateKeyboardReport(struct Key key, void *data)
 {
   USB_KeyboardReport_Data_t* KeyboardReport;
   uint16_t key_value;
 
   KeyboardReport = (USB_KeyboardReport_Data_t*)data;
 
-  for(uint8_t i ; i < END_LAYER ; i++) {
+  for(uint8_t i=0 ; i < END_LAYER ; i++) {
 
-    key_value = pgm_read_byte_near(&(keymaps[i][key.row][key.column]));
+    key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
 
     switch(GET_KEY_FN(key_value)){
       case KEY_FN_REG:
-        if(key.state)
+        if(key.state) {
            Add_KeyCode_to_USB_KeyboardReport_Data(KeyboardReport, GET_KEY_CODE(key_value));
+           goto finish;
+        }
         break;
       case KEY_FN_NONE:
         goto finish;
@@ -65,7 +67,6 @@ void Generate_USB_KeyboardReport_Data(struct Key key, void *data)
       case KEY_FN_PASS:
         break;
     }
-    next: ;
   }
   finish: ;
 }

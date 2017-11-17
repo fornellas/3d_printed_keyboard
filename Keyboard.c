@@ -35,7 +35,7 @@
  */
 
 #include "Keyboard.h"
-#include "Generate_USB_KeyboardReport_Data.h"
+#include "GenerateKeyboardReport.h"
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
@@ -166,7 +166,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 {
   USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
 
-  ScanKeys_Read(&Generate_USB_KeyboardReport_Data, (void *)KeyboardReport);
+  ScanKeys_Read(&GenerateKeyboardReport, (void *)KeyboardReport);
 
   *ReportSize = sizeof(USB_KeyboardReport_Data_t);
   return false;

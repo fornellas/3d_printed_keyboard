@@ -13,7 +13,7 @@ SRC          = \
 	$(TARGET).c \
 	Descriptors.c \
 	Display.c \
-	Generate_USB_KeyboardReport_Data.c \
+	GenerateKeyboardReport.c \
 	ScanKeys.c \
 	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
 	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \
