@@ -104,6 +104,7 @@ void SetupHardware()
   SPI_Init(SPI_MODE_MASTER);
   Display_Init();
   ScanKeys_Init();
+  GenerateKeyboardReport_Init();
   USB_Init();
 }
 

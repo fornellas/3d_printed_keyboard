@@ -46,21 +46,21 @@
 }
 
 enum keymap_layers {
+  QWERTY_LAYER,
   DVORAK_LAYER,
   COMMON_LAYER,
-  QWERTY_LAYER,
   END_LAYER,
 };
 
-enum keymaps_enabled {
+enum layer_enabled {
   KEYMAP_START_ENABLED,
   KEYMAP_START_DISABLED,
   KEYMAP_START_LOAD,
 };
 
-uint8_t keymaps_enabled[] = {
+uint8_t layer_initial_state[] = {
   [QWERTY_LAYER] = KEYMAP_START_LOAD,
-  [DVORAK_LAYER] = KEYMAP_START_LOAD,
+  [DVORAK_LAYER] = KEYMAP_START_ENABLED,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 

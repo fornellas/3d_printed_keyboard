@@ -1,0 +1,1 @@
+#define EEPROM_LAYOUT_STATES 0
