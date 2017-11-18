@@ -39,6 +39,9 @@ extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
 
 enum keymap_seq {
   SEQ_SHUFFLE,
+  SEQ_00,
+  SEQ_B_TAB,
+  SEQ_DESKTOP,
   SEQ_COUNT,
 };
 

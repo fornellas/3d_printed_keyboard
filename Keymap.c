@@ -55,13 +55,13 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     ____, TODO("cut"),          TODO("copy"),         TODO("paste"),       K(MUTE),
     NONE, ____,                                       ____,
     // Right
-    K(INSERT), ____, K(POWER), K(MEDIA_SLEEP), TODO("wake"), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
-    ____,      ____, ____,     ____,           ____,         ____,            ____,           ____, ____,
-               ____, ____,     ____,           ____,         ____,            ____,           ____, ____,
-    ____,      ____, ____,     ____,           ____,         ____,            ____,           ____, ____,
-               ____, ____,     ____,           ____,         ____,            ____,                 ____,
-               K(MUTE),        ____,           ____,         ____,            ____,           ____, ____,
-                               ____,           ____,         ____,            ____,                 ____
+    K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          TODO("wake"), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
+    ____,      ____,           ____,     ____,                    ____,         ____,            ____,           ____, ____,
+               ____,           ____,     ____,                    ____,         ____,            ____,           ____, ____,
+    ____,      ____,           ____,     ____,                    ____,         ____,            ____,           ____, ____,
+               ____,           ____,     ____,                    ____,         ____,            ____,                 ____,
+               K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,         ____,            ____,           ____, K(MEDIA_BACKWARD),
+                                         K(MEDIA_NEXT_TRACK),     ____,         ____,            ____,                 K(MEDIA_FORWARD)
   ),
   [KEYPAD_LAYER] = KEYMAP(
     // Left
@@ -75,11 +75,11 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     // Right
     ____, ____,          ____,          ____,           ____,                       ____,                       ____,                        ____,            ____,
     ____, ____,          ____,          ____,           ____,                       ____,                       ____,                        ____,            ____,
-          ____,          ____,          ____,           K(TAB),                     K(KEYPAD_SLASH),            K(KEYPAD_ASTERISK),          K(KEYPAD_MINUS), TODO("b.tab"),
+          ____,          ____,          ____,           K(TAB),                     K(KEYPAD_SLASH),            K(KEYPAD_ASTERISK),          K(KEYPAD_MINUS), SEQ(SEQ_B_TAB),
     ____, K(HOME),       K(UP_ARROW),   K(END),         K(KEYPAD_7_AND_HOME),       K(KEYPAD_8_AND_UP_ARROW),   K(KEYPAD_9_AND_PAGE_UP),     K(KEYPAD_PLUS),  K(ERROR_ROLLOVER),
           K(LEFT_ARROW), K(DOWN_ARROW), K(RIGHT_ARROW), K(KEYPAD_4_AND_LEFT_ARROW), K(KEYPAD_5),                K(KEYPAD_6_AND_RIGHT_ARROW),                  K(KEYPAD_BACKSPACE),
-          ____,                         TODO("prev"),   K(KEYPAD_1_AND_END),        K(KEYPAD_2_AND_DOWN_ARROW), K(KEYPAD_3_AND_PAGE_DOWN),   K(KEYPAD_ENTER), TODO("back"),
-                                        TODO("next"),   K(KEYPAD_0_AND_INSERT),     TODO("00"),                 K(KEYPAD_DOT_AND_DELETE),                     TODO("forward")
+          ____,                         ____,           K(KEYPAD_1_AND_END),        K(KEYPAD_2_AND_DOWN_ARROW), K(KEYPAD_3_AND_PAGE_DOWN),   K(KEYPAD_ENTER), ____,
+                                        ____,           K(KEYPAD_0_AND_INSERT),     SEQ(SEQ_00),                K(KEYPAD_DOT_AND_DELETE),                     ____
   ),
   [QWERTY_LAYER] = KEYMAP(
     // Left
@@ -132,7 +132,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
                   ____,           ____,               ____,              ____,                         ____,                         ____,           ____,             TODO('mail'),
     K(ENTER),     ____,           ____,               ____,              ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
                   ____,           ____,               ____,              ____,                         ____,                         ____,                             TODO('www'),
-                  K(SPACE),                           TODO('desktop'),   K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
+                  K(SPACE),                           SEQ(SEQ_DESKTOP),  K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
                                                       K(RIGHT_ALT),      K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
   ),
 };
@@ -179,8 +179,38 @@ uint16_t seq_shuffle[] = {
   0,
 };
 
+uint16_t seq_00[] = {
+  2,
+  HID_KEYBOARD_SC_0_AND_CLOSING_PARENTHESIS,
+  HID_KEYBOARD_SC_0_AND_CLOSING_PARENTHESIS,
+  0,
+};
+
+uint16_t seq_b_tab[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_SHIFT,
+  2,
+  HID_KEYBOARD_SC_LEFT_SHIFT,
+  HID_KEYBOARD_SC_TAB,
+  0,
+};
+
+uint16_t seq_desktop[] = {
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  HID_KEYBOARD_SC_D,
+  0,
+};
+
 const uint16_t (*keymap_seqs[])[SEQ_COUNT] = {
   [SEQ_SHUFFLE] = seq_shuffle,
+  [SEQ_00] = seq_00,
+  [SEQ_B_TAB] = seq_b_tab,
+  [SEQ_DESKTOP] = seq_desktop,
 };
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
