@@ -47,21 +47,21 @@ const uint8_t keymap_layout_layers[LAYOUT_LAYERS_COUNT] = {
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
   [FN_LAYER] = KEYMAP(
     // Left
-    ____, LAYOUT(QWERTY_LAYER), LAYOUT(DVORAK_LAYER), _TBD, _TBD, _TBD, K(INSERT),
-    _TBD, _TBD,                 _TBD,                 _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD,                 _TBD,                 _TBD, _TBD, _TBD,
-    _TBD, _TBD,                 _TBD,                 _TBD, _TBD, _TBD, _TBD,
-          _TBD,                 _TBD,                 _TBD, _TBD, _TBD,
-    _TBD, _TBD,                 _TBD,                 _TBD,       _TBD,
-    _TBD, _TBD,                                       _TBD,
+    ____, LAYOUT(QWERTY_LAYER), LAYOUT(DVORAK_LAYER), ____,          ____, ____, K(INSERT),
+    ____, ____,                 ____,                 ____,          ____, ____, K(VOLUME_UP),
+    ____, ____,                 ____,                 ____,          ____, ____,
+    ____, ____,                 ____,                 ____,          ____, ____, K(VOLUME_DOWN),
+          ____,                 ____,                 ____,          ____, ____,
+    ____, TODO("cut"),          TODO("copy"),         TODO("paste"),       K(MUTE),
+    NONE, ____,                                       ____,
     // Right
-    K(INSERT), _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, K(NUM_LOCK),
-    _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-               _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-               _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,       _TBD,
-               _TBD,       _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-                           _TBD, _TBD, _TBD, _TBD,       _TBD
+    K(INSERT), ____, K(POWER), K(MEDIA_SLEEP), TODO("wake"), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
+    ____,      ____, ____,     ____,           ____,         ____,            ____,           ____, ____,
+               ____, ____,     ____,           ____,         ____,            ____,           ____, ____,
+    ____,      ____, ____,     ____,           ____,         ____,            ____,           ____, ____,
+               ____, ____,     ____,           ____,         ____,            ____,                 ____,
+               K(MUTE),        ____,           ____,         ____,            ____,           ____, ____,
+                               ____,           ____,         ____,            ____,                 ____
   ),
   [KEYPAD_LAYER] = KEYMAP(
     // Left
