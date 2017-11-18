@@ -15,7 +15,7 @@ SRC          = \
 	Display.c \
 	GenerateKeyboardReport.c \
 	Keymap.c \
-	LayoutState.c \
+	LayerState.c \
 	ScanKeys.c \
 	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
 	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \

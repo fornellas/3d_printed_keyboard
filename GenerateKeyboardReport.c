@@ -1,5 +1,5 @@
 #include "GenerateKeyboardReport.h"
-#include "LayoutState.h"
+#include "LayerState.h"
 #include "Keymap.h"
 #include <LUFA/Drivers/USB/USB.h>
 
@@ -54,7 +54,7 @@ void GenerateKeyboardReport(struct Key key, void *data)
   KeyboardReport = (USB_KeyboardReport_Data_t*)data;
 
   for(uint8_t i=0 ; i < LAYER_COUNT ; i++) {
-    if(!LayoutState_Get(i))
+    if(!LayerState_Get(i))
       continue;
 
     key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
@@ -80,9 +80,9 @@ void GenerateKeyboardReport(struct Key key, void *data)
         if(key.just_pressed) {
           for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
             if(keymap_layout_layers[l] == layout)
-              LayoutState_Set(layout, 1);
+              LayerState_Set(layout, 1);
             else
-              LayoutState_Set(keymap_layout_layers[l], 0);
+              LayerState_Set(keymap_layout_layers[l], 0);
           }
         }
         goto finish;

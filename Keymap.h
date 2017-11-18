@@ -33,7 +33,7 @@ enum keymap_macros {
 
 extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
 
-enum layer_enabled {
+enum layer_start_status {
   KEYMAP_START_ENABLED,
   KEYMAP_START_DISABLED,
   KEYMAP_START_LOAD,

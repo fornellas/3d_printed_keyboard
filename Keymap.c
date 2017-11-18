@@ -1,6 +1,6 @@
 #include "Keymap.h"
 #include "ScanKeys.h"
-#include "LayoutState.h"
+#include "LayerState.h"
 #include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
 
@@ -147,12 +147,12 @@ void Keymap_Init(void)
 void macro_fn(struct Key key)
 {
   if(key.just_pressed) {
-    LayoutState_Set(FN_LAYER, 1);
-    LayoutState_Set(KEYPAD_LAYER, 1);
+    LayerState_Set(FN_LAYER, 1);
+    LayerState_Set(KEYPAD_LAYER, 1);
   }
   if(key.just_released) {
-    LayoutState_Set(FN_LAYER, 0);
-    LayoutState_Set(KEYPAD_LAYER, keypad_state);
+    LayerState_Set(FN_LAYER, 0);
+    LayerState_Set(KEYPAD_LAYER, keypad_state);
   }
 }
 
@@ -160,7 +160,7 @@ void macro_keypad(struct Key key)
 {
   if(key.just_pressed) {
     keypad_state = !keypad_state;
-    LayoutState_Set(KEYPAD_LAYER, keypad_state);
+    LayerState_Set(KEYPAD_LAYER, keypad_state);
   }
 }
 

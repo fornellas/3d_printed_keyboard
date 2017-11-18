@@ -37,7 +37,7 @@
 #include "GenerateKeyboardReport.h"
 #include "Keyboard.h"
 #include "Keymap.h"
-#include "LayoutState.h"
+#include "LayerState.h"
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
@@ -106,7 +106,7 @@ void SetupHardware()
   SPI_Init(SPI_MODE_MASTER);
   Display_Init();
   ScanKeys_Init();
-  LayoutState_Init();
+  LayerState_Init();
   Keymap_Init();
   USB_Init();
 }
