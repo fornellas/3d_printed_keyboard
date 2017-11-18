@@ -200,4 +200,10 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
   //
   // if (*LEDReport & HID_KEYBOARD_LED_SCROLLLOCK)
   //   // TODO u8glib: Scroll on
+  //
+  // if (*LEDReport & HID_KEYBOARD_LED_COMPOSE)
+  //   // TODO u8glib: Scroll on
+  //
+  // if (*LEDReport & HID_KEYBOARD_LED_KANA)
+  //   // TODO u8glib: Scroll on
 }

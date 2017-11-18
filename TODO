@@ -1,4 +1,15 @@
-- Macro for enable/disable layers
-- Keypad layer
-- Fn layer
 - Macro keys
+  - Finish all TODO keys
+- Display
+  - USB Statuses
+  - "LED" Status
+    - Caps Lock
+    - Num Lock
+    - Scroll Lock
+    - Keypad
+  - Layout
+    - Qwerty
+    - Dvorak
+  - Screensaver
+  - Key press counter
+- Wake up from suspend
