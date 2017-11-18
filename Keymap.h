@@ -21,6 +21,9 @@
 #define MACRO(m) ((KEY_FN_MACRO<<8) | m)
 #define GET_MACRO(k) (k&0xFF)
 
+#define KEY_FN_LAYOUT 4
+#define LAYOUT(l) ((KEY_FN_LAYOUT<<8) | l)
+#define GET_LAYOUT(k) (k&0xFF)
 
 enum keymap_macros {
   MACRO_FN,
@@ -44,6 +47,10 @@ enum keymap_layers {
   COMMON_LAYER,
   LAYER_COUNT,
 };
+
+extern const uint8_t keymap_layout_layers[];
+
+#define LAYOUT_LAYERS_COUNT 2
 
 extern const uint8_t layer_initial_state[LAYER_COUNT];
 

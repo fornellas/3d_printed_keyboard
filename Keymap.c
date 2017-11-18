@@ -39,16 +39,21 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
+const uint8_t keymap_layout_layers[LAYOUT_LAYERS_COUNT] = {
+  QWERTY_LAYER,
+  DVORAK_LAYER,
+};
+
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
   [FN_LAYER] = KEYMAP(
     // Left
-    ____, _TBD, _TBD, _TBD, _TBD, _TBD, K(INSERT),
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-          _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD,       _TBD,
-    _TBD, _TBD,       _TBD,
+    ____, LAYOUT(QWERTY_LAYER), LAYOUT(DVORAK_LAYER), _TBD, _TBD, _TBD, K(INSERT),
+    _TBD, _TBD,                 _TBD,                 _TBD, _TBD, _TBD, _TBD,
+    _TBD, _TBD,                 _TBD,                 _TBD, _TBD, _TBD,
+    _TBD, _TBD,                 _TBD,                 _TBD, _TBD, _TBD, _TBD,
+          _TBD,                 _TBD,                 _TBD, _TBD, _TBD,
+    _TBD, _TBD,                 _TBD,                 _TBD,       _TBD,
+    _TBD, _TBD,                                       _TBD,
     // Right
     K(INSERT), _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, K(NUM_LOCK),
     _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
@@ -159,6 +164,7 @@ void macro_keypad(struct Key key)
   }
 }
 
+// FIXME warning: initialization from incompatible pointer type
 const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,

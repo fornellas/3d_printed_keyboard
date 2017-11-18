@@ -49,6 +49,7 @@ void GenerateKeyboardReport(struct Key key, void *data)
 {
   USB_KeyboardReport_Data_t* KeyboardReport;
   uint16_t key_value;
+  uint8_t layout;
 
   KeyboardReport = (USB_KeyboardReport_Data_t*)data;
 
@@ -60,10 +61,9 @@ void GenerateKeyboardReport(struct Key key, void *data)
 
     switch(GET_KEY_FN(key_value)){
       case KEY_FN_REG:
-        if(key.state) {
+        if(key.state)
            Add_KeyCode_to_USB_KeyboardReport_Data(KeyboardReport, GET_KEY_CODE(key_value));
-           goto finish;
-        }
+        goto finish;
         break;
       case KEY_FN_NONE:
         goto finish;
@@ -71,7 +71,20 @@ void GenerateKeyboardReport(struct Key key, void *data)
       case KEY_FN_PASS:
         break;
       case KEY_FN_MACRO:
+        // FIXME warning: function with qualified void return type called
         keymap_macros[GET_MACRO(key_value)](key);
+        goto finish;
+        break;
+      case KEY_FN_LAYOUT:
+        layout = GET_LAYOUT(key_value);
+        if(key.just_pressed) {
+          for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
+            if(keymap_layout_layers[l] == layout)
+              LayoutState_Set(layout, 1);
+            else
+              LayoutState_Set(keymap_layout_layers[l], 0);
+          }
+        }
         goto finish;
         break;
     }

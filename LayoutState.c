@@ -31,5 +31,5 @@ void LayoutState_Set(uint8_t id, uint8_t value)
 {
   layer_state[id] = value;
   if(layer_initial_state[id] == KEYMAP_START_LOAD)
-    eeprom_write_byte((const uint8_t *)EEPROM_LAYOUT_STATES+id, value);
+    eeprom_write_byte((uint8_t *)EEPROM_LAYOUT_STATES+id, value);
 }
