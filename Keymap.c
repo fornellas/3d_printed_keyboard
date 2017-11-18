@@ -52,7 +52,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     ____, ____,                 ____,                 ____,          ____, ____,
     ____, ____,                 ____,                 ____,          ____, ____, K(VOLUME_DOWN),
           ____,                 ____,                 ____,          ____, ____,
-    ____, TODO("cut"),          TODO("copy"),         TODO("paste"),       K(MUTE),
+    ____, SEQ(SEQ_CUT),         SEQ(SEQ_COPY),        SEQ(SEQ_PASTE),      K(MUTE),
     NONE, ____,                                       ____,
     // Right
     K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          TODO("wake"), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
