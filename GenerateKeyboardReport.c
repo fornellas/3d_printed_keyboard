@@ -70,15 +70,9 @@ void GenerateKeyboardReport(struct Key key, void *data)
         break;
       case KEY_FN_PASS:
         break;
-      case KEY_FN_ENABLE_LAYER:
-        if(key.just_pressed)
-          for(uint8_t l=0 ; l < LAYER_COUNT ; l++)
-            if(IS_LAYER(key_value, l))
-              LayoutState_Set(l, 1);
-        if(key.just_released)
-          for(uint8_t l=0 ; l < LAYER_COUNT ; l++)
-            if(IS_LAYER(key_value, l))
-              LayoutState_Set(l, 0);
+      case KEY_FN_MACRO:
+        keymap_macros[GET_MACRO(key_value)](key);
+        goto finish;
         break;
     }
   }

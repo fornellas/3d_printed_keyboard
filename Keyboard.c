@@ -34,8 +34,9 @@
  *  the demo and is responsible for the initial application hardware configuration.
  */
 
-#include "Keyboard.h"
 #include "GenerateKeyboardReport.h"
+#include "Keyboard.h"
+#include "Keymap.h"
 #include "LayoutState.h"
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
@@ -106,6 +107,7 @@ void SetupHardware()
   Display_Init();
   ScanKeys_Init();
   LayoutState_Init();
+  Keymap_Init();
   USB_Init();
 }
 

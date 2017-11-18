@@ -11,17 +11,30 @@
 
 #define KEY_FN_NONE 1
 #define NONE (KEY_FN_NONE << 8)
-#define TODO NONE
+#define TODO(_) NONE
 
 #define KEY_FN_PASS 2
 #define ____ (KEY_FN_PASS << 8)
 #define _TBD ____
 
-#define KEY_FN_ENABLE_LAYER 3
-#define ENABLE(l) ((KEY_FN_ENABLE_LAYER<<8) | (1<<l))
-#define ENABLE2(l1, l2) ((KEY_FN_ENABLE_LAYER<<8) | (1<<l1) | (1<<l2))
+#define KEY_FN_MACRO 3
+#define MACRO(m) ((KEY_FN_MACRO<<8) | m)
+#define GET_MACRO(k) (k&0xFF)
 
-#define IS_LAYER(k, l) ((k&0xFF) & (1<<l))
+
+enum keymap_macros {
+  MACRO_FN,
+  MACRO_KEYPAD,
+  MACRO_COUNT,
+};
+
+extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
+
+enum layer_enabled {
+  KEYMAP_START_ENABLED,
+  KEYMAP_START_DISABLED,
+  KEYMAP_START_LOAD,
+};
 
 enum keymap_layers {
   FN_LAYER,
@@ -32,14 +45,10 @@ enum keymap_layers {
   LAYER_COUNT,
 };
 
-enum layer_enabled {
-  KEYMAP_START_ENABLED,
-  KEYMAP_START_DISABLED,
-  KEYMAP_START_LOAD,
-};
-
 extern const uint8_t layer_initial_state[LAYER_COUNT];
 
 extern const uint16_t keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS];
+
+void Keymap_Init(void);
 
 #endif

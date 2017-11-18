@@ -1,5 +1,6 @@
 #include "Keymap.h"
 #include "ScanKeys.h"
+#include "LayoutState.h"
 #include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
 
@@ -34,14 +35,14 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [FN_LAYER] = KEYMAP_START_DISABLED,
   [KEYPAD_LAYER] = KEYMAP_START_DISABLED,
   [QWERTY_LAYER] = KEYMAP_START_LOAD,
-  [DVORAK_LAYER] = KEYMAP_START_ENABLED,
+  [DVORAK_LAYER] = KEYMAP_START_LOAD,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
   [FN_LAYER] = KEYMAP(
     // Left
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, K(INSERT),
+    ____, _TBD, _TBD, _TBD, _TBD, _TBD, K(INSERT),
     _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
     _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
     _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
@@ -49,7 +50,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     _TBD, _TBD, _TBD, _TBD,       _TBD,
     _TBD, _TBD,       _TBD,
     // Right
-    K(INSERT), _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
+    K(INSERT), _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, K(NUM_LOCK),
     _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
                _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
     _TBD,      _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
@@ -59,21 +60,21 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
   ),
   [KEYPAD_LAYER] = KEYMAP(
     // Left
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,
-          _TBD, _TBD, _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD,       _TBD,
-    _TBD, _TBD,       _TBD,
+    ____, ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____,
+    ____, ____, ____, ____, ____, ____, ____,
+          ____, ____, ____, ____, ____,
+    ____, ____, ____, ____,       ____,
+    ____, ____,       ____,
     // Right
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
-          _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
-    _TBD, _TBD, _TBD, _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
-          _TBD, _TBD, _TBD, _TBD, K(KEYPAD_5), _TBD,       _TBD,
-          _TBD,       _TBD, _TBD, _TBD,        _TBD, _TBD, _TBD,
-                      _TBD, _TBD, _TBD,        _TBD,       _TBD
+    ____, ____,          ____,          ____,           ____,                       ____,                       ____,                        ____,            ____,
+    ____, ____,          ____,          ____,           ____,                       ____,                       ____,                        ____,            ____,
+          ____,          ____,          ____,           K(TAB),                     K(KEYPAD_SLASH),            K(KEYPAD_ASTERISK),          K(KEYPAD_MINUS), TODO("b.tab"),
+    ____, K(HOME),       K(UP_ARROW),   K(END),         K(KEYPAD_7_AND_HOME),       K(KEYPAD_8_AND_UP_ARROW),   K(KEYPAD_9_AND_PAGE_UP),     K(KEYPAD_PLUS),  K(ERROR_ROLLOVER),
+          K(LEFT_ARROW), K(DOWN_ARROW), K(RIGHT_ARROW), K(KEYPAD_4_AND_LEFT_ARROW), K(KEYPAD_5),                K(KEYPAD_6_AND_RIGHT_ARROW),                  K(KEYPAD_BACKSPACE),
+          ____,                         TODO("prev"),   K(KEYPAD_1_AND_END),        K(KEYPAD_2_AND_DOWN_ARROW), K(KEYPAD_3_AND_PAGE_DOWN),   K(KEYPAD_ENTER), TODO("back"),
+                                        TODO("next"),   K(KEYPAD_0_AND_INSERT),     TODO("00"),                 K(KEYPAD_DOT_AND_DELETE),                     TODO("forward")
   ),
   [QWERTY_LAYER] = KEYMAP(
     // Left
@@ -118,17 +119,49 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     K(TAB),                          ____,                 ____,           ____,              ____,            ____,
     K(LEFT_SHIFT),                   ____,                 ____,           ____,              ____,            ____,                K(ENTER),
                                      ____,                 ____,           ____,              ____,            ____,
-    K(LEFT_CONTROL),                 K(MEDIA_PLAY),        K(APPLICATION), TODO,                               K(SPACE),
-    ENABLE2(FN_LAYER, KEYPAD_LAYER), K(LEFT_GUI),                          K(LEFT_ALT),
+    K(LEFT_CONTROL),                 K(MEDIA_PLAY),        K(APPLICATION), TODO('Alt+Tab'),                    K(SPACE),
+    MACRO(MACRO_FN),                 K(LEFT_GUI),                          K(LEFT_ALT),
     // Right
-    K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           TODO,
+    K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           MACRO(MACRO_KEYPAD),
     K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK), K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
-                  ____,           ____,               ____,              ____,                         ____,                         ____,           ____,             TODO,
+                  ____,           ____,               ____,              ____,                         ____,                         ____,           ____,             TODO('mail'),
     K(ENTER),     ____,           ____,               ____,              ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
-                  ____,           ____,               ____,              ____,                         ____,                         ____,                             TODO,
-                  K(SPACE),                           TODO,              K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
+                  ____,           ____,               ____,              ____,                         ____,                         ____,                             TODO('www'),
+                  K(SPACE),                           TODO('desktop'),   K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
                                                       K(RIGHT_ALT),      K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
   ),
+};
+
+uint8_t keypad_state;
+
+void Keymap_Init(void)
+{
+  keypad_state = 0;
+}
+
+void macro_fn(struct Key key)
+{
+  if(key.just_pressed) {
+    LayoutState_Set(FN_LAYER, 1);
+    LayoutState_Set(KEYPAD_LAYER, 1);
+  }
+  if(key.just_released) {
+    LayoutState_Set(FN_LAYER, 0);
+    LayoutState_Set(KEYPAD_LAYER, keypad_state);
+  }
+}
+
+void macro_keypad(struct Key key)
+{
+  if(key.just_pressed) {
+    keypad_state = !keypad_state;
+    LayoutState_Set(KEYPAD_LAYER, keypad_state);
+  }
+}
+
+const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
+  [MACRO_FN] = &macro_fn,
+  [MACRO_KEYPAD] = &macro_keypad,
 };
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
