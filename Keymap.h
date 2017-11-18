@@ -38,13 +38,13 @@ enum keymap_macros {
 extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
 
 enum keymap_seq {
+  SEQ_CUT,
+  SEQ_COPY,
+  SEQ_PASTE,
   SEQ_SHUFFLE,
   SEQ_00,
   SEQ_B_TAB,
   SEQ_DESKTOP,
-  SEQ_CUT,
-  SEQ_COPY,
-  SEQ_PASTE,
   SEQ_COUNT,
 };
 

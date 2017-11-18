@@ -170,6 +170,33 @@ const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_KEYPAD] = &macro_keypad,
 };
 
+uint16_t seq_cut[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_X,
+  0,
+};
+
+uint16_t seq_copy[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_C,
+  0,
+};
+
+uint16_t seq_paste[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_V,
+  0,
+};
+
 uint16_t seq_shuffle[] = {
   1,
   HID_KEYBOARD_SC_LEFT_ALT,
@@ -199,49 +226,21 @@ uint16_t seq_desktop[] = {
   2,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   HID_KEYBOARD_SC_LEFT_ALT,
-  2,
+  3,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   HID_KEYBOARD_SC_LEFT_ALT,
   HID_KEYBOARD_SC_D,
   0,
 };
 
-uint16_t seq_cut[] = {
-  1,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  2,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  HID_KEYBOARD_SC_X,
-  0,
-};
-
-uint16_t seq_copy[] = {
-  1,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  2,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  HID_KEYBOARD_SC_C,
-  0,
-};
-
-uint16_t seq_paste[] = {
-  1,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  2,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  HID_KEYBOARD_SC_V,
-  0,
-};
-
-
 const uint16_t (*keymap_seqs[])[SEQ_COUNT] = {
+  [SEQ_CUT] = seq_cut,
+  [SEQ_COPY] = seq_copy,
+  [SEQ_PASTE] = seq_paste,
   [SEQ_SHUFFLE] = seq_shuffle,
   [SEQ_00] = seq_00,
   [SEQ_B_TAB] = seq_b_tab,
   [SEQ_DESKTOP] = seq_desktop,
-  [SEQ_CUT] = seq_cut,
-  [SEQ_COPY] = seq_copy,
-  [SEQ_PASTE] = seq_paste,
 };
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
