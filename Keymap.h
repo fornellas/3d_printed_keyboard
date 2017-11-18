@@ -32,19 +32,19 @@
 enum keymap_macros {
   MACRO_FN,
   MACRO_KEYPAD,
+  MACRO_CUT,
+  MACRO_COPY,
+  MACRO_PASTE,
+  MACRO_DESKTOP,
   MACRO_COUNT,
 };
 
 extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
 
 enum keymap_seq {
-  SEQ_CUT,
-  SEQ_COPY,
-  SEQ_PASTE,
   SEQ_SHUFFLE,
   SEQ_00,
   SEQ_B_TAB,
-  SEQ_DESKTOP,
   SEQ_COUNT,
 };
 
@@ -61,13 +61,14 @@ enum keymap_layers {
   KEYPAD_LAYER,
   QWERTY_QWERTY_LAYER,
   QWERTY_DVORAK_LAYER,
+  DVORAK_DVORAK_LAYER,
   COMMON_LAYER,
   LAYER_COUNT,
 };
 
 extern const uint8_t keymap_layout_layers[];
 
-#define LAYOUT_LAYERS_COUNT 2
+#define LAYOUT_LAYERS_COUNT 3
 
 extern const uint8_t layer_initial_state[LAYER_COUNT];
 

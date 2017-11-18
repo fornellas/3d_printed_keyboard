@@ -33,3 +33,11 @@ void LayerState_Set(uint8_t id, uint8_t value)
   if(layer_initial_state[id] == KEYMAP_START_LOAD)
     eeprom_write_byte((uint8_t *)EEPROM_LAYOUT_STATES+id, value);
 }
+
+uint8_t LayerState_Get_Active_Layout()
+{
+  for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
+    if(LayerState_Get(keymap_layout_layers[l]))
+      return keymap_layout_layers[l];
+  }
+}

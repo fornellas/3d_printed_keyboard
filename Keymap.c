@@ -1,6 +1,7 @@
 #include "Keymap.h"
 #include "ScanKeys.h"
 #include "LayerState.h"
+#include "Sequence.h"
 #include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
 
@@ -36,23 +37,25 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [KEYPAD_LAYER] = KEYMAP_START_DISABLED,
   [QWERTY_QWERTY_LAYER] = KEYMAP_START_LOAD,
   [QWERTY_DVORAK_LAYER] = KEYMAP_START_LOAD,
+  [DVORAK_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
 const uint8_t keymap_layout_layers[LAYOUT_LAYERS_COUNT] = {
   QWERTY_QWERTY_LAYER,
   QWERTY_DVORAK_LAYER,
+  DVORAK_DVORAK_LAYER,
 };
 
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
   [FN_LAYER] = KEYMAP(
     // Left
-    ____, LAYOUT(QWERTY_QWERTY_LAYER), LAYOUT(QWERTY_DVORAK_LAYER), ____,           ____, ____,    K(INSERT),
-    ____, ____,                        ____,                        ____,           ____, ____,    K(VOLUME_UP),
-    ____, ____,                        ____,                        ____,           ____, ____,
-    ____, ____,                        ____,                        ____,           ____, ____,    K(VOLUME_DOWN),
-          ____,                        ____,                        ____,           ____, ____,
-    ____, SEQ(SEQ_CUT),                SEQ(SEQ_COPY),               SEQ(SEQ_PASTE),       K(MUTE),
+    ____, LAYOUT(QWERTY_QWERTY_LAYER), LAYOUT(QWERTY_DVORAK_LAYER), LAYOUT(DVORAK_DVORAK_LAYER), ____, ____,    K(INSERT),
+    ____, ____,                        ____,                        ____,                        ____, ____,    K(VOLUME_UP),
+    ____, ____,                        ____,                        ____,                        ____, ____,
+    ____, ____,                        ____,                        ____,                        ____, ____,    K(VOLUME_DOWN),
+          ____,                        ____,                        ____,                        ____, ____,
+    ____, MACRO(MACRO_CUT),            MACRO(MACRO_COPY),           MACRO(MACRO_PASTE),                K(MUTE),
     ____, ____,                                                     ____,
     // Right
     K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          TODO("wake"), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
@@ -117,6 +120,24 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
           ____,       ____, ____, ____, ____,                                 ____,                                 ____,
                       ____, ____, ____, ____,                                                                       ____
   ),
+  [DVORAK_DVORAK_LAYER] = KEYMAP(
+    // Left
+    ____,                      ____, ____, ____, ____, ____, ____,
+    K(GRAVE_ACCENT_AND_TILDE), ____, ____, ____, ____, ____, ____,
+    ____,                      K(Q), K(W), K(E), K(R), K(T),
+    ____,                      K(A), K(S), K(D), K(F), K(G), ____,
+                               K(Z), K(X), K(C), K(V), K(B),
+    ____,                      ____, ____, ____,       ____,
+    ____,                      ____,       ____,
+    // Right
+    ____, ____, ____, ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
+    ____, ____, ____, ____,                        ____,                         ____,                       K(MINUS_AND_UNDERSCORE),              K(EQUAL_AND_PLUS),                    ____,
+          K(Y), K(U), K(I),                        K(O),                         K(P),                       K(OPENING_BRACKET_AND_OPENING_BRACE), K(CLOSING_BRACKET_AND_CLOSING_BRACE), ____,
+    ____, K(H), K(J), K(K),                        K(L),                         K(SEMICOLON_AND_COLON),     K(APOSTROPHE_AND_QUOTE),              ____,                                 ____,
+          K(N), K(M), K(COMMA_AND_LESS_THAN_SIGN), K(DOT_AND_GREATER_THAN_SIGN), K(SLASH_AND_QUESTION_MARK), K(BACKSLASH_AND_PIPE),                                                      ____,
+          ____,       ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
+                      ____,                        ____,                         ____,                       ____,                                                                       ____
+  ),
   [COMMON_LAYER] = KEYMAP(
     // Left
     K(ESCAPE),                       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
@@ -127,13 +148,13 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     K(LEFT_CONTROL),                 K(MEDIA_PLAY),        K(APPLICATION), SEQ(SEQ_SHUFFLE),                   K(SPACE),
     MACRO(MACRO_FN),                 K(LEFT_GUI),                          K(LEFT_ALT),
     // Right
-    K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           MACRO(MACRO_KEYPAD),
-    K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK), K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
-                  ____,           ____,               ____,              ____,                         ____,                         ____,           ____,             TODO('mail'),
-    K(ENTER),     ____,           ____,               ____,              ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
-                  ____,           ____,               ____,              ____,                         ____,                         ____,                             TODO('www'),
-                  K(SPACE),                           SEQ(SEQ_DESKTOP),  K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
-                                                      K(RIGHT_ALT),      K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
+    K(DELETE),    K(F6),          K(F7),              K(F8),                K(F9),                        K(F10),                       K(F11),         K(F12),           MACRO(MACRO_KEYPAD),
+    K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK),    K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
+                  ____,           ____,               ____,                 ____,                         ____,                         ____,           ____,             TODO('mail'),
+    K(ENTER),     ____,           ____,               ____,                 ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
+                  ____,           ____,               ____,                 ____,                         ____,                         ____,                             TODO('www'),
+                  K(SPACE),                           MACRO(MACRO_DESKTOP), K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
+                                                      K(RIGHT_ALT),         K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
   ),
 };
 
@@ -158,19 +179,13 @@ void macro_fn(struct Key key)
 
 void macro_keypad(struct Key key)
 {
-  if(key.just_pressed) {
+  if(!key.just_pressed) {
     keypad_state = !keypad_state;
     LayerState_Set(KEYPAD_LAYER, keypad_state);
   }
 }
 
-// FIXME warning: initialization from incompatible pointer type
-const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
-  [MACRO_FN] = &macro_fn,
-  [MACRO_KEYPAD] = &macro_keypad,
-};
-
-uint16_t seq_cut[] = {
+const uint16_t seq_cut[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -179,7 +194,33 @@ uint16_t seq_cut[] = {
   0,
 };
 
-uint16_t seq_copy[] = {
+const uint16_t seq_cut_dvorak[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_B,
+  0,
+};
+
+void macro_cut(struct Key key)
+{
+  if(key.just_pressed) {
+    switch(LayerState_Get_Active_Layout()) {
+      case QWERTY_QWERTY_LAYER:
+        Sequence_Register(seq_cut);
+        break;
+      case QWERTY_DVORAK_LAYER:
+        Sequence_Register(seq_cut);
+        break;
+      case DVORAK_DVORAK_LAYER:
+        Sequence_Register(seq_cut_dvorak);
+        break;
+    }
+  }
+}
+
+const uint16_t seq_copy[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -188,13 +229,114 @@ uint16_t seq_copy[] = {
   0,
 };
 
-uint16_t seq_paste[] = {
+const uint16_t seq_copy_dvorak[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_I,
+  0,
+};
+
+void macro_copy(struct Key key)
+{
+  if(key.just_pressed) {
+    switch(LayerState_Get_Active_Layout()) {
+      case QWERTY_QWERTY_LAYER:
+        Sequence_Register(seq_copy);
+        break;
+      case QWERTY_DVORAK_LAYER:
+        Sequence_Register(seq_copy);
+        break;
+      case DVORAK_DVORAK_LAYER:
+        Sequence_Register(seq_copy_dvorak);
+        break;
+    }
+  }
+}
+
+const uint16_t seq_paste[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   HID_KEYBOARD_SC_V,
   0,
+};
+
+const uint16_t seq_paste_dvorak[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_DOT_AND_GREATER_THAN_SIGN,
+  0,
+};
+
+void macro_paste(struct Key key)
+{
+  if(key.just_pressed) {
+    switch(LayerState_Get_Active_Layout()) {
+      case QWERTY_QWERTY_LAYER:
+        Sequence_Register(seq_paste);
+        break;
+      case QWERTY_DVORAK_LAYER:
+        Sequence_Register(seq_paste);
+        break;
+      case DVORAK_DVORAK_LAYER:
+        Sequence_Register(seq_paste_dvorak);
+        break;
+    }
+  }
+}
+
+const uint16_t seq_desktop[] = {
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  3,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  HID_KEYBOARD_SC_D,
+  0,
+};
+
+const uint16_t seq_desktop_dvorak[] = {
+  2,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  3,
+  HID_KEYBOARD_SC_LEFT_CONTROL,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  HID_KEYBOARD_SC_H,
+  0,
+};
+
+void macro_desktop(struct Key key)
+{
+  if(key.just_pressed) {
+    switch(LayerState_Get_Active_Layout()) {
+      case QWERTY_QWERTY_LAYER:
+        Sequence_Register(seq_desktop);
+        break;
+      case QWERTY_DVORAK_LAYER:
+        Sequence_Register(seq_desktop);
+        break;
+      case DVORAK_DVORAK_LAYER:
+        Sequence_Register(seq_desktop_dvorak);
+        break;
+    }
+  }
+}
+
+// FIXME warning: initialization from incompatible pointer type
+const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
+  [MACRO_FN] = &macro_fn,
+  [MACRO_KEYPAD] = &macro_keypad,
+  [MACRO_CUT] = &macro_cut,
+  [MACRO_COPY] = &macro_copy,
+  [MACRO_PASTE] = &macro_paste,
+  [MACRO_DESKTOP] = &macro_desktop,
 };
 
 uint16_t seq_shuffle[] = {
@@ -222,25 +364,10 @@ uint16_t seq_b_tab[] = {
   0,
 };
 
-uint16_t seq_desktop[] = {
-  2,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  HID_KEYBOARD_SC_LEFT_ALT,
-  3,
-  HID_KEYBOARD_SC_LEFT_CONTROL,
-  HID_KEYBOARD_SC_LEFT_ALT,
-  HID_KEYBOARD_SC_D,
-  0,
-};
-
 const uint16_t (*keymap_seqs[])[SEQ_COUNT] = {
-  [SEQ_CUT] = seq_cut,
-  [SEQ_COPY] = seq_copy,
-  [SEQ_PASTE] = seq_paste,
   [SEQ_SHUFFLE] = seq_shuffle,
   [SEQ_00] = seq_00,
   [SEQ_B_TAB] = seq_b_tab,
-  [SEQ_DESKTOP] = seq_desktop,
 };
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
