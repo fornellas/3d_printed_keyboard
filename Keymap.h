@@ -59,8 +59,8 @@ enum layer_start_status {
 enum keymap_layers {
   FN_LAYER,
   KEYPAD_LAYER,
-  QWERTY_LAYER,
-  DVORAK_LAYER,
+  QWERTY_QWERTY_LAYER,
+  QWERTY_DVORAK_LAYER,
   COMMON_LAYER,
   LAYER_COUNT,
 };
