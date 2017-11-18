@@ -13,10 +13,11 @@ SRC          = \
 	$(TARGET).c \
 	Descriptors.c \
 	Display.c \
-	GenerateKeyboardReport.c \
+	KeyboardReport.c \
 	Keymap.c \
 	LayerState.c \
 	ScanKeys.c \
+	Sequence.c \
 	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
 	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \
 	$(LUFA_SRC_USB) \

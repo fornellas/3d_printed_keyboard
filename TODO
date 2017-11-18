@@ -13,3 +13,6 @@
   - Screensaver
   - Key press counter
 - Wake up from suspend
+- ScanKeys.c
+  - Right side scanning with MCP23017
+- Fix compile warnings

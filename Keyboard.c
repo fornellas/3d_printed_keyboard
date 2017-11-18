@@ -34,10 +34,11 @@
  *  the demo and is responsible for the initial application hardware configuration.
  */
 
-#include "GenerateKeyboardReport.h"
 #include "Keyboard.h"
+#include "KeyboardReport.h"
 #include "Keymap.h"
 #include "LayerState.h"
+#include "Sequence.h"
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
@@ -106,8 +107,9 @@ void SetupHardware()
   SPI_Init(SPI_MODE_MASTER);
   Display_Init();
   ScanKeys_Init();
-  LayerState_Init();
   Keymap_Init();
+  LayerState_Init();
+  Sequence_Init();
   USB_Init();
 }
 
@@ -170,7 +172,9 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 {
   USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
 
-  ScanKeys_Read(&GenerateKeyboardReport, (void *)KeyboardReport);
+  ScanKeys_Read(&KeyboardReport_ScanKeys_Callback, (void *)KeyboardReport);
+
+  Sequence_Play(KeyboardReport);
 
   *ReportSize = sizeof(USB_KeyboardReport_Data_t);
   return false;

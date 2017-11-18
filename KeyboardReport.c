@@ -1,9 +1,9 @@
-#include "GenerateKeyboardReport.h"
 #include "LayerState.h"
+#include "KeyboardReport.h"
 #include "Keymap.h"
-#include <LUFA/Drivers/USB/USB.h>
+#include "Sequence.h"
 
-void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
+void KeyboardReport_Add_KeyCode(USB_KeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
 {
   switch(KeyCode){
     case HID_KEYBOARD_SC_LEFT_CONTROL:
@@ -45,7 +45,7 @@ void Add_KeyCode_to_USB_KeyboardReport_Data(USB_KeyboardReport_Data_t* KeyboardR
   }
 }
 
-void GenerateKeyboardReport(struct Key key, void *data)
+void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
 {
   USB_KeyboardReport_Data_t* KeyboardReport;
   uint16_t key_value;
@@ -62,7 +62,7 @@ void GenerateKeyboardReport(struct Key key, void *data)
     switch(GET_KEY_FN(key_value)){
       case KEY_FN_REG:
         if(key.state)
-           Add_KeyCode_to_USB_KeyboardReport_Data(KeyboardReport, GET_KEY_CODE(key_value));
+           KeyboardReport_Add_KeyCode(KeyboardReport, GET_KEY_CODE(key_value));
         goto finish;
         break;
       case KEY_FN_NONE:
@@ -85,6 +85,11 @@ void GenerateKeyboardReport(struct Key key, void *data)
               LayerState_Set(keymap_layout_layers[l], 0);
           }
         }
+        goto finish;
+        break;
+      case KEY_FN_SEQ:
+        if(key.just_pressed)
+          Sequence_Register((uint16_t *)keymap_seqs[GET_SEQ(key_value)]);
         goto finish;
         break;
     }

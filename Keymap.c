@@ -124,7 +124,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     K(TAB),                          ____,                 ____,           ____,              ____,            ____,
     K(LEFT_SHIFT),                   ____,                 ____,           ____,              ____,            ____,                K(ENTER),
                                      ____,                 ____,           ____,              ____,            ____,
-    K(LEFT_CONTROL),                 K(MEDIA_PLAY),        K(APPLICATION), TODO('Alt+Tab'),                    K(SPACE),
+    K(LEFT_CONTROL),                 K(MEDIA_PLAY),        K(APPLICATION), SEQ(SEQ_SHUFFLE),                   K(SPACE),
     MACRO(MACRO_FN),                 K(LEFT_GUI),                          K(LEFT_ALT),
     // Right
     K(DELETE),    K(F6),          K(F7),              K(F8),             K(F9),                        K(F10),                       K(F11),         K(F12),           MACRO(MACRO_KEYPAD),
@@ -168,6 +168,19 @@ void macro_keypad(struct Key key)
 const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,
+};
+
+uint16_t seq_shuffle[] = {
+  1,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  2,
+  HID_KEYBOARD_SC_LEFT_ALT,
+  HID_KEYBOARD_SC_TAB,
+  0,
+};
+
+const uint16_t (*keymap_seqs[])[SEQ_COUNT] = {
+  [SEQ_SHUFFLE] = seq_shuffle,
 };
 
 // const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(

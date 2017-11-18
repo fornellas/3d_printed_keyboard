@@ -25,6 +25,10 @@
 #define LAYOUT(l) ((KEY_FN_LAYOUT<<8) | l)
 #define GET_LAYOUT(k) (k&0xFF)
 
+#define KEY_FN_SEQ 5
+#define SEQ(s) ((KEY_FN_SEQ<<8) | s)
+#define GET_SEQ(s) (s&0xFF)
+
 enum keymap_macros {
   MACRO_FN,
   MACRO_KEYPAD,
@@ -32,6 +36,13 @@ enum keymap_macros {
 };
 
 extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
+
+enum keymap_seq {
+  SEQ_SHUFFLE,
+  SEQ_COUNT,
+};
+
+extern const uint16_t (*keymap_seqs[])[SEQ_COUNT];
 
 enum layer_start_status {
   KEYMAP_START_ENABLED,
