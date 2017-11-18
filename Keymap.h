@@ -42,6 +42,9 @@ enum keymap_seq {
   SEQ_00,
   SEQ_B_TAB,
   SEQ_DESKTOP,
+  SEQ_CUT,
+  SEQ_COPY,
+  SEQ_PASTE,
   SEQ_COUNT,
 };
 
