@@ -77,7 +77,7 @@ int main(void)
   {
     HID_Device_USBTask(&Keyboard_HID_Interface);
     USB_USBTask();
-    Display_Update(); // FIXME
+    Display_Update();
   }
 }
 

@@ -1,7 +1,7 @@
 #include "Display.h"
-#include "ScanKeys.h" // FIXME
 #include <u8g.h>
-#include <stdarg.h>  // FIXME
+#include <LUFA/Drivers/USB/USB.h>
+#include <stdlib.h>
 
 u8g_t u8g;
 
@@ -16,67 +16,170 @@ void Display_Init(void)
   );
 }
 
-void ScanKeys_Callback(struct Key key, void *data)
-{
-  struct Key *send_key;
-
-  if(key.state) {
-    send_key = (struct Key *)data;
-    send_key->row = key.row;
-    send_key->column = key.column;
-    send_key->state = key.state;
-    send_key->just_pressed = key.just_pressed;
-    send_key->just_released = key.just_released;
-  }
-}
-
-void Display_Write_Centered(int8_t x_offset, int8_t y_offset, ...){
-  va_list ap, apl;
+void Display_Write_Box_CenteredP(
+  int8_t x_start, int8_t y_start,
+  u8g_uint_t x_end, u8g_uint_t y_end,
+  u8g_pgm_uint8_t *strP
+) {
   uint8_t lines;
-  u8g_pgm_uint8_t *str;
-  va_start(ap, y_offset);
-  // count lines
-  va_copy(apl, ap);
-  lines=0;
-  while(va_arg(apl, u8g_pgm_uint8_t *)!=NULL)
-    lines++;
-  va_end(apl);
-  // print lines
-  int l=0;
-  while((str=va_arg(ap, u8g_pgm_uint8_t *))!=NULL){
-    int8_t x=u8g_GetWidth(&u8g)/2-u8g_GetStrWidth(&u8g, str)/2+x_offset;
+  uint8_t line;
+
+  lines = 1;
+  for(uint8_t i=0 ; pgm_read_byte(strP + i) ; i++)
+    if(pgm_read_byte(strP + i) == '\n')
+      lines++;
+
+  for(line=0 ; line < lines ; line++) {
+    uint8_t draw_x;
+    uint8_t draw_y;
+    int8_t font_height;
+    char *str;
+    char *newline;
+    size_t len;
+
+    len = strlen_P(strP) + sizeof(char);
+    str = malloc(sizeof(char) * len);
+    if(!str)
+      continue;
+    memcpy_P(str, strP, len);
+    if(newline = strchr(str, '\n'))
+      str[newline - str] = '\0';
+
+    draw_x = x_start + x_end / 2 - u8g_GetStrWidth(&u8g, str) / 2;
     u8g_SetFontRefHeightText(&u8g);
-    int8_t y=u8g_GetHeight(&u8g)/2+u8g_GetFontAscent(&u8g)/2+y_offset;
+    int8_t y = y_end / 2 + u8g_GetFontAscent(&u8g) / 2 + y_start;
     u8g_SetFontRefHeightAll(&u8g);
-    int8_t font_height=(u8g_GetFontLineSpacing(&u8g));
-    int8_t line_y_offset=-font_height/2*(lines-1);
-    u8g_DrawStr(&u8g, x, y+line_y_offset+font_height*l+2*l, (const char *)str);
-    l++;
+    font_height = u8g_GetFontLineSpacing(&u8g);
+    int8_t line_y_start = - font_height / 2 * (lines-1);
+    draw_y = y + line_y_start + font_height * line + 2 * line;
+
+    u8g_DrawStr(&u8g, draw_x, draw_y, str);
+
+    free(str);
+    strP = strchr_P(strP, '\n') + 1;
   }
-  va_end(ap);
 }
+
+void Display_Write_CenteredP(u8g_pgm_uint8_t *strP)
+{
+  Display_Write_Box_CenteredP(
+    0, 0,
+    u8g_GetWidth(&u8g), u8g_GetHeight(&u8g),
+    strP
+  );
+}
+
+/**< Internally implemented by the library. This state indicates
+  *   that the device is not currently connected to a host.
+  */
+void Display_USB_Unattached(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nUnattached"));
+  } while(u8g_NextPage(&u8g));
+}
+
+/**< Internally implemented by the library. This state indicates
+  *   that the device is connected to a host, but enumeration has not
+  *   yet begun.
+  */
+void Display_USB_Powered(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nPowered"));
+  } while(u8g_NextPage(&u8g));
+}
+
+/**< Internally implemented by the library. This state indicates
+  *   that the device's USB bus has been reset by the host and it is
+  *   now waiting for the host to begin the enumeration process.
+  */
+void Display_USB_Default(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nDefault"));
+  } while(u8g_NextPage(&u8g));
+}
+
+/**< Internally implemented by the library. This state indicates
+  *   that the device has been addressed by the USB Host, but is not
+  *   yet configured.
+  */
+void Display_USB_Addressed(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nAddressed"));
+  } while(u8g_NextPage(&u8g));
+}
+
+/**< May be implemented by the user project. This state indicates
+  *   that the device has been enumerated by the host and is ready
+  *   for USB communications to begin.
+  */
+void Display_USB_Configured(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nConfigured"));
+  } while(u8g_NextPage(&u8g));
+}
+
+/**< May be implemented by the user project. This state indicates
+  *   that the USB bus has been suspended by the host, and the device
+  *   should power down to a minimal power level until the bus is
+  *   resumed.
+  */
+void Display_USB_Suspended(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nSuspended"));
+  } while(u8g_NextPage(&u8g));
+}
+
+void Display_USB_Unknown(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_SetFont(&u8g, u8g_font_helvB10);
+    Display_Write_CenteredP(U8G_PSTR("USB\nUnknown"));
+  } while(u8g_NextPage(&u8g));
+}
+
 
 void Display_Update(void)
 {
-  char *str_row[11];
-  char *str_column[11];
-  struct Key key;
-
-  key.state = 0;
-
-  ScanKeys_Read(&ScanKeys_Callback, (void *)&key);
-
-  u8g_FirstPage(&u8g);
-  do {
-    u8g_DrawFrame(&u8g, 0, 0, 128, 64);
-    u8g_SetFont(&u8g, u8g_font_helvB10);
-    if(key.state) {
-      Display_Write_Centered(
-        0, 0,
-        utoa(key.row, str_row, 10),
-        utoa(key.column, str_column, 10),
-        NULL
-      );
-    }
-  } while(u8g_NextPage(&u8g));
+  switch(USB_DeviceState){
+    case DEVICE_STATE_Unattached:
+      Display_USB_Unattached();
+      break;
+    case DEVICE_STATE_Powered:
+      Display_USB_Powered();
+      break;
+    case DEVICE_STATE_Default:
+      Display_USB_Default();
+      break;
+    case DEVICE_STATE_Addressed:
+      Display_USB_Addressed();
+      break;
+    case DEVICE_STATE_Configured:
+      Display_USB_Configured();
+      break;
+    case DEVICE_STATE_Suspended:
+      Display_USB_Suspended();
+      break;
+    default:
+      Display_USB_Unknown();
+      break;
+  }
 }
