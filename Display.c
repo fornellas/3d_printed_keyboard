@@ -4,8 +4,16 @@
 #include <stdlib.h>
 #include <util/delay.h>
 #include "Bitmaps.h"
+#include <avr/io.h>
 
 u8g_t u8g;
+uint16_t init_time;
+
+#define TIMER_COUNTER_CONTROL_REGISTER TCCR1B
+#define TIMER_COUNTER_PRESCALE_SETTINGS ((1<<CS12) | (1<<CS10))
+#define TIMER_COUNTER_PRESCALE 1024
+#define TIMER_COUNTER TCNT1
+#define LOGO_SECS 3
 
 void Display_Init(void)
 {
@@ -26,7 +34,8 @@ void Display_Init(void)
       bitmap_logo
     );
   } while(u8g_NextPage(&u8g));
-  _delay_ms(1000);
+  TIMER_COUNTER_CONTROL_REGISTER |= TIMER_COUNTER_PRESCALE_SETTINGS;
+  TIMER_COUNTER = 0;
 }
 
 void Display_Write_Box_CenteredP(
@@ -169,9 +178,13 @@ void Display_USB_Unknown(void)
   } while(u8g_NextPage(&u8g));
 }
 
-
 void Display_Update(void)
 {
+  if(TIMER_COUNTER < 1.0 / ( (1.0 / LOGO_SECS) / F_CPU * TIMER_COUNTER_PRESCALE))
+    return;
+  else
+    TIMER_COUNTER_CONTROL_REGISTER = 0;
+
   switch(USB_DeviceState){
     case DEVICE_STATE_Unattached:
       Display_USB_Unattached();
