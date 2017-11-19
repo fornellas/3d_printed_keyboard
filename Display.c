@@ -77,7 +77,7 @@ void Display_USB_Unattached(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nUnattached"));
+    Display_Write_CenteredP(U8G_PSTR("USB\ndisconnected"));
   } while(u8g_NextPage(&u8g));
 }
 
@@ -90,7 +90,7 @@ void Display_USB_Powered(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nPowered"));
+    Display_Write_CenteredP(U8G_PSTR("USB connected,\nwaiting for\nenumeration"));
   } while(u8g_NextPage(&u8g));
 }
 
@@ -103,7 +103,7 @@ void Display_USB_Default(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nDefault"));
+    Display_Write_CenteredP(U8G_PSTR("USB bus reset,\nwaiting for\nenumeration"));
   } while(u8g_NextPage(&u8g));
 }
 
@@ -116,7 +116,7 @@ void Display_USB_Addressed(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nAddressed"));
+    Display_Write_CenteredP(U8G_PSTR("USB addressed,\nwaiting for\nconfiguration"));
   } while(u8g_NextPage(&u8g));
 }
 
@@ -129,7 +129,7 @@ void Display_USB_Configured(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nConfigured"));
+    Display_Write_CenteredP(U8G_PSTR("USB enumerated,\nready to\ncommunicate"));
   } while(u8g_NextPage(&u8g));
 }
 
@@ -143,7 +143,7 @@ void Display_USB_Suspended(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nSuspended"));
+    Display_Write_CenteredP(U8G_PSTR("USB\nsuspended"));
   } while(u8g_NextPage(&u8g));
 }
 
@@ -152,7 +152,7 @@ void Display_USB_Unknown(void)
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nUnknown"));
+    Display_Write_CenteredP(U8G_PSTR("USB\nunknown\nstate"));
   } while(u8g_NextPage(&u8g));
 }
 
