@@ -1,5 +1,4 @@
 - Display
-  - USB Statuses
   - "LED" Status
     - Caps Lock
     - Num Lock
@@ -9,6 +8,8 @@
     - Qwerty
     - Dvorak
   - Screensaver
+    - Animation
+    - Brightness
   - Key press counter
 - Wake up from suspend
 - ScanKeys.c

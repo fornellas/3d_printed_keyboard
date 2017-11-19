@@ -2,6 +2,8 @@
 #include <u8g.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <stdlib.h>
+#include <util/delay.h>
+#include "Bitmaps.h"
 
 u8g_t u8g;
 
@@ -14,6 +16,17 @@ void Display_Init(void)
       PN(1, 4), // A0
       PN(0, 7) // RESET
   );
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_DrawBitmapP(
+      &u8g,
+      ((u8g_GetWidth(&u8g) - (BITMAP_LOGO_WIDTH * 8)) / 2),
+      (u8g_GetHeight(&u8g) - BITMAP_LOGO_HEIGHT) / 2,
+      BITMAP_LOGO_WIDTH, BITMAP_LOGO_HEIGHT,
+      bitmap_logo
+    );
+  } while(u8g_NextPage(&u8g));
+  _delay_ms(1000);
 }
 
 void Display_Write_Box_CenteredP(
