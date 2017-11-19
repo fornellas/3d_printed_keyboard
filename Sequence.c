@@ -12,7 +12,7 @@ void Sequence_Init()
 
 size_t Sequence_Len(uint16_t *seq)
 {
-  size_t len = 0;
+  size_t len = 1;
 
   for(uint8_t i=0 ;  ; i++)
     if(seq[i])
