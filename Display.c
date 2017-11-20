@@ -59,8 +59,8 @@ void Display_Write_Box_CenteredP(
     char *newline;
     size_t len;
 
-    len = strlen_P(strP) + sizeof(char);
-    str = malloc(sizeof(char) * len);
+    len = (strlen_P(strP) + 1) + sizeof(char);
+    str = malloc(len);
     if(!str)
       continue;
     memcpy_P(str, strP, len);
