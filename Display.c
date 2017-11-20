@@ -162,10 +162,15 @@ void Display_USB_Configured(void)
   */
 void Display_USB_Suspended(void)
 {
+  u8g_pgm_uint8_t * strP;
+  if(USB_Device_RemoteWakeupEnabled)
+    strP = U8G_PSTR("USB\nsuspended:\press any key to\nwake up");
+  else
+    strP = U8G_PSTR("USB\nsuspended");
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB\nsuspended"));
+    Display_Write_CenteredP(strP);
   } while(u8g_NextPage(&u8g));
 }
 
