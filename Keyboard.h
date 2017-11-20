@@ -66,5 +66,6 @@
                                               const uint8_t ReportType,
                                               const void* ReportData,
                                               const uint16_t ReportSize);
+    void Device_RemoteWakeup(void);
 
 #endif

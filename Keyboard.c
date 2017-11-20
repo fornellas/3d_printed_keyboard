@@ -195,22 +195,7 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
                                           const void* ReportData,
                                           const uint16_t ReportSize)
 {
-  // uint8_t* LEDReport = (uint8_t*)ReportData;
-  //
-  // if (*LEDReport & HID_KEYBOARD_LED_NUMLOCK)
-  //   // TODO u8glib: Numlock on
-  //
-  // if (*LEDReport & HID_KEYBOARD_LED_CAPSLOCK)
-  //   // TODO u8glib: CapsLock on
-  //
-  // if (*LEDReport & HID_KEYBOARD_LED_SCROLLLOCK)
-  //   // TODO u8glib: Scroll on
-  //
-  // if (*LEDReport & HID_KEYBOARD_LED_COMPOSE)
-  //   // TODO u8glib: Scroll on
-  //
-  // if (*LEDReport & HID_KEYBOARD_LED_KANA)
-  //   // TODO u8glib: Scroll on
+  Display_Set_LEDReport(*(uint8_t*)ReportData);
 }
 
 void Device_RemoteWakeup_ScanKeys_Callback(struct Key key, void *data)

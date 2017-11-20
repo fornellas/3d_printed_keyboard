@@ -2,6 +2,7 @@
 #include "ScanKeys.h"
 #include "LayerState.h"
 #include "Sequence.h"
+#include "Display.h"
 #include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
 
@@ -169,19 +170,24 @@ void macro_fn(struct Key key)
 {
   if(key.just_pressed) {
     LayerState_Set(FN_LAYER, 1);
+    Display_Set_Fn(1);
     LayerState_Set(KEYPAD_LAYER, 1);
+    Display_Set_Keypad(1);
   }
   if(key.just_released) {
     LayerState_Set(FN_LAYER, 0);
+    Display_Set_Fn(0);
     LayerState_Set(KEYPAD_LAYER, keypad_state);
+    Display_Set_Keypad(keypad_state);
   }
 }
 
 void macro_keypad(struct Key key)
 {
-  if(!key.just_pressed) {
+  if(key.just_pressed) {
     keypad_state = !keypad_state;
     LayerState_Set(KEYPAD_LAYER, keypad_state);
+    Display_Set_Keypad(keypad_state);
   }
 }
 

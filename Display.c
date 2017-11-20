@@ -7,13 +7,19 @@
 #include <avr/io.h>
 
 u8g_t u8g;
-uint16_t init_time;
+uint8_t Display_LEDReport;
+uint8_t Display_keypad_state;
+uint8_t Display_Fn_state;
 
 #define TIMER_COUNTER_CONTROL_REGISTER TCCR1B
 #define TIMER_COUNTER_PRESCALE_SETTINGS ((1<<CS12) | (1<<CS10))
 #define TIMER_COUNTER_PRESCALE 1024
 #define TIMER_COUNTER TCNT1
 #define LOGO_SECS 3
+
+#define TOGGLE_WIDTH  24
+#define TOGGLE_HEIGHT  28
+#define TOGGLE_SPACING 2
 
 void Display_Init(void)
 {
@@ -24,6 +30,7 @@ void Display_Init(void)
       PN(1, 4), // A0
       PN(0, 7) // RESET
   );
+
   u8g_FirstPage(&u8g);
   do {
     u8g_DrawBitmapP(
@@ -36,6 +43,10 @@ void Display_Init(void)
   } while(u8g_NextPage(&u8g));
   TIMER_COUNTER_CONTROL_REGISTER |= TIMER_COUNTER_PRESCALE_SETTINGS;
   TIMER_COUNTER = 0;
+
+  Display_LEDReport = 0;
+  Display_keypad_state = 0;
+  Display_Fn_state = 0;
 }
 
 void Display_Write_Box_CenteredP(
@@ -89,6 +100,24 @@ void Display_Write_CenteredP(u8g_pgm_uint8_t *strP)
     u8g_GetWidth(&u8g), u8g_GetHeight(&u8g),
     strP
   );
+}
+
+void Display_Draw_Toggle(
+    uint8_t x, uint8_t y,
+    uint8_t width, uint8_t height,
+    u8g_pgm_uint8_t *strP,
+    uint8_t state
+)
+{
+  if(state){
+    u8g_DrawFrame(&u8g, x, y, width, height);
+    u8g_DrawBox(&u8g, x + 2,  y + 2, width - 4, height - 4);
+    u8g_SetColorIndex(&u8g, 0);
+  }else{
+    u8g_DrawFrame(&u8g, x, y, width, height);
+  }
+  Display_Write_Box_CenteredP(x, y, width, height, strP);
+  u8g_SetColorIndex(&u8g, 1);
 }
 
 /**< Internally implemented by the library. This state indicates
@@ -150,8 +179,38 @@ void Display_USB_Configured(void)
 {
   u8g_FirstPage(&u8g);
   do {
-    u8g_SetFont(&u8g, u8g_font_helvB10);
-    Display_Write_CenteredP(U8G_PSTR("USB enumerated,\nready to\ncommunicate"));
+    u8g_SetFont(&u8g, u8g_font_helvB14);
+
+    Display_Draw_Toggle(
+        0 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
+        TOGGLE_WIDTH, TOGGLE_HEIGHT,
+        U8G_PSTR("1"),
+        Display_LEDReport & HID_KEYBOARD_LED_NUMLOCK
+    );
+    Display_Draw_Toggle(
+        1 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
+        TOGGLE_WIDTH, TOGGLE_HEIGHT,
+        U8G_PSTR("A"),
+        Display_LEDReport & HID_KEYBOARD_LED_CAPSLOCK
+    );
+    Display_Draw_Toggle(
+        2 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
+        TOGGLE_WIDTH, TOGGLE_HEIGHT,
+        U8G_PSTR("S"),
+        Display_LEDReport & HID_KEYBOARD_LED_SCROLLLOCK
+    );
+    Display_Draw_Toggle(
+        3 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
+        TOGGLE_WIDTH, TOGGLE_HEIGHT,
+        U8G_PSTR("K"),
+        Display_keypad_state
+    );
+    Display_Draw_Toggle(
+        4 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
+        TOGGLE_WIDTH, TOGGLE_HEIGHT,
+        U8G_PSTR("F"),
+        Display_Fn_state
+    );
   } while(u8g_NextPage(&u8g));
 }
 
@@ -165,7 +224,7 @@ void Display_USB_Suspended(void)
   u8g_pgm_uint8_t * strP;
 
   if(USB_Device_RemoteWakeupEnabled)
-    strP = U8G_PSTR("USB suspended:\press any key to\nwake up");
+    strP = U8G_PSTR("USB suspended:\npress any key to\nwake up");
   else
     strP = U8G_PSTR("USB\nsuspended");
   u8g_FirstPage(&u8g);
@@ -214,4 +273,19 @@ void Display_Update(void)
       Display_USB_Unknown();
       break;
   }
+}
+
+void Display_Set_LEDReport(uint8_t ReportData)
+{
+  Display_LEDReport = ReportData;
+}
+
+void Display_Set_Keypad(uint8_t new_keypad_state)
+{
+  Display_keypad_state = new_keypad_state;
+}
+
+void Display_Set_Fn(uint8_t new_Fn_state)
+{
+  Display_Fn_state = new_Fn_state;
 }
