@@ -78,6 +78,7 @@ int main(void)
     HID_Device_USBTask(&Keyboard_HID_Interface);
     USB_USBTask();
     Display_Update();
+    Device_RemoteWakeup();
   }
 }
 
@@ -210,4 +211,24 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
   //
   // if (*LEDReport & HID_KEYBOARD_LED_KANA)
   //   // TODO u8glib: Scroll on
+}
+
+void Device_RemoteWakeup_ScanKeys_Callback(struct Key key, void *data)
+{
+  uint8_t *send_remote_wakeup = (uint8_t *)data;
+
+  if(key.state)
+    *send_remote_wakeup = 1;
+}
+
+void Device_RemoteWakeup(void)
+{
+  uint8_t send_remote_wakeup = 0;
+
+  if(DEVICE_STATE_Suspended==USB_DeviceState)
+    if(USB_Device_RemoteWakeupEnabled) {
+      ScanKeys_Read(&KeyboardReport_ScanKeys_Callback, (void *)&send_remote_wakeup);
+      if(send_remote_wakeup)
+        USB_Device_SendRemoteWakeup();
+    }
 }

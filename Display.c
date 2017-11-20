@@ -163,8 +163,9 @@ void Display_USB_Configured(void)
 void Display_USB_Suspended(void)
 {
   u8g_pgm_uint8_t * strP;
+
   if(USB_Device_RemoteWakeupEnabled)
-    strP = U8G_PSTR("USB\nsuspended:\press any key to\nwake up");
+    strP = U8G_PSTR("USB suspended:\press any key to\nwake up");
   else
     strP = U8G_PSTR("USB\nsuspended");
   u8g_FirstPage(&u8g);
