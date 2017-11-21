@@ -1,4 +1,5 @@
 #include "Display.h"
+#include "Counter.h"
 #include "Keymap.h"
 #include <u8g.h>
 #include <LUFA/Drivers/USB/USB.h>
@@ -232,8 +233,7 @@ void Display_USB_Configured(void)
 
     // Key press counter
     u8g_SetFont(&u8g, u8g_font_6x10);
-    uint32_t kp = 2341241;
-    ultoa(kp, str, 10);
+    ultoa(Counter_Get(), str, 10);
     u8g_DrawStr(&u8g, u8g_GetWidth(&u8g) / 2 - u8g_GetStrWidth(&u8g, str) / 2, u8g_GetHeight(&u8g), str);
   } while(u8g_NextPage(&u8g));
 }

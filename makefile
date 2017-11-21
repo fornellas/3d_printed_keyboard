@@ -11,6 +11,7 @@ U8GLIB_CSRC_PATH  = u8glib/csrc
 U8GLIB_SFNTSRC_PATH  = u8glib/sfntsrc
 SRC          = \
 	$(TARGET).c \
+	Counter.c \
 	Descriptors.c \
 	Display.c \
 	KeyboardReport.c \

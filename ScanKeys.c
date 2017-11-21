@@ -1,4 +1,5 @@
 #include "ScanKeys.h"
+#include "Counter.h"
 #include <avr/io.h>
 
 #define SCAN_MATRIX_LEFT_COLUMNS 7
@@ -37,8 +38,10 @@ void ScanKeys_Read_Left(void (*scan_keys_callback)(struct Key, void *data), void
         key.state = 1;
         if(previous_state[row][column])
           key.just_pressed = 0;
-        else
+        else {
           key.just_pressed = 1;
+          Counter_Add();
+        }
         key.just_released = 0;
       } else {
         key.state = 0;

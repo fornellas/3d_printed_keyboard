@@ -34,6 +34,7 @@
  *  the demo and is responsible for the initial application hardware configuration.
  */
 
+#include "Counter.h"
 #include "Keyboard.h"
 #include "KeyboardReport.h"
 #include "Keymap.h"
@@ -111,19 +112,21 @@ void SetupHardware()
   Keymap_Init();
   LayerState_Init();
   Sequence_Init();
+  Counter_Init();
   USB_Init();
 }
 
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
-  // USB Enumerating
+  Counter_Reset();
 }
 
 /** Event handler for the library USB Disconnection event. */
 void EVENT_USB_Device_Disconnect(void)
 {
   Display_Set_LEDReport(NO_LED_REPORT);
+  Counter_Reset();
 }
 
 /** Event handler for the library USB Configuration Changed event. */
@@ -135,11 +138,12 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 
   USB_Device_EnableSOFEvents();
 
-  // TODO Display:
+  Counter_Reset();
+
   // if(ConfigSuccess) {
-  //   // TODO Display: USB Ready
+  //
   // } else {
-  //   // TODO Display: USB Error
+  //
   // }
 }
 
