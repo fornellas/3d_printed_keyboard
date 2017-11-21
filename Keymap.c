@@ -166,6 +166,38 @@ void Keymap_Init(void)
   keypad_state = 0;
 }
 
+const uint8_t qwertyP[] U8G_PROGMEM = "QWERTY";
+const uint8_t dvorakP[] U8G_PROGMEM = "Dvorak";
+const uint8_t unknownP[] U8G_PROGMEM = "Unknown";
+
+u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
+{
+  switch(id) {
+    case QWERTY_QWERTY_LAYER:
+      return qwertyP;
+    case QWERTY_DVORAK_LAYER:
+      return dvorakP;
+    case DVORAK_DVORAK_LAYER:
+      return dvorakP;
+    default:
+      return unknownP;
+  }
+}
+
+u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
+{
+  switch(id) {
+    case QWERTY_QWERTY_LAYER:
+      return qwertyP;
+    case QWERTY_DVORAK_LAYER:
+      return qwertyP;
+    case DVORAK_DVORAK_LAYER:
+      return dvorakP;
+    default:
+      return unknownP;
+  }
+}
+
 void macro_fn(struct Key key)
 {
   if(key.just_pressed) {

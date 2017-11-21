@@ -2,6 +2,7 @@
 #define _KEYMAP_H_
 
 #include "ScanKeys.h"
+#include <u8g.h>
 
 #define GET_KEY_FN(k) ((0xFF00 & k) >> 8)
 
@@ -75,5 +76,8 @@ extern const uint8_t layer_initial_state[LAYER_COUNT];
 extern const uint16_t keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS];
 
 void Keymap_Init(void);
+
+u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t);
+u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t);
 
 #endif

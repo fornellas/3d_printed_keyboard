@@ -1,4 +1,5 @@
 #include "Display.h"
+#include "Keymap.h"
 #include <u8g.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <stdlib.h>
@@ -180,7 +181,7 @@ void Display_USB_Configured(void)
   uint8_t y;
   uint8_t x_icon;
   uint8_t x_text;
-  char str[20] = "aoeui";
+  char str[20];
 
   u8g_FirstPage(&u8g);
   do {
@@ -211,17 +212,23 @@ void Display_USB_Configured(void)
     );
 
     // Layout
-    u8g_SetFont(&u8g, u8g_font_helvB12);
+    u8g_SetFont(&u8g, u8g_font_helvB10);
 
     x_icon = 20;
     y = TOGGLE_HEIGHT + 3;
     u8g_DrawBitmapP(&u8g, x_icon, y, BITMAP_KEYBOARD_WIDTH, BITMAP_KEYBOARD_HEIGHT, bitmap_keyboard);
     x_text = x_icon + BITMAP_KEYBOARD_WIDTH * 8;
-    Display_Write_Box_CenteredP(x_text, y, u8g_GetWidth(&u8g) - x_text - x_icon, BITMAP_KEYBOARD_HEIGHT, U8G_PSTR("Dvorak"));
+    Display_Write_Box_CenteredP(
+      x_text, y, u8g_GetWidth(&u8g) - x_text - x_icon, BITMAP_KEYBOARD_HEIGHT,
+      Keymap_Get_Layer_Keyboard_Name(LayerState_Get_Active_Layout())
+    );
 
     y = y + BITMAP_COMPUTER_HEIGHT + 3;
     u8g_DrawBitmapP(&u8g, x_icon, y, BITMAP_COMPUTER_WIDTH, BITMAP_COMPUTER_HEIGHT, bitmap_computer);
-    Display_Write_Box_CenteredP(x_text, y, u8g_GetWidth(&u8g) - x_text - x_icon, BITMAP_KEYBOARD_HEIGHT, U8G_PSTR("Dvorak"));
+    Display_Write_Box_CenteredP(
+      x_text, y, u8g_GetWidth(&u8g) - x_text - x_icon, BITMAP_KEYBOARD_HEIGHT,
+      Keymap_Get_Layer_Computer_Name(LayerState_Get_Active_Layout())
+    );
 
     // Key press counter
     u8g_SetFont(&u8g, u8g_font_6x10);
