@@ -15,10 +15,10 @@ uint8_t Display_Fn_state;
 #define TIMER_COUNTER_PRESCALE_SETTINGS ((1<<CS12) | (1<<CS10))
 #define TIMER_COUNTER_PRESCALE 1024
 #define TIMER_COUNTER TCNT1
-#define LOGO_SECS 3
+#define LOGO_SECS 0.2
 
 #define TOGGLE_WIDTH  24
-#define TOGGLE_HEIGHT  28
+#define TOGGLE_HEIGHT  22
 #define TOGGLE_SPACING 2
 
 void Display_Init(void)
@@ -44,7 +44,7 @@ void Display_Init(void)
   TIMER_COUNTER_CONTROL_REGISTER |= TIMER_COUNTER_PRESCALE_SETTINGS;
   TIMER_COUNTER = 0;
 
-  Display_LEDReport = 0;
+  Display_LEDReport = NO_LED_REPORT;
   Display_keypad_state = 0;
   Display_Fn_state = 0;
 }
@@ -177,40 +177,57 @@ void Display_USB_Addressed(void)
   */
 void Display_USB_Configured(void)
 {
+  uint8_t y;
+  uint8_t x_icon;
+  uint8_t x_text;
+  char str[20] = "aoeui";
+
   u8g_FirstPage(&u8g);
   do {
     u8g_SetFont(&u8g, u8g_font_helvB14);
 
+    // LED status
+    if(Display_LEDReport != NO_LED_REPORT){
+      Display_Draw_Toggle(
+          0 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+          U8G_PSTR("1"), Display_LEDReport & HID_KEYBOARD_LED_NUMLOCK
+      );
+      Display_Draw_Toggle(
+          1 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+          U8G_PSTR("A"), Display_LEDReport & HID_KEYBOARD_LED_CAPSLOCK
+      );
+      Display_Draw_Toggle(
+          2 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+          U8G_PSTR("S"), Display_LEDReport & HID_KEYBOARD_LED_SCROLLLOCK
+      );
+    }
     Display_Draw_Toggle(
-        0 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
-        TOGGLE_WIDTH, TOGGLE_HEIGHT,
-        U8G_PSTR("1"),
-        Display_LEDReport & HID_KEYBOARD_LED_NUMLOCK
+        3 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+        U8G_PSTR("K"), Display_keypad_state
     );
     Display_Draw_Toggle(
-        1 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
-        TOGGLE_WIDTH, TOGGLE_HEIGHT,
-        U8G_PSTR("A"),
-        Display_LEDReport & HID_KEYBOARD_LED_CAPSLOCK
+        4 * (TOGGLE_WIDTH + TOGGLE_SPACING) - 8, 0, TOGGLE_WIDTH + 8, TOGGLE_HEIGHT,
+        U8G_PSTR("Fn"), Display_Fn_state
     );
-    Display_Draw_Toggle(
-        2 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
-        TOGGLE_WIDTH, TOGGLE_HEIGHT,
-        U8G_PSTR("S"),
-        Display_LEDReport & HID_KEYBOARD_LED_SCROLLLOCK
-    );
-    Display_Draw_Toggle(
-        3 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
-        TOGGLE_WIDTH, TOGGLE_HEIGHT,
-        U8G_PSTR("K"),
-        Display_keypad_state
-    );
-    Display_Draw_Toggle(
-        4 * (TOGGLE_WIDTH + TOGGLE_SPACING), 0,
-        TOGGLE_WIDTH, TOGGLE_HEIGHT,
-        U8G_PSTR("F"),
-        Display_Fn_state
-    );
+
+    // Layout
+    u8g_SetFont(&u8g, u8g_font_helvB12);
+
+    x_icon = 20;
+    y = TOGGLE_HEIGHT + 3;
+    u8g_DrawBitmapP(&u8g, x_icon, y, BITMAP_KEYBOARD_WIDTH, BITMAP_KEYBOARD_HEIGHT, bitmap_keyboard);
+    x_text = x_icon + BITMAP_KEYBOARD_WIDTH * 8;
+    Display_Write_Box_CenteredP(x_text, y, u8g_GetWidth(&u8g) - x_text - x_icon, BITMAP_KEYBOARD_HEIGHT, U8G_PSTR("Dvorak"));
+
+    y = y + BITMAP_COMPUTER_HEIGHT + 3;
+    u8g_DrawBitmapP(&u8g, x_icon, y, BITMAP_COMPUTER_WIDTH, BITMAP_COMPUTER_HEIGHT, bitmap_computer);
+    Display_Write_Box_CenteredP(x_text, y, u8g_GetWidth(&u8g) - x_text - x_icon, BITMAP_KEYBOARD_HEIGHT, U8G_PSTR("Dvorak"));
+
+    // Key press counter
+    u8g_SetFont(&u8g, u8g_font_6x10);
+    uint32_t kp = 2341241;
+    ultoa(kp, str, 10);
+    u8g_DrawStr(&u8g, u8g_GetWidth(&u8g) / 2 - u8g_GetStrWidth(&u8g, str) / 2, u8g_GetHeight(&u8g), str);
   } while(u8g_NextPage(&u8g));
 }
 

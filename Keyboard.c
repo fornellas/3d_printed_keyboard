@@ -117,13 +117,13 @@ void SetupHardware()
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
-  // TODO Display: USB Enumerating
+  // USB Enumerating
 }
 
 /** Event handler for the library USB Disconnection event. */
 void EVENT_USB_Device_Disconnect(void)
 {
-  // TODO Display: USB Not Ready
+  Display_Set_LEDReport(NO_LED_REPORT);
 }
 
 /** Event handler for the library USB Configuration Changed event. */
