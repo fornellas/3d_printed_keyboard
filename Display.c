@@ -12,16 +12,42 @@ u8g_t u8g;
 uint8_t Display_LEDReport;
 uint8_t Display_keypad_state;
 uint8_t Display_Fn_state;
+uint32_t seconds;
+uint8_t mode;
+uint8_t last_USB_DeviceState;
 
-#define TIMER_COUNTER_CONTROL_REGISTER TCCR1B
-#define TIMER_COUNTER_PRESCALE_SETTINGS ((1<<CS12) | (1<<CS10))
-#define TIMER_COUNTER_PRESCALE 1024
-#define TIMER_COUNTER TCNT1
-#define LOGO_SECS 0.2
+uint8_t px;
+uint8_t py;
+uint8_t step;
+uint8_t start;
+uint32_t last_seconds;
+
+#define SPLASH_MODE 0
+#define STATUS_MODE 1
+#define SCREENSAVER_MODE 2
+
+#define SPLASH_TIMEOUT 2
+#define SCREENSAVER_TIMEOUT 120
 
 #define TOGGLE_WIDTH  24
 #define TOGGLE_HEIGHT  22
 #define TOGGLE_SPACING 2
+
+ISR(TIMER1_COMPA_vect)
+{
+  seconds++;
+}
+
+void Display_Setup_Timer(void)
+{
+  cli();
+  OCR1A = 1.0 / ( 1.0  / F_CPU * 1024);
+  TCCR1B |= (1 << WGM12) |  (1<<CS12) | (1<<CS10);
+  TIMSK1 |= (1 << OCIE1A);
+  TCNT1 = 0;
+  seconds = 0;
+  sei();
+}
 
 void Display_Init(void)
 {
@@ -33,6 +59,23 @@ void Display_Init(void)
       PN(0, 7) // RESET
   );
 
+  Display_Draw_Logo();
+
+  Display_Setup_Timer();
+
+  Display_LEDReport = NO_LED_REPORT;
+  Display_keypad_state = 0;
+  Display_Fn_state = 0;
+
+  last_USB_DeviceState = USB_DeviceState;
+
+  mode = SPLASH_MODE;
+
+  Display_Screensaver_Init();
+}
+
+void Display_Draw_Logo(void)
+{
   u8g_FirstPage(&u8g);
   do {
     u8g_DrawBitmapP(
@@ -43,12 +86,6 @@ void Display_Init(void)
       bitmap_logo
     );
   } while(u8g_NextPage(&u8g));
-  TIMER_COUNTER_CONTROL_REGISTER |= TIMER_COUNTER_PRESCALE_SETTINGS;
-  TIMER_COUNTER = 0;
-
-  Display_LEDReport = NO_LED_REPORT;
-  Display_keypad_state = 0;
-  Display_Fn_state = 0;
 }
 
 void Display_Write_Box_CenteredP(
@@ -277,13 +314,8 @@ void Display_USB_Unknown(void)
   } while(u8g_NextPage(&u8g));
 }
 
-void Display_Update(void)
+void Display_Status(void)
 {
-  if(TIMER_COUNTER < 1.0 / ( (1.0 / LOGO_SECS) / F_CPU * TIMER_COUNTER_PRESCALE))
-    return;
-  else
-    TIMER_COUNTER_CONTROL_REGISTER = 0;
-
   switch(USB_DeviceState){
     case DEVICE_STATE_Unattached:
       Display_USB_Unattached();
@@ -309,6 +341,73 @@ void Display_Update(void)
   }
 }
 
+void Display_Screensaver_Init(void)
+{
+  px = (float)rand() / RAND_MAX * u8g_GetWidth(&u8g);
+  py = (float)rand() / RAND_MAX * u8g_GetHeight(&u8g);
+  step = (float)rand() / RAND_MAX * 12 + 4;
+  start = (float)rand() / RAND_MAX * step;
+  last_seconds = seconds;
+}
+
+void Display_Screensaver(void)
+{
+  if(seconds < SPLASH_TIMEOUT){
+    Display_Draw_Logo();
+    return;
+  }
+
+  if(seconds - last_seconds > 3)
+    Display_Screensaver_Init();
+
+  u8g_FirstPage(&u8g);
+  do {
+    if(step%2) {
+      for(uint8_t x=start; x < u8g_GetWidth(&u8g) ; x += step)
+        u8g_DrawLine(&u8g, x, 0, px, py);
+      for(uint8_t x=start; x < u8g_GetWidth(&u8g) ; x += step)
+        u8g_DrawLine(&u8g, x, u8g_GetHeight(&u8g), px, py);
+    }else{
+      for(uint8_t y=start; y < u8g_GetHeight(&u8g) ; y += step)
+        u8g_DrawLine(&u8g, 0, y, px, py);
+      for(uint8_t y=start; y < u8g_GetHeight(&u8g) ; y += step)
+        u8g_DrawLine(&u8g, u8g_GetWidth(&u8g), y, px, py);
+    }
+
+  } while(u8g_NextPage(&u8g));
+}
+
+void Display_Update(void)
+{
+  if(USB_DeviceState != last_USB_DeviceState) {
+    Display_Tick();
+    last_USB_DeviceState = USB_DeviceState;
+  }
+
+  switch(mode){
+    case SPLASH_MODE:
+      if(seconds > SPLASH_TIMEOUT){
+        Display_Tick();
+        mode = STATUS_MODE;
+      }
+      break;
+    case STATUS_MODE:
+      if(seconds > SCREENSAVER_TIMEOUT) {
+        Display_Screensaver_Init();
+        mode = SCREENSAVER_MODE;
+      } else
+        Display_Status();
+      break;
+    case SCREENSAVER_MODE:
+      if(seconds > SCREENSAVER_TIMEOUT)
+        Display_Screensaver();
+      else
+        mode = STATUS_MODE;
+      break;
+  }
+
+}
+
 void Display_Set_LEDReport(uint8_t ReportData)
 {
   Display_LEDReport = ReportData;
@@ -322,4 +421,9 @@ void Display_Set_Keypad(uint8_t new_keypad_state)
 void Display_Set_Fn(uint8_t new_Fn_state)
 {
   Display_Fn_state = new_Fn_state;
+}
+
+void Display_Tick(void)
+{
+  seconds = 0;
 }
