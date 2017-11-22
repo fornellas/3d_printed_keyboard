@@ -174,13 +174,13 @@ u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
 {
   switch(id) {
     case QWERTY_QWERTY_LAYER:
-      return qwertyP;
+      return (u8g_pgm_uint8_t *)qwertyP;
     case QWERTY_DVORAK_LAYER:
-      return dvorakP;
+      return (u8g_pgm_uint8_t *)dvorakP;
     case DVORAK_DVORAK_LAYER:
-      return dvorakP;
+      return (u8g_pgm_uint8_t *)dvorakP;
     default:
-      return unknownP;
+      return (u8g_pgm_uint8_t *)unknownP;
   }
 }
 
@@ -188,13 +188,13 @@ u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
 {
   switch(id) {
     case QWERTY_QWERTY_LAYER:
-      return qwertyP;
+      return (u8g_pgm_uint8_t *)qwertyP;
     case QWERTY_DVORAK_LAYER:
-      return qwertyP;
+      return (u8g_pgm_uint8_t *)qwertyP;
     case DVORAK_DVORAK_LAYER:
-      return dvorakP;
+      return (u8g_pgm_uint8_t *)dvorakP;
     default:
-      return unknownP;
+      return (u8g_pgm_uint8_t *)unknownP;
   }
 }
 
@@ -246,13 +246,13 @@ void macro_cut(struct Key key)
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
       case QWERTY_QWERTY_LAYER:
-        Sequence_Register(seq_cut);
+        Sequence_Register((uint16_t *)seq_cut);
         break;
       case QWERTY_DVORAK_LAYER:
-        Sequence_Register(seq_cut);
+        Sequence_Register((uint16_t *)seq_cut);
         break;
       case DVORAK_DVORAK_LAYER:
-        Sequence_Register(seq_cut_dvorak);
+        Sequence_Register((uint16_t *)seq_cut_dvorak);
         break;
     }
   }
@@ -281,13 +281,13 @@ void macro_copy(struct Key key)
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
       case QWERTY_QWERTY_LAYER:
-        Sequence_Register(seq_copy);
+        Sequence_Register((uint16_t *)seq_copy);
         break;
       case QWERTY_DVORAK_LAYER:
-        Sequence_Register(seq_copy);
+        Sequence_Register((uint16_t *)seq_copy);
         break;
       case DVORAK_DVORAK_LAYER:
-        Sequence_Register(seq_copy_dvorak);
+        Sequence_Register((uint16_t *)seq_copy_dvorak);
         break;
     }
   }
@@ -316,13 +316,13 @@ void macro_paste(struct Key key)
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
       case QWERTY_QWERTY_LAYER:
-        Sequence_Register(seq_paste);
+        Sequence_Register((uint16_t *)seq_paste);
         break;
       case QWERTY_DVORAK_LAYER:
-        Sequence_Register(seq_paste);
+        Sequence_Register((uint16_t *)seq_paste);
         break;
       case DVORAK_DVORAK_LAYER:
-        Sequence_Register(seq_paste_dvorak);
+        Sequence_Register((uint16_t *)seq_paste_dvorak);
         break;
     }
   }
@@ -355,13 +355,13 @@ void macro_desktop(struct Key key)
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
       case QWERTY_QWERTY_LAYER:
-        Sequence_Register(seq_desktop);
+        Sequence_Register((uint16_t *)seq_desktop);
         break;
       case QWERTY_DVORAK_LAYER:
-        Sequence_Register(seq_desktop);
+        Sequence_Register((uint16_t *)seq_desktop);
         break;
       case DVORAK_DVORAK_LAYER:
-        Sequence_Register(seq_desktop_dvorak);
+        Sequence_Register((uint16_t *)seq_desktop_dvorak);
         break;
     }
   }
