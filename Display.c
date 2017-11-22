@@ -58,6 +58,7 @@ void Display_Init(void)
       PN(1, 4), // A0
       PN(0, 7) // RESET
   );
+  u8g_SetContrast(&u8g, 96);
 
   Display_Draw_Logo();
 
