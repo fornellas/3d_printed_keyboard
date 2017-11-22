@@ -1,6 +1,7 @@
 #include "Display.h"
 #include "Counter.h"
 #include "Keymap.h"
+#include "LayerState.h"
 #include <u8g.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <stdlib.h>
@@ -49,6 +50,29 @@ void Display_Setup_Timer(void)
   sei();
 }
 
+void Display_Draw_Logo(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_DrawBitmapP(
+      &u8g,
+      ((u8g_GetWidth(&u8g) - (BITMAP_LOGO_WIDTH * 8)) / 2),
+      (u8g_GetHeight(&u8g) - BITMAP_LOGO_HEIGHT) / 2,
+      BITMAP_LOGO_WIDTH, BITMAP_LOGO_HEIGHT,
+      bitmap_logo
+    );
+  } while(u8g_NextPage(&u8g));
+}
+
+void Display_Screensaver_Init(void)
+{
+  px = (float)rand() / RAND_MAX * u8g_GetWidth(&u8g);
+  py = (float)rand() / RAND_MAX * u8g_GetHeight(&u8g);
+  step = (float)rand() / RAND_MAX * 12 + 4;
+  start = (float)rand() / RAND_MAX * step;
+  last_seconds = seconds;
+}
+
 void Display_Init(void)
 {
   u8g_InitHWSPI(
@@ -75,20 +99,6 @@ void Display_Init(void)
   Display_Screensaver_Init();
 }
 
-void Display_Draw_Logo(void)
-{
-  u8g_FirstPage(&u8g);
-  do {
-    u8g_DrawBitmapP(
-      &u8g,
-      ((u8g_GetWidth(&u8g) - (BITMAP_LOGO_WIDTH * 8)) / 2),
-      (u8g_GetHeight(&u8g) - BITMAP_LOGO_HEIGHT) / 2,
-      BITMAP_LOGO_WIDTH, BITMAP_LOGO_HEIGHT,
-      bitmap_logo
-    );
-  } while(u8g_NextPage(&u8g));
-}
-
 void Display_Write_Box_CenteredP(
   int8_t x_start, int8_t y_start,
   u8g_uint_t x_end, u8g_uint_t y_end,
@@ -110,12 +120,12 @@ void Display_Write_Box_CenteredP(
     char *newline;
     size_t len;
 
-    len = (strlen_P(strP) + 1) + sizeof(char);
+    len = (strlen_P((const char *)strP) + 1) + sizeof(char);
     str = malloc(len);
     if(!str)
       continue;
     memcpy_P(str, strP, len);
-    if(newline = strchr(str, '\n'))
+    if((newline = strchr(str, '\n')))
       str[newline - str] = '\0';
 
     draw_x = x_start + x_end / 2 - u8g_GetStrWidth(&u8g, str) / 2;
@@ -129,7 +139,7 @@ void Display_Write_Box_CenteredP(
     u8g_DrawStr(&u8g, draw_x, draw_y, str);
 
     free(str);
-    strP = strchr_P(strP, '\n') + 1;
+    strP = (u8g_pgm_uint8_t *)strchr_P((const char *)strP, '\n') + 1;
   }
 }
 
@@ -340,15 +350,6 @@ void Display_Status(void)
       Display_USB_Unknown();
       break;
   }
-}
-
-void Display_Screensaver_Init(void)
-{
-  px = (float)rand() / RAND_MAX * u8g_GetWidth(&u8g);
-  py = (float)rand() / RAND_MAX * u8g_GetHeight(&u8g);
-  step = (float)rand() / RAND_MAX * 12 + 4;
-  start = (float)rand() / RAND_MAX * step;
-  last_seconds = seconds;
 }
 
 void Display_Screensaver(void)

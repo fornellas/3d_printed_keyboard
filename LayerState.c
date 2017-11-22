@@ -40,4 +40,5 @@ uint8_t LayerState_Get_Active_Layout()
     if(LayerState_Get(keymap_layout_layers[l]))
       return keymap_layout_layers[l];
   }
+  return keymap_layout_layers[0];
 }
