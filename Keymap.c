@@ -59,13 +59,13 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     ____, MACRO(MACRO_CUT),            MACRO(MACRO_COPY),           MACRO(MACRO_PASTE),                K(MUTE),
     ____, ____,                                                     ____,
     // Right
-    K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          TODO("wake"), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
-    ____,      ____,           ____,     ____,                    ____,         ____,            ____,           ____, ____,
-               ____,           ____,     ____,                    ____,         ____,            ____,           ____, ____,
-    ____,      ____,           ____,     ____,                    ____,         ____,            ____,           ____, ____,
-               ____,           ____,     ____,                    ____,         ____,            ____,                 ____,
-               K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,         ____,            ____,           ____, K(MEDIA_BACKWARD),
-                                         K(MEDIA_NEXT_TRACK),     ____,         ____,            ____,                 K(MEDIA_FORWARD)
+    K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          KGD(SYSTEM_WAKE_UP_OSC), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
+    ____,      ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+               ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+    ____,      ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+               ____,           ____,     ____,                    ____,                    ____,            ____,                 ____,
+               K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,                    ____,            ____,           ____, K(MEDIA_BACKWARD),
+                                         K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
   ),
   [KEYPAD_LAYER] = KEYMAP(
     // Left
@@ -151,9 +151,9 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     // Right
     K(DELETE),    K(F6),          K(F7),              K(F8),                K(F9),                        K(F10),                       K(F11),         K(F12),           MACRO(MACRO_KEYPAD),
     K(BACKSPACE), K(6_AND_CARET), K(7_AND_AMPERSAND), K(8_AND_ASTERISK),    K(9_AND_OPENING_PARENTHESIS), K(0_AND_CLOSING_PARENTHESIS), ____,           ____,             K(MEDIA_CALCULATOR),
-                  ____,           ____,               ____,                 ____,                         ____,                         ____,           ____,             TODO('mail'),
+                  ____,           ____,               ____,                 ____,                         ____,                         ____,           ____,             KC(AL_EMAIL_READER_SEL),
     K(ENTER),     ____,           ____,               ____,                 ____,                         ____,                         ____,           K(RIGHT_SHIFT),   K(CAPS_LOCK),
-                  ____,           ____,               ____,                 ____,                         ____,                         ____,                             TODO('www'),
+                  ____,           ____,               ____,                 ____,                         ____,                         ____,                             KC(AL_INTERNET_BROWSER_SEL),
                   K(SPACE),                           MACRO(MACRO_DESKTOP), K(HOME),                      K(UP_ARROW),                  K(END),         K(RIGHT_CONTROL), K(PAGE_UP),
                                                       K(RIGHT_ALT),         K(LEFT_ARROW),                K(DOWN_ARROW),                K(RIGHT_ARROW),                   K(PAGE_DOWN)
   ),

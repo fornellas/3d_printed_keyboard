@@ -3,7 +3,7 @@
 #include "Keymap.h"
 #include "Sequence.h"
 
-void KeyboardReport_Add_KeyCode(USB_KeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
+void KeyboardReport_Add_KeyboardKeypad(USB_ExtendedKeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
 {
   switch(KeyCode){
     case HID_KEYBOARD_SC_LEFT_CONTROL:
@@ -31,12 +31,12 @@ void KeyboardReport_Add_KeyCode(USB_KeyboardReport_Data_t* KeyboardReport, uint1
       KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_RIGHTGUI;
       break;
     default:
-      for(uint8_t i=0 ; i < 6 ; i++)
-        if(KeyboardReport->KeyCode[i] == KeyCode)
+      for(uint8_t i=0 ; i < MAX_KEYS ; i++)
+        if(KeyboardReport->KeyboardKeyPad[i] == KeyCode)
           goto end;
-      for(uint8_t i=0 ; i < 6 ; i++){
-        if(KeyboardReport->KeyCode[i] == 0){
-          KeyboardReport->KeyCode[i] = KeyCode;
+      for(uint8_t i=0 ; i < MAX_KEYS ; i++){
+        if(KeyboardReport->KeyboardKeyPad[i] == 0){
+          KeyboardReport->KeyboardKeyPad[i] = KeyCode;
           break;
         }
       }
@@ -45,13 +45,39 @@ void KeyboardReport_Add_KeyCode(USB_KeyboardReport_Data_t* KeyboardReport, uint1
   }
 }
 
+void KeyboardReport_Add_GenericDesktop(USB_ExtendedKeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
+{
+  for(uint8_t i=0 ; i < MAX_KEYS ; i++)
+    if(KeyboardReport->GenericDesktop[i] == KeyCode)
+      return;
+  for(uint8_t i=0 ; i < MAX_KEYS ; i++){
+    if(KeyboardReport->GenericDesktop[i] == 0){
+      KeyboardReport->GenericDesktop[i] = KeyCode;
+      break;
+    }
+  }
+}
+
+void KeyboardReport_Add_Consumer(USB_ExtendedKeyboardReport_Data_t* KeyboardReport, uint16_t KeyCode)
+{
+  for(uint8_t i=0 ; i < MAX_KEYS ; i++)
+    if(KeyboardReport->Consumer[i] == KeyCode)
+      return;
+  for(uint8_t i=0 ; i < MAX_KEYS ; i++){
+    if(KeyboardReport->Consumer[i] == 0){
+      KeyboardReport->Consumer[i] = KeyCode;
+      break;
+    }
+  }
+}
+
 void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
 {
-  USB_KeyboardReport_Data_t* KeyboardReport;
+  USB_ExtendedKeyboardReport_Data_t* KeyboardReport;
   uint16_t key_value;
   uint8_t layout;
 
-  KeyboardReport = (USB_KeyboardReport_Data_t*)data;
+  KeyboardReport = (USB_ExtendedKeyboardReport_Data_t*)data;
 
   for(uint8_t i=0 ; i < LAYER_COUNT ; i++) {
     if(!LayerState_Get(i))
@@ -60,9 +86,19 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
     key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
 
     switch(GET_KEY_FN(key_value)){
-      case KEY_FN_REG:
+      case KEY_FN_KEYBOARD_PAGE:
         if(key.state)
-           KeyboardReport_Add_KeyCode(KeyboardReport, GET_KEY_CODE(key_value));
+           KeyboardReport_Add_KeyboardKeypad(KeyboardReport, GET_KEY_VALUE(key_value));
+        goto finish;
+        break;
+      case KEY_FN_GENERIC_DESKTOP_PAGE:
+        if(key.state)
+           KeyboardReport_Add_GenericDesktop(KeyboardReport, GET_KEY_VALUE(key_value));
+        goto finish;
+        break;
+      case KEY_FN_CONSUMER_PAGE_PAGE:
+        if(key.state)
+           KeyboardReport_Add_Consumer(KeyboardReport, GET_KEY_VALUE(key_value));
         goto finish;
         break;
       case KEY_FN_NONE:
@@ -72,11 +108,11 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
         break;
       case KEY_FN_MACRO:
         // FIXME warning: function with qualified void return type called
-        keymap_macros[GET_MACRO(key_value)](key);
+        keymap_macros[GET_KEY_VALUE(key_value)](key);
         goto finish;
         break;
       case KEY_FN_LAYOUT:
-        layout = GET_LAYOUT(key_value);
+        layout = GET_KEY_VALUE(key_value);
         if(key.just_pressed) {
           for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
             if(keymap_layout_layers[l] == layout)
@@ -89,7 +125,7 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
         break;
       case KEY_FN_SEQ:
         if(key.just_pressed)
-          Sequence_Register((uint16_t *)keymap_seqs[GET_SEQ(key_value)]);
+          Sequence_Register((uint16_t *)keymap_seqs[GET_KEY_VALUE(key_value)]);
         goto finish;
         break;
     }

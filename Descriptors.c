@@ -36,6 +36,7 @@
  */
 
 #include "Descriptors.h"
+#include "Keyboard.h"
 
 /** HID class report descriptor. This is a special descriptor constructed with values from the
  *  USBIF HID class specification to describe the reports and capabilities of the HID device. This
@@ -45,10 +46,61 @@
  */
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM KeyboardReport[] =
 {
-  /* Use the HID class driver's standard Keyboard report.
-   *   Max simultaneous keys: 6
-   */
-  HID_DESCRIPTOR_KEYBOARD(6)
+  HID_RI_USAGE_PAGE(8, 0x01), // Generic Desktop
+  HID_RI_USAGE(8, 0x06), // Keyboard
+  HID_RI_COLLECTION(8, 0x01), // Application
+
+    HID_RI_USAGE_PAGE(8, 0x07), // Keyboard/Keypad
+    HID_RI_USAGE_MINIMUM(8, 0xE0), // HID_KEYBOARD_SC_LEFT_CONTROL
+    HID_RI_USAGE_MAXIMUM(8, 0xE7), // HID_KEYBOARD_SC_RIGHT_GUI
+    HID_RI_LOGICAL_MINIMUM(8, 0x00),
+    HID_RI_LOGICAL_MAXIMUM(8, 0x01),
+    HID_RI_REPORT_SIZE(8, 0x01),
+    HID_RI_REPORT_COUNT(8, 0x08),
+    HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
+
+    HID_RI_REPORT_COUNT(8, 0x01),
+    HID_RI_REPORT_SIZE(8, 0x08),
+    HID_RI_INPUT(8, HID_IOF_CONSTANT), // Reserved
+
+    HID_RI_USAGE_PAGE(8, 0x08), // LEDs
+    HID_RI_USAGE_MINIMUM(8, 0x01), // Num Lock
+    HID_RI_USAGE_MAXIMUM(8, 0x05), // Kana
+    HID_RI_REPORT_COUNT(8, 0x05),
+    HID_RI_REPORT_SIZE(8, 0x01),
+    HID_RI_OUTPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE | HID_IOF_NON_VOLATILE),
+
+    HID_RI_REPORT_COUNT(8, 0x01),
+    HID_RI_REPORT_SIZE(8, 0x03),
+    HID_RI_OUTPUT(8, HID_IOF_CONSTANT),
+
+    HID_RI_LOGICAL_MINIMUM(8, 0x00),
+    HID_RI_LOGICAL_MAXIMUM(16, 0xFF),
+    HID_RI_USAGE_PAGE(8, 0x07), // Keyboard/Keypad
+    HID_RI_USAGE_MINIMUM(8, 0x00),
+    HID_RI_USAGE_MAXIMUM(8, 0xFF),
+    HID_RI_REPORT_COUNT(8, MAX_KEYS),
+    HID_RI_REPORT_SIZE(8, 0x08),
+    HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
+
+    HID_RI_LOGICAL_MINIMUM(8, 0x00),
+    HID_RI_LOGICAL_MAXIMUM(16, 0xB7),
+    HID_RI_USAGE_PAGE(8, 0x01), // Generic Desktop
+    HID_RI_USAGE_MINIMUM(8, 0x00),
+    HID_RI_USAGE_MAXIMUM(8, 0xB7),
+    HID_RI_REPORT_COUNT(8, MAX_KEYS),
+    HID_RI_REPORT_SIZE(8, 0x08),
+    HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
+
+    HID_RI_LOGICAL_MINIMUM(8, 0x00),
+    HID_RI_LOGICAL_MAXIMUM(16, 0x029C),
+    HID_RI_USAGE_PAGE(8, 0x0C), // Consumer
+    HID_RI_USAGE_MINIMUM(8, 0x00),
+    HID_RI_USAGE_MAXIMUM(16, 0x029C),
+    HID_RI_REPORT_COUNT(8, MAX_KEYS),
+    HID_RI_REPORT_SIZE(8, 0x10),
+    HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
+  HID_RI_END_COLLECTION(0)
 };
 
 /** Device descriptor structure. This descriptor, located in FLASH memory, describes the overall

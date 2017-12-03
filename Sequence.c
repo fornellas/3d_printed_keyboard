@@ -31,7 +31,7 @@ void Sequence_Register(uint16_t *seq)
   }
 }
 
-void Sequence_Play(USB_KeyboardReport_Data_t* KeyboardReport)
+void Sequence_Play(USB_ExtendedKeyboardReport_Data_t* KeyboardReport)
 {
   uint8_t start;
   uint8_t key_start;
@@ -47,7 +47,7 @@ void Sequence_Play(USB_KeyboardReport_Data_t* KeyboardReport)
   key_start = start + 1;
 
   for(uint8_t key=key_start ; key <= start + len ; key++)
-    KeyboardReport_Add_KeyCode(KeyboardReport, sequence[key]);
+    KeyboardReport_Add_KeyboardKeypad(KeyboardReport, sequence[key]);
 
   for(uint8_t i=start ; i <= start + len ; i++)
     sequence[i] = 0;

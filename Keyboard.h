@@ -47,6 +47,23 @@
     #include <LUFA/Drivers/USB/USB.h>
     #include <LUFA/Drivers/Peripheral/SPI.h>
 
+    #define MAX_KEYS 6
+
+    /* Type Defines: */
+    /** Type define for HID report. This report contains the bits to match the usages defined
+      *  in the HID report of the device.
+      */
+    typedef struct
+    {
+      uint8_t Modifier; /**< Keyboard modifier byte, indicating pressed modifier keys (a combination of
+                         *   \c HID_KEYBOARD_MODIFER_* masks).
+                         */
+      uint8_t Reserved; /**< Reserved for OEM use, always set to 0. */
+      uint8_t KeyboardKeyPad[MAX_KEYS]; // Keyboard/Keypad Page (0x07)
+      uint8_t GenericDesktop[MAX_KEYS]; // Generic Desktop Page (0x01)
+      uint16_t Consumer[MAX_KEYS]; // Consumer Page (0x0C)
+    } ATTR_PACKED USB_ExtendedKeyboardReport_Data_t;
+
   /* Function Prototypes: */
     void SetupHardware(void);
 
