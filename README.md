@@ -19,8 +19,29 @@ A fully 3D printed computer keyboard.
 
 - Based on the [LUFA](http://www.fourwalledcubicle.com/LUFA.php) USB library.
 - [u8glib](https://github.com/olikraus/u8glib) to drive the display.
+- Key press counter.
+- USB Remote wake up support.
+- Full featured display:
+  - "LED" for Num Lock, Caps Lock and Scroll Lock.
+  - Hardware Keypad.
+  - Hardware Fn key.
+  - Computer and Keyboard layout configuration (QWERTY, Dvorak).
+  - Screensaver to avoid OLED burn out.
+  - Boot up splash screen.
+  - USB communication status.
+- Hardware layout mapping:
+  - Computer QWERTY, keyboard QWERTY.
+  - Computer QWERTY, keyboard Dvoark.
+  - Computer Dvoark, keyboard Dvoark.
+  - Hardware keypad.
+- Key functions:
+  - Regular key press.
+    - Support for non standard USB HID use pages key codes (useful for shortcuts like "browser").
+  - Sequence of key presses.
+  - Ignore key.
 
-## STL Files
+
+## 3D Printable STL Files
 
 The source for all 3D models used in this project can be fount at [OnShape](https://cad.onshape.com/documents/70ad0c4316c1f7791e16adf7/w/2614b0b88a96d33de0d37d52/e/1350c0cb06dbf70709189044). From there, STL files can be easily exported.
 
