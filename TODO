@@ -1,3 +1,5 @@
+- Display.c
+  - Fix tick keeping splash screen active
 - ScanKeys.c
   - Right side scanning with MCP23017
 - Fix compile warnings
