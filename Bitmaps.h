@@ -2,6 +2,7 @@
 #define _LOGO_H_
 
 #include <inttypes.h>
+#include <u8g.h>
 
 #define BITMAP_LOGO_WIDTH 16
 #define BITMAP_LOGO_HEIGHT 44

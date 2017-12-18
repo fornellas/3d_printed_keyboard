@@ -106,7 +106,6 @@ void SetupHardware()
 #endif
 
   /* Hardware Initialization */
-  SPI_Init(SPI_MODE_MASTER);
   Display_Init();
   ScanKeys_Init();
   Keymap_Init();

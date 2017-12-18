@@ -1,13 +1,15 @@
-#include "Display.h"
+#include "Bitmaps.h"
 #include "Counter.h"
+#include "Display.h"
 #include "Keymap.h"
 #include "LayerState.h"
-#include <u8g.h>
+#include <avr/io.h>
+#include <LUFA/Drivers/Peripheral/SPI.h>
+#include <LUFA/Drivers/Peripheral/TWI.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <stdlib.h>
+#include <u8g.h>
 #include <util/delay.h>
-#include "Bitmaps.h"
-#include <avr/io.h>
 
 u8g_t u8g;
 uint8_t Display_LEDReport;
@@ -75,6 +77,7 @@ void Display_Screensaver_Init(void)
 
 void Display_Init(void)
 {
+  SPI_Init(SPI_MODE_MASTER);
   u8g_InitHWSPI(
       &u8g,
       &u8g_dev_sh1106_128x64_hw_spi,

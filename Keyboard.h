@@ -45,7 +45,6 @@
     #include "ScanKeys.h"
 
     #include <LUFA/Drivers/USB/USB.h>
-    #include <LUFA/Drivers/Peripheral/SPI.h>
 
     #define MAX_KEYS 6
 
