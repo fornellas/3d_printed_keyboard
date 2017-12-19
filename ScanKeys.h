@@ -2,6 +2,7 @@
 #define _SCAN_KEYS_H_
 
 #include <stdint.h>
+#include <LUFA/Drivers/Peripheral/TWI.h>
 
 struct Key {
   uint8_t row;
@@ -10,6 +11,8 @@ struct Key {
   uint8_t just_pressed;
   uint8_t just_released;
 };
+
+extern uint8_t ScanKeys_Right_Side_Disconnected;
 
 void ScanKeys_Init(void);
 void ScanKeys_Read(void (*scan_keys_callback)(struct Key, void *data), void *data);

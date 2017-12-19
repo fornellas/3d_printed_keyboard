@@ -22,7 +22,8 @@ SRC          = \
 	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
 	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \
 	$(LUFA_SRC_USB) \
-	$(LUFA_SRC_USBCLASS)
+	$(LUFA_SRC_USBCLASS) \
+	$(LUFA_SRC_TWI)
 TEENSY_LOADER_PATH = teensy_loader_cli
 TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
 CC_FLAGS     = \

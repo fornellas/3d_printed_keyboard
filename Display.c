@@ -3,9 +3,9 @@
 #include "Display.h"
 #include "Keymap.h"
 #include "LayerState.h"
+#include "ScanKeys.h"
 #include <avr/io.h>
 #include <LUFA/Drivers/Peripheral/SPI.h>
-#include <LUFA/Drivers/Peripheral/TWI.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <stdlib.h>
 #include <u8g.h>
@@ -290,13 +290,21 @@ void Display_Draw_Keypress_Counter(void)
   */
 void Display_USB_Configured(void)
 {
-  u8g_FirstPage(&u8g);
-  do {
-    u8g_SetFont(&u8g, u8g_font_helvB14);
-    Display_Draw_LED_Status();
-    Display_Draw_Layout_Status();
-    Display_Draw_Keypress_Counter();
-  } while(u8g_NextPage(&u8g));
+  if(ScanKeys_Right_Side_Disconnected) {
+    u8g_FirstPage(&u8g);
+    do {
+      u8g_SetFont(&u8g, u8g_font_helvB14);
+      Display_Write_CenteredP(U8G_PSTR("Right Side\nDisconnected"));
+    } while(u8g_NextPage(&u8g));
+  } else {
+    u8g_FirstPage(&u8g);
+    do {
+      u8g_SetFont(&u8g, u8g_font_helvB14);
+      Display_Draw_LED_Status();
+      Display_Draw_Layout_Status();
+      Display_Draw_Keypress_Counter();
+    } while(u8g_NextPage(&u8g));
+  }
 }
 
 /**< May be implemented by the user project. This state indicates
