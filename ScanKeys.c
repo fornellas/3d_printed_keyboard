@@ -165,20 +165,16 @@ uint8_t ScanKeys_SetColumnLow(uint8_t column)
   return 1;
 }
 
-uint8_t ScanKeys_ReadRow(uint8_t row, uint8_t column, uint8_t *state)
+uint8_t ScanKeys_ReadRows(uint8_t column, uint8_t *state)
 {
   if(column < SCAN_MATRIX_LEFT_COLUMNS) {
-    *state = PINA & (1 << row);
+    *state = PINA;
   } else {
-    uint8_t PortState;
-
     if(!ScanKeys_SetUp_MCP23017())
       return 0;
 
-    if(!MCP23017_ReadByte(MCP23017_BANK1_GPIOB, &PortState))
+    if(!MCP23017_ReadByte(MCP23017_BANK1_GPIOB, state))
       return 0;
-
-    *state = PortState & (1 << row);
   }
   return 1;
 }
@@ -187,18 +183,22 @@ void ScanKeys_Read(void (*scan_keys_callback)(struct Key, void *data), void *dat
 {
   struct Key key;
 
-  for(uint8_t column=0 ; column < SCAN_MATRIX_LEFT_COLUMNS + SCAN_MATRIX_RIGHT_COLUMNS ; column++) { // FIXME
+  for(uint8_t column=0 ; column < SCAN_MATRIX_LEFT_COLUMNS + SCAN_MATRIX_RIGHT_COLUMNS ; column++) {
+    uint8_t rows_statuses;
+
     if(!ScanKeys_SetColumnLow(column))
       continue;
-    for(uint8_t row=0 ; row < SCAN_MATRIX_ROWS ; row++) {
-      uint8_t row_status;
 
+    if(!ScanKeys_ReadRows(column, &rows_statuses))
+      continue;
+
+    for(uint8_t row=0 ; row < SCAN_MATRIX_ROWS ; row++) {
       key.row = row;
       key.column = column;
-      if(!ScanKeys_ReadRow(row, column, &row_status))
-        continue;
-      if(!row_status) {
+
+      if(!(rows_statuses & (1 << row))) {
         key.state = 1;
+
         if(previous_state[row][column])
           key.just_pressed = 0;
         else {
@@ -210,12 +210,14 @@ void ScanKeys_Read(void (*scan_keys_callback)(struct Key, void *data), void *dat
       } else {
         key.state = 0;
         key.just_pressed = 0;
+
         if(previous_state[row][column]) {
           key.just_released = 1;
           Display_Tick();
         } else
           key.just_released = 0;
       }
+
       previous_state[row][column] = key.state;
       (*scan_keys_callback)(key, data);
     }
