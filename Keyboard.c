@@ -40,6 +40,7 @@
 #include "Keymap.h"
 #include "LayerState.h"
 #include "Sequence.h"
+#include "Timer.h"
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_ExtendedKeyboardReport_Data_t)];
@@ -106,6 +107,7 @@ void SetupHardware()
 #endif
 
   /* Hardware Initialization */
+  Timer_Init();
   Display_Init();
   ScanKeys_Init();
   Keymap_Init();

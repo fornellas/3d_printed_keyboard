@@ -19,6 +19,7 @@ SRC          = \
 	LayerState.c \
 	ScanKeys.c \
 	Sequence.c \
+	Timer.c \
 	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
 	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \
 	$(LUFA_SRC_USB) \

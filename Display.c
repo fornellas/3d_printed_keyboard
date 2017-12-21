@@ -4,53 +4,40 @@
 #include "Keymap.h"
 #include "LayerState.h"
 #include "ScanKeys.h"
+#include "Timer.h"
 #include <avr/io.h>
 #include <LUFA/Drivers/Peripheral/SPI.h>
 #include <LUFA/Drivers/USB/USB.h>
 #include <stdlib.h>
 #include <u8g.h>
-#include <util/delay.h>
 
 u8g_t u8g;
 uint8_t Display_LEDReport;
 uint8_t Display_keypad_state;
 uint8_t Display_Fn_state;
-uint32_t seconds;
 uint8_t mode;
 uint8_t last_USB_DeviceState;
+uint32_t last_tick;
 
+// Screensaver
 uint8_t px;
 uint8_t py;
 uint8_t step;
 uint8_t start;
-uint32_t last_seconds;
+uint32_t last_display_init;
 
+// Modes
 #define SPLASH_MODE 0
 #define STATUS_MODE 1
 #define SCREENSAVER_MODE 2
 
+// Configuration
 #define SPLASH_TIMEOUT 2
 #define SCREENSAVER_TIMEOUT 120
 
 #define TOGGLE_WIDTH  24
 #define TOGGLE_HEIGHT  22
 #define TOGGLE_SPACING 2
-
-ISR(TIMER1_COMPA_vect)
-{
-  seconds++;
-}
-
-void Display_Setup_Timer(void)
-{
-  cli();
-  OCR1A = 1.0 / ( 1.0  / F_CPU * 1024);
-  TCCR1B |= (1 << WGM12) |  (1<<CS12) | (1<<CS10);
-  TIMSK1 |= (1 << OCIE1A);
-  TCNT1 = 0;
-  seconds = 0;
-  sei();
-}
 
 void Display_Draw_Logo(void)
 {
@@ -72,7 +59,7 @@ void Display_Screensaver_Init(void)
   py = (float)rand() / RAND_MAX * u8g_GetHeight(&u8g);
   step = (float)rand() / RAND_MAX * 12 + 4;
   start = (float)rand() / RAND_MAX * step;
-  last_seconds = seconds;
+  last_display_init = Timer_Secs();
 }
 
 void Display_Init(void)
@@ -88,8 +75,6 @@ void Display_Init(void)
   u8g_SetContrast(&u8g, 96);
 
   Display_Draw_Logo();
-
-  Display_Setup_Timer();
 
   Display_LEDReport = NO_LED_REPORT;
   Display_keypad_state = 0;
@@ -365,12 +350,13 @@ void Display_Status(void)
 
 void Display_Screensaver(void)
 {
-  if(seconds < SPLASH_TIMEOUT){
-    Display_Draw_Logo();
-    return;
-  }
+  // if(seconds < SPLASH_TIMEOUT){
+  //   Display_Draw_Logo();
+  //   return;
+  // }
 
-  if(seconds - last_seconds > 3)
+  // New pattern
+  if(Timer_Secs() - last_display_init > 3)
     Display_Screensaver_Init();
 
   u8g_FirstPage(&u8g);
@@ -386,7 +372,6 @@ void Display_Screensaver(void)
       for(uint8_t y=start; y < u8g_GetHeight(&u8g) ; y += step)
         u8g_DrawLine(&u8g, u8g_GetWidth(&u8g), y, px, py);
     }
-
   } while(u8g_NextPage(&u8g));
 }
 
@@ -399,20 +384,20 @@ void Display_Update(void)
 
   switch(mode){
     case SPLASH_MODE:
-      if(seconds > SPLASH_TIMEOUT){
+      if(Timer_Secs() > SPLASH_TIMEOUT){
         Display_Tick();
         mode = STATUS_MODE;
       }
       break;
     case STATUS_MODE:
-      if(seconds > SCREENSAVER_TIMEOUT) {
+      if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT) {
         Display_Screensaver_Init();
         mode = SCREENSAVER_MODE;
       } else
         Display_Status();
       break;
     case SCREENSAVER_MODE:
-      if(seconds > SCREENSAVER_TIMEOUT)
+      if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT)
         Display_Screensaver();
       else
         mode = STATUS_MODE;
@@ -438,5 +423,5 @@ void Display_Set_Fn(uint8_t new_Fn_state)
 
 void Display_Tick(void)
 {
-  seconds = 0;
+  last_tick = Timer_Secs();
 }
