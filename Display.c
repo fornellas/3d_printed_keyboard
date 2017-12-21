@@ -77,7 +77,7 @@ void Display_Screensaver_Init(void)
 
 void Display_Init(void)
 {
-  SPI_Init(SPI_MODE_MASTER);
+  SPI_Init(SPI_MODE_MASTER | SPI_SPEED_FCPU_DIV_2);
   u8g_InitHWSPI(
       &u8g,
       &u8g_dev_sh1106_128x64_hw_spi,
