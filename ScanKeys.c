@@ -101,7 +101,6 @@ uint8_t ScanKeys_SetUp_MCP23017(void)
   ScanKeys_Right_Side_Disconnected = 0;
 
   return 1;
-
 }
 
 void ScanKeys_Init_Right(void)
@@ -119,19 +118,17 @@ void ScanKeys_Init(void)
   ScanKeys_Init_Right();
 }
 
-uint8_t ScanKeys_SetColumn(uint8_t column, uint8_t state)
+uint8_t ScanKeys_SetColumnLow(uint8_t column)
 {
   uint8_t Bit;
+  static uint8_t anyLatchAdown = 0;
+  static uint8_t anyLatchBdown = 0;
 
   if(column < SCAN_MATRIX_LEFT_COLUMNS) {
     Bit = SCAN_MATRIX_LEFT_COLUMNS - column - 1;
-    if(state)
-      PORTC |= 1 << Bit;
-    else
-      PORTC &= ~(1 << Bit);
+    PORTC = 0b11111111 & ~(1 << Bit);
   } else {
     uint8_t LatchAddress;
-    uint8_t LatchState;
 
     if(!ScanKeys_SetUp_MCP23017())
       return 0;
@@ -144,15 +141,25 @@ uint8_t ScanKeys_SetColumn(uint8_t column, uint8_t state)
       Bit = 15 - column;
     }
 
-    if(!MCP23017_ReadByte(LatchAddress, &LatchState))
+    if(!MCP23017_WriteByte(LatchAddress, 0b11111111 & ~(1 << Bit)))
       return 0;
 
-    if(state) {
-      if(!MCP23017_WriteByte(LatchAddress, LatchState | (1 << Bit)))
-        return 0;
-    } else {
-      if(!MCP23017_WriteByte(LatchAddress, LatchState & ~(1 << Bit)))
-        return 0;
+    if(LatchAddress == MCP23017_BANK1_OLATA) {
+      anyLatchAdown = 1;
+      if(anyLatchBdown) {
+        if(!MCP23017_WriteByte(MCP23017_BANK1_OLATB, 0b11111111))
+          return 0;
+        anyLatchBdown = 0;
+      }
+    }
+
+    if(LatchAddress == MCP23017_BANK1_OLATB) {
+      anyLatchBdown = 1;
+      if(anyLatchAdown) {
+        if(!MCP23017_WriteByte(MCP23017_BANK1_OLATA, 0b11111111))
+          return 0;
+        anyLatchAdown = 0;
+      }
     }
   }
   return 1;
@@ -181,7 +188,7 @@ void ScanKeys_Read(void (*scan_keys_callback)(struct Key, void *data), void *dat
   struct Key key;
 
   for(uint8_t column=0 ; column < SCAN_MATRIX_LEFT_COLUMNS + SCAN_MATRIX_RIGHT_COLUMNS ; column++) { // FIXME
-    if(!ScanKeys_SetColumn(column, 0))
+    if(!ScanKeys_SetColumnLow(column))
       continue;
     for(uint8_t row=0 ; row < SCAN_MATRIX_ROWS ; row++) {
       uint8_t row_status;
@@ -212,6 +219,5 @@ void ScanKeys_Read(void (*scan_keys_callback)(struct Key, void *data), void *dat
       previous_state[row][column] = key.state;
       (*scan_keys_callback)(key, data);
     }
-    ScanKeys_SetColumn(column, 1);
   }
 }
