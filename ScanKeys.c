@@ -21,7 +21,7 @@
 
 #define MCP23017_TIMEOUT_MS 1
 
-uint8_t ScanKeys_Right_Side_Disconnected = 1;
+uint8_t ScanKeys_Right_Side_Disconnected;
 
 void ScanKeys_Init_Left(void)
 {

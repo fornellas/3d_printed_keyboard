@@ -350,11 +350,6 @@ void Display_Status(void)
 
 void Display_Screensaver(void)
 {
-  // if(seconds < SPLASH_TIMEOUT){
-  //   Display_Draw_Logo();
-  //   return;
-  // }
-
   // New pattern
   if(Timer_Secs() - last_display_init > 3)
     Display_Screensaver_Init();
