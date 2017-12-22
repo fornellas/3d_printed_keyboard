@@ -33,26 +33,16 @@ uint32_t last_display_init;
 
 // Configuration
 #define SPLASH_TIMEOUT 2
-#define SCREENSAVER_TIMEOUT 600
+#define SCREENSAVER_TIMEOUT 180
 #define CONTRAST 96
 
 #define TOGGLE_WIDTH  24
 #define TOGGLE_HEIGHT  22
 #define TOGGLE_SPACING 2
 
-void Display_Draw_Logo(void)
-{
-  u8g_FirstPage(&u8g);
-  do {
-    u8g_DrawBitmapP(
-      &u8g,
-      ((u8g_GetWidth(&u8g) - (BITMAP_LOGO_WIDTH * 8)) / 2),
-      (u8g_GetHeight(&u8g) - BITMAP_LOGO_HEIGHT) / 2,
-      BITMAP_LOGO_WIDTH, BITMAP_LOGO_HEIGHT,
-      bitmap_logo
-    );
-  } while(u8g_NextPage(&u8g));
-}
+/*
+ * Initialization
+ */
 
 void Display_Screensaver_Init(void)
 {
@@ -75,8 +65,6 @@ void Display_Init(void)
   );
   u8g_SetContrast(&u8g, CONTRAST);
 
-  Display_Draw_Logo();
-
   Display_LEDReport = NO_LED_REPORT;
   Display_keypad_state = 0;
   Display_Fn_state = 0;
@@ -87,6 +75,10 @@ void Display_Init(void)
 
   Display_Screensaver_Init();
 }
+
+/*
+ * Helpers
+ */
 
 void Display_Write_Box_CenteredP(
   int8_t x_start, int8_t y_start,
@@ -157,6 +149,24 @@ void Display_Draw_Toggle(
   }
   Display_Write_Box_CenteredP(x, y, width, height, strP);
   u8g_SetColorIndex(&u8g, 1);
+}
+
+/*
+ * Display Modes
+ */
+
+void Display_Splash(void)
+{
+  u8g_FirstPage(&u8g);
+  do {
+    u8g_DrawBitmapP(
+      &u8g,
+      ((u8g_GetWidth(&u8g) - (BITMAP_LOGO_WIDTH * 8)) / 2),
+      (u8g_GetHeight(&u8g) - BITMAP_LOGO_HEIGHT) / 2,
+      BITMAP_LOGO_WIDTH, BITMAP_LOGO_HEIGHT,
+      bitmap_logo
+    );
+  } while(u8g_NextPage(&u8g));
 }
 
 /**< Internally implemented by the library. This state indicates
@@ -371,6 +381,10 @@ void Display_Screensaver(void)
   } while(u8g_NextPage(&u8g));
 }
 
+/*
+ * Update
+ */
+
 void Display_Update(void)
 {
   if(USB_DeviceState != last_USB_DeviceState) {
@@ -383,7 +397,8 @@ void Display_Update(void)
       if(Timer_Secs() > SPLASH_TIMEOUT){
         Display_Tick();
         mode = STATUS_MODE;
-      }
+      } else
+        Display_Splash();
       break;
     case STATUS_MODE:
       if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT) {
@@ -403,6 +418,10 @@ void Display_Update(void)
       break;
   }
 }
+
+/*
+ * External input
+ */
 
 void Display_Set_LEDReport(uint8_t ReportData)
 {

@@ -1,5 +1,3 @@
-- Display.c
-  - Fix tick keeping splash screen active
-- ScanKeys.c
-  - Right side scanning with MCP23017
+- Screensaver for remote wake up
+- Yield back control from Display_Update() so key scan can go faster.
 - Fix compile warnings
