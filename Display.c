@@ -33,7 +33,8 @@ uint32_t last_display_init;
 
 // Configuration
 #define SPLASH_TIMEOUT 2
-#define SCREENSAVER_TIMEOUT 120
+#define SCREENSAVER_TIMEOUT 600
+#define CONTRAST 96
 
 #define TOGGLE_WIDTH  24
 #define TOGGLE_HEIGHT  22
@@ -72,7 +73,7 @@ void Display_Init(void)
       PN(1, 4), // A0
       PN(0, 7) // RESET
   );
-  u8g_SetContrast(&u8g, 96);
+  u8g_SetContrast(&u8g, CONTRAST);
 
   Display_Draw_Logo();
 
@@ -392,13 +393,15 @@ void Display_Update(void)
         Display_Status();
       break;
     case SCREENSAVER_MODE:
-      if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT)
+      if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT) {
+        u8g_SetContrast(&u8g, 0);
         Display_Screensaver();
-      else
+      } else {
         mode = STATUS_MODE;
+        u8g_SetContrast(&u8g, CONTRAST);
+      }
       break;
   }
-
 }
 
 void Display_Set_LEDReport(uint8_t ReportData)
