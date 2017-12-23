@@ -483,7 +483,7 @@ enum keymap_macros {
   MACRO_COUNT,
 };
 
-extern const void (*keymap_macros[MACRO_COUNT])(struct Key);
+extern void (* const keymap_macros[MACRO_COUNT])(struct Key);
 
 enum keymap_seq {
   SEQ_SHUFFLE,

@@ -424,8 +424,7 @@ static void macro_desktop(struct Key key)
   }
 }
 
-// FIXME warning: initialization from incompatible pointer type
-const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
+void (* const keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,
   [MACRO_CUT] = &macro_cut,
