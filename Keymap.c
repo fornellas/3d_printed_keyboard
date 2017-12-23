@@ -151,7 +151,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
           ____,       ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
                       ____,                        ____,                         ____,                       ____,                                                                       ____
   ),
-  [DVORAK_QWERTY_LAYER] = KEYMAP( // FIXME
+  [DVORAK_QWERTY_LAYER] = KEYMAP(
     // Left
     ____,                      ____,                       ____,                        ____, ____,                         ____, ____,
     K(GRAVE_ACCENT_AND_TILDE), ____,                       ____,                        ____, ____,                         ____, ____,
@@ -464,22 +464,3 @@ const uint16_t (*keymap_seqs[])[SEQ_COUNT] = {
   [SEQ_00] = seq_00,
   [SEQ_B_TAB] = seq_b_tab,
 };
-
-// const uint16_t PROGMEM keymap_template[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = KEYMAP(
-//   // Left
-//   NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//   NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//   NONE, NONE, NONE, NONE, NONE, NONE,
-//   NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//         NONE, NONE, NONE, NONE, NONE,
-//   NONE, NONE, NONE, NONE,       NONE,
-//   NONE, NONE,       NONE,
-//   // Right
-//   NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//   NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//         NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//   NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
-//         NONE, NONE, NONE, NONE, NONE, NONE,       NONE,
-//         NONE,       NONE, NONE, NONE, NONE, NONE, NONE,
-//                     NONE, NONE, NONE, NONE,       NONE
-// );
