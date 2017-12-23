@@ -42,3 +42,14 @@ uint8_t LayerState_Get_Active_Layout()
   }
   return keymap_layout_layers[0];
 }
+
+
+void LayerState_SetLayout(uint8_t layout)
+{
+  for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
+    if(keymap_layout_layers[l] == layout)
+      LayerState_Set(layout, 1);
+    else
+      LayerState_Set(keymap_layout_layers[l], 0);
+  }
+}

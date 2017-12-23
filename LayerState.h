@@ -11,4 +11,6 @@ void LayerState_Set(uint8_t id, uint8_t value);
 
 uint8_t LayerState_Get_Active_Layout(void);
 
+void LayerState_SetLayout(uint8_t layout);
+
 #endif

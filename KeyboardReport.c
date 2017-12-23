@@ -113,14 +113,8 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
         break;
       case KEY_FN_LAYOUT:
         layout = GET_KEY_VALUE(key_value);
-        if(key.just_pressed) {
-          for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
-            if(keymap_layout_layers[l] == layout)
-              LayerState_Set(layout, 1);
-            else
-              LayerState_Set(keymap_layout_layers[l], 0);
-          }
-        }
+        if(key.just_pressed)
+          LayerState_SetLayout(layout);
         goto finish;
         break;
       case KEY_FN_SEQ:
