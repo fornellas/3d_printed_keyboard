@@ -506,13 +506,14 @@ enum keymap_layers {
   QWERTY_QWERTY_LAYER,
   QWERTY_DVORAK_LAYER,
   DVORAK_DVORAK_LAYER,
+  DVORAK_QWERTY_LAYER,
   COMMON_LAYER,
   LAYER_COUNT,
 };
 
 extern const uint8_t keymap_layout_layers[];
 
-#define LAYOUT_LAYERS_COUNT 3
+#define LAYOUT_LAYERS_COUNT 4
 
 extern const uint8_t layer_initial_state[LAYER_COUNT];
 

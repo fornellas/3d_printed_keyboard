@@ -39,6 +39,7 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [QWERTY_QWERTY_LAYER] = KEYMAP_START_LOAD,
   [QWERTY_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_DVORAK_LAYER] = KEYMAP_START_LOAD,
+  [DVORAK_QWERTY_LAYER] = KEYMAP_START_LOAD,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
@@ -46,17 +47,18 @@ const uint8_t keymap_layout_layers[LAYOUT_LAYERS_COUNT] = {
   QWERTY_QWERTY_LAYER,
   QWERTY_DVORAK_LAYER,
   DVORAK_DVORAK_LAYER,
+  DVORAK_QWERTY_LAYER,
 };
 
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
   [FN_LAYER] = KEYMAP(
     // Left
-    ____, LAYOUT(QWERTY_QWERTY_LAYER), LAYOUT(QWERTY_DVORAK_LAYER), LAYOUT(DVORAK_DVORAK_LAYER), ____, ____,    K(INSERT),
-    ____, ____,                        ____,                        ____,                        ____, ____,    K(VOLUME_UP),
-    ____, ____,                        ____,                        ____,                        ____, ____,
-    ____, ____,                        ____,                        ____,                        ____, ____,    K(VOLUME_DOWN),
-          ____,                        ____,                        ____,                        ____, ____,
-    ____, MACRO(MACRO_CUT),            MACRO(MACRO_COPY),           MACRO(MACRO_PASTE),                K(MUTE),
+    ____, LAYOUT(QWERTY_QWERTY_LAYER), LAYOUT(QWERTY_DVORAK_LAYER), LAYOUT(DVORAK_DVORAK_LAYER), LAYOUT(DVORAK_QWERTY_LAYER), ____,    K(INSERT),
+    ____, ____,                        ____,                        ____,                        ____,                        ____,    K(VOLUME_UP),
+    ____, ____,                        ____,                        ____,                        ____,                        ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,    K(VOLUME_DOWN),
+          ____,                        ____,                        ____,                        ____,                        ____,
+    ____, MACRO(MACRO_CUT),            MACRO(MACRO_COPY),           MACRO(MACRO_PASTE),                                       K(MUTE),
     ____, ____,                                                     ____,
     // Right
     K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          KGD(SYSTEM_WAKE_UP_OSC), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
@@ -139,6 +141,24 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
           ____,       ____,                        ____,                         ____,                       ____,                                 ____,                                 ____,
                       ____,                        ____,                         ____,                       ____,                                                                       ____
   ),
+  [DVORAK_QWERTY_LAYER] = KEYMAP( // FIXME
+    // Left
+    ____,                      ____,                       ____,                        ____, ____,                         ____, ____,
+    K(GRAVE_ACCENT_AND_TILDE), ____,                       ____,                        ____, ____,                         ____, ____,
+    ____,                      K(X),                       K(COMMA_AND_LESS_THAN_SIGN), K(D), K(O),                         K(K),
+    ____,                      K(A),                       K(SEMICOLON_AND_COLON),      K(H), K(Y),                         K(U), ____,
+                               K(SLASH_AND_QUESTION_MARK), K(B),                        K(I), K(DOT_AND_GREATER_THAN_SIGN), K(N),
+    ____,                      ____,                       ____,                        ____,                               ____,
+    ____,                      ____,                                                    ____,
+    // Right
+    ____, ____, ____, ____, ____,                                       ____,                       ____,                    ____,                                 ____,
+    ____, ____, ____, ____, ____,                                       ____,                       K(APOSTROPHE_AND_QUOTE), K(CLOSING_BRACKET_AND_CLOSING_BRACE), ____,
+          K(T), K(F), K(G), K(S),                                       K(R),                       K(MINUS_AND_UNDERSCORE), K(EQUAL_AND_PLUS),                    ____,
+    ____, K(J), K(C), K(V), K(P),                                       K(Z),                       K(Q),                    ____,                                 ____,
+          K(P), K(M), K(W), K(E), K(OPENING_BRACKET_AND_OPENING_BRACE), K(BACKSLASH_AND_PIPE),                               ____,
+          ____,       ____, ____,                                       ____,                       ____,                    ____,                                 ____,
+                      ____, ____,                                       ____,                       ____,                                                          ____
+  ),
   [COMMON_LAYER] = KEYMAP(
     // Left
     K(ESCAPE),                       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
@@ -179,6 +199,8 @@ u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
       return (u8g_pgm_uint8_t *)dvorakP;
     case DVORAK_DVORAK_LAYER:
       return (u8g_pgm_uint8_t *)dvorakP;
+    case DVORAK_QWERTY_LAYER:
+      return (u8g_pgm_uint8_t *)qwertyP;
     default:
       return (u8g_pgm_uint8_t *)unknownP;
   }
@@ -191,6 +213,8 @@ u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
       return (u8g_pgm_uint8_t *)qwertyP;
     case QWERTY_DVORAK_LAYER:
       return (u8g_pgm_uint8_t *)qwertyP;
+    case DVORAK_QWERTY_LAYER:
+      return (u8g_pgm_uint8_t *)dvorakP;
     case DVORAK_DVORAK_LAYER:
       return (u8g_pgm_uint8_t *)dvorakP;
     default:
@@ -254,6 +278,9 @@ void macro_cut(struct Key key)
       case DVORAK_DVORAK_LAYER:
         Sequence_Register((uint16_t *)seq_cut_dvorak);
         break;
+      case DVORAK_QWERTY_LAYER:
+        Sequence_Register((uint16_t *)seq_cut_dvorak);
+        break;
     }
   }
 }
@@ -289,6 +316,9 @@ void macro_copy(struct Key key)
       case DVORAK_DVORAK_LAYER:
         Sequence_Register((uint16_t *)seq_copy_dvorak);
         break;
+      case DVORAK_QWERTY_LAYER:
+        Sequence_Register((uint16_t *)seq_copy_dvorak);
+        break;
     }
   }
 }
@@ -322,6 +352,9 @@ void macro_paste(struct Key key)
         Sequence_Register((uint16_t *)seq_paste);
         break;
       case DVORAK_DVORAK_LAYER:
+        Sequence_Register((uint16_t *)seq_paste_dvorak);
+        break;
+      case DVORAK_QWERTY_LAYER:
         Sequence_Register((uint16_t *)seq_paste_dvorak);
         break;
     }
@@ -361,6 +394,9 @@ void macro_desktop(struct Key key)
         Sequence_Register((uint16_t *)seq_desktop);
         break;
       case DVORAK_DVORAK_LAYER:
+        Sequence_Register((uint16_t *)seq_desktop_dvorak);
+        break;
+      case DVORAK_QWERTY_LAYER:
         Sequence_Register((uint16_t *)seq_desktop_dvorak);
         break;
     }
