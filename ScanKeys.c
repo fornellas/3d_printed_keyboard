@@ -22,8 +22,9 @@
 #define MCP23017_TIMEOUT_MS 1
 
 uint8_t ScanKeys_Right_Side_Disconnected;
+static uint8_t previous_state[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {};
 
-void ScanKeys_Init_Left(void)
+static void ScanKeys_Init_Left(void)
 {
   DDRA &= ~0b01111111; // Rows as input...
   PORTA |= 0b01111111; // ...with pull up.
@@ -31,7 +32,7 @@ void ScanKeys_Init_Left(void)
   PORTC |= 0b01111111; // ...and high.
 }
 
-uint8_t MCP23017_WriteByte(uint8_t InternalAddress, uint8_t Data)
+static uint8_t MCP23017_WriteByte(uint8_t InternalAddress, uint8_t Data)
 {
   if (TWI_StartTransmission(MCP23017_ADDRESS | TWI_ADDRESS_WRITE, MCP23017_TIMEOUT_MS) == TWI_ERROR_NoError) {
       TWI_SendByte(InternalAddress);
@@ -43,7 +44,7 @@ uint8_t MCP23017_WriteByte(uint8_t InternalAddress, uint8_t Data)
   return 0;
 }
 
-uint8_t MCP23017_ReadByte(uint8_t InternalAddress, uint8_t *Data)
+static uint8_t MCP23017_ReadByte(uint8_t InternalAddress, uint8_t *Data)
 {
   if (TWI_StartTransmission(MCP23017_ADDRESS | TWI_ADDRESS_WRITE, MCP23017_TIMEOUT_MS) == TWI_ERROR_NoError) {
       TWI_SendByte(InternalAddress);
@@ -58,7 +59,7 @@ uint8_t MCP23017_ReadByte(uint8_t InternalAddress, uint8_t *Data)
   return 0;
 }
 
-uint8_t ScanKeys_SetUp_MCP23017(void)
+static uint8_t ScanKeys_SetUp_MCP23017(void)
 {
   if(!ScanKeys_Right_Side_Disconnected)
     return 1;
@@ -103,14 +104,12 @@ uint8_t ScanKeys_SetUp_MCP23017(void)
   return 1;
 }
 
-void ScanKeys_Init_Right(void)
+static void ScanKeys_Init_Right(void)
 {
   TWI_Init(TWI_BIT_PRESCALE_1, TWI_BITLENGTH_FROM_FREQ(1, 400000));
   ScanKeys_Right_Side_Disconnected = 1;
   ScanKeys_SetUp_MCP23017();
 }
-
-uint8_t previous_state[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {};
 
 void ScanKeys_Init(void)
 {
