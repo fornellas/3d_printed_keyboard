@@ -65,6 +65,26 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface =
       },
   };
 
+void Device_RemoteWakeup_ScanKeys_Callback(struct Key key, void *data)
+{
+  uint8_t *send_remote_wakeup = (uint8_t *)data;
+
+  if(key.state)
+    *send_remote_wakeup = 1;
+}
+
+
+void Device_RemoteWakeup(void)
+{
+  uint8_t send_remote_wakeup = 0;
+
+  if(DEVICE_STATE_Suspended == USB_DeviceState)
+    if(USB_Device_RemoteWakeupEnabled) {
+      ScanKeys_Read(&Device_RemoteWakeup_ScanKeys_Callback, (void *)&send_remote_wakeup);
+      if(send_remote_wakeup)
+        USB_Device_SendRemoteWakeup();
+    }
+}
 
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
@@ -203,24 +223,4 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
                                           const uint16_t ReportSize)
 {
   Display_Set_LEDReport(*(uint8_t*)ReportData);
-}
-
-void Device_RemoteWakeup_ScanKeys_Callback(struct Key key, void *data)
-{
-  uint8_t *send_remote_wakeup = (uint8_t *)data;
-
-  if(key.state)
-    *send_remote_wakeup = 1;
-}
-
-void Device_RemoteWakeup(void)
-{
-  uint8_t send_remote_wakeup = 0;
-
-  if(DEVICE_STATE_Suspended==USB_DeviceState)
-    if(USB_Device_RemoteWakeupEnabled) {
-      ScanKeys_Read(&KeyboardReport_ScanKeys_Callback, (void *)&send_remote_wakeup);
-      if(send_remote_wakeup)
-        USB_Device_SendRemoteWakeup();
-    }
 }
