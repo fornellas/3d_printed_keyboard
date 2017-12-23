@@ -50,7 +50,7 @@ const uint8_t keymap_layout_layers[LAYOUT_LAYERS_COUNT] = {
   DVORAK_QWERTY_LAYER,
 };
 
-const uint8_t keymap_fn_alt_keymap[LAYER_COUNT] = {
+static const uint8_t keymap_fn_alt_keymap[LAYER_COUNT] = {
   [FN_LAYER] = 0,
   [KEYPAD_LAYER] = 0,
   [QWERTY_QWERTY_LAYER] = QWERTY_QWERTY_LAYER,
@@ -189,16 +189,16 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
   ),
 };
 
-uint8_t keypad_state;
+static uint8_t keypad_state;
 
 void Keymap_Init(void)
 {
   keypad_state = 0;
 }
 
-const uint8_t qwertyP[] U8G_PROGMEM = "QWERTY";
-const uint8_t dvorakP[] U8G_PROGMEM = "Dvorak";
-const uint8_t unknownP[] U8G_PROGMEM = "Unknown";
+static const uint8_t qwertyP[] U8G_PROGMEM = "QWERTY";
+static const uint8_t dvorakP[] U8G_PROGMEM = "Dvorak";
+static const uint8_t unknownP[] U8G_PROGMEM = "Unknown";
 
 u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
 {
@@ -232,7 +232,7 @@ u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
   }
 }
 
-void macro_fn(struct Key key)
+static void macro_fn(struct Key key)
 {
   static uint8_t previous_layout;
   static uint8_t previous_layout_changes;
@@ -259,7 +259,7 @@ void macro_fn(struct Key key)
   }
 }
 
-void macro_keypad(struct Key key)
+static void macro_keypad(struct Key key)
 {
   if(key.just_pressed) {
     keypad_state = !keypad_state;
@@ -268,7 +268,7 @@ void macro_keypad(struct Key key)
   }
 }
 
-const uint16_t seq_cut[] = {
+static const uint16_t seq_cut[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -277,7 +277,7 @@ const uint16_t seq_cut[] = {
   0,
 };
 
-const uint16_t seq_cut_dvorak[] = {
+static const uint16_t seq_cut_dvorak[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -286,7 +286,7 @@ const uint16_t seq_cut_dvorak[] = {
   0,
 };
 
-void macro_cut(struct Key key)
+static void macro_cut(struct Key key)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -306,7 +306,7 @@ void macro_cut(struct Key key)
   }
 }
 
-const uint16_t seq_copy[] = {
+static const uint16_t seq_copy[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -315,7 +315,7 @@ const uint16_t seq_copy[] = {
   0,
 };
 
-const uint16_t seq_copy_dvorak[] = {
+static const uint16_t seq_copy_dvorak[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -324,7 +324,7 @@ const uint16_t seq_copy_dvorak[] = {
   0,
 };
 
-void macro_copy(struct Key key)
+static void macro_copy(struct Key key)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -344,7 +344,7 @@ void macro_copy(struct Key key)
   }
 }
 
-const uint16_t seq_paste[] = {
+static const uint16_t seq_paste[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -353,7 +353,7 @@ const uint16_t seq_paste[] = {
   0,
 };
 
-const uint16_t seq_paste_dvorak[] = {
+static const uint16_t seq_paste_dvorak[] = {
   1,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   2,
@@ -362,7 +362,7 @@ const uint16_t seq_paste_dvorak[] = {
   0,
 };
 
-void macro_paste(struct Key key)
+static void macro_paste(struct Key key)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -382,7 +382,7 @@ void macro_paste(struct Key key)
   }
 }
 
-const uint16_t seq_desktop[] = {
+static const uint16_t seq_desktop[] = {
   2,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   HID_KEYBOARD_SC_LEFT_ALT,
@@ -393,7 +393,7 @@ const uint16_t seq_desktop[] = {
   0,
 };
 
-const uint16_t seq_desktop_dvorak[] = {
+static const uint16_t seq_desktop_dvorak[] = {
   2,
   HID_KEYBOARD_SC_LEFT_CONTROL,
   HID_KEYBOARD_SC_LEFT_ALT,
@@ -404,7 +404,7 @@ const uint16_t seq_desktop_dvorak[] = {
   0,
 };
 
-void macro_desktop(struct Key key)
+static void macro_desktop(struct Key key)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -434,7 +434,7 @@ const void (*keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_DESKTOP] = &macro_desktop,
 };
 
-uint16_t seq_shuffle[] = {
+static uint16_t seq_shuffle[] = {
   1,
   HID_KEYBOARD_SC_LEFT_ALT,
   2,
@@ -443,14 +443,14 @@ uint16_t seq_shuffle[] = {
   0,
 };
 
-uint16_t seq_00[] = {
+static uint16_t seq_00[] = {
   2,
   HID_KEYBOARD_SC_0_AND_CLOSING_PARENTHESIS,
   HID_KEYBOARD_SC_0_AND_CLOSING_PARENTHESIS,
   0,
 };
 
-uint16_t seq_b_tab[] = {
+static uint16_t seq_b_tab[] = {
   1,
   HID_KEYBOARD_SC_LEFT_SHIFT,
   2,
