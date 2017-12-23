@@ -41,6 +41,9 @@
 #include "LayerState.h"
 #include "Sequence.h"
 #include "Timer.h"
+#ifdef SERIAL_DEBUG
+#include <avr/io.h>
+#endif
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_ExtendedKeyboardReport_Data_t)];
@@ -65,6 +68,33 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface =
       },
   };
 
+#ifdef SERIAL_DEBUG
+/** LUFA CDC Class driver interface configuration and state information. This structure is
+ *  passed to all CDC Class driver functions, so that multiple instances of the same class
+ *  within a device can be differentiated from one another.
+ */
+USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface = {
+   .Config = {
+       .ControlInterfaceNumber   = INTERFACE_ID_CDC_CCI,
+       .DataINEndpoint           = {
+           .Address          = CDC_TX_EPADDR,
+           .Size             = CDC_TXRX_EPSIZE,
+           .Banks            = 1,
+         },
+       .DataOUTEndpoint = {
+           .Address          = CDC_RX_EPADDR,
+           .Size             = CDC_TXRX_EPSIZE,
+           .Banks            = 1,
+         },
+       .NotificationEndpoint = {
+           .Address          = CDC_NOTIFICATION_EPADDR,
+           .Size             = CDC_NOTIFICATION_EPSIZE,
+           .Banks            = 1,
+         },
+     },
+  };
+#endif
+
 void Device_RemoteWakeup_ScanKeys_Callback(struct Key key, void *data)
 {
   uint8_t *send_remote_wakeup = (uint8_t *)data;
@@ -86,6 +116,13 @@ void Device_RemoteWakeup(void)
     }
 }
 
+#ifdef SERIAL_DEBUG
+/** Standard file stream for the CDC interface when set up, so that the virtual CDC COM port can be
+ *  used like any regular character stream in the C APIs.
+ */
+FILE USBSerialStream;
+#endif
+
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
  */
@@ -93,10 +130,21 @@ int main(void)
 {
   SetupHardware();
 
+#ifdef SERIAL_DEBUG
+  /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
+  CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
+  stdout = &USBSerialStream;
+#endif
+
   GlobalInterruptEnable();
 
   for (;;)
   {
+#ifdef SERIAL_DEBUG
+    /* Must throw away unused bytes from the host, or it will lock up while waiting for the device */
+    while(CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface) >= 0);
+    CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
+#endif
     HID_Device_USBTask(&Keyboard_HID_Interface);
     USB_USBTask();
     Display_Update();
@@ -166,12 +214,19 @@ void EVENT_USB_Device_ConfigurationChanged(void)
   // } else {
   //
   // }
+
+#ifdef SERIAL_DEBUG
+  CDC_Device_ConfigureEndpoints(&VirtualSerial_CDC_Interface);
+#endif
 }
 
 /** Event handler for the library USB Control Request reception event. */
 void EVENT_USB_Device_ControlRequest(void)
 {
   HID_Device_ProcessControlRequest(&Keyboard_HID_Interface);
+#ifdef SERIAL_DEBUG
+  CDC_Device_ProcessControlRequest(&VirtualSerial_CDC_Interface);
+#endif
 }
 
 /** Event handler for the USB device Start Of Frame event. */

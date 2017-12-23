@@ -53,7 +53,7 @@ The source for all 3D models used in this project can be fount at [OnShape](http
 git clone https://github.com/fornellas/3d_printed_keyboard.git
 cd 3d_printed_keyboard/
 git submodule update --init --recursive
-make
+make # or SERIAL_DEBUG=1 make
 ```
 
 ## Loading Firmware

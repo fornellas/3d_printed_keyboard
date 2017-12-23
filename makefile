@@ -27,11 +27,16 @@ SRC          = \
 	$(LUFA_SRC_TWI)
 TEENSY_LOADER_PATH = teensy_loader_cli
 TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
-CC_FLAGS     = \
+BASE_CC_FLAGS     =  \
 	-DUSE_LUFA_CONFIG_HEADER \
 	-IConfig/ \
 	-I$(U8GLIB_CSRC_PATH) \
 	-I$(U8GLIB_SFNTSRC_PATH)
+ifdef SERIAL_DEBUG
+CC_FLAGS := -DSERIAL_DEBUG $(BASE_CC_FLAGS)
+else
+CC_FLAGS := $(BASE_CC_FLAGS)
+endif
 LD_FLAGS     =
 
 # Default target

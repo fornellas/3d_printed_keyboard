@@ -83,4 +83,8 @@
                                               const void* ReportData,
                                               const uint16_t ReportSize);
 
+#ifdef SERIAL_DEBUG
+    extern FILE USBSerialStream;
+#endif
+
 #endif
