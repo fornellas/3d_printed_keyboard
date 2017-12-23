@@ -4,6 +4,7 @@
 #include <avr/eeprom.h>
 
 uint8_t layer_state[LAYER_COUNT];
+uint8_t layout_changes=0;
 
 void LayerState_Init(void)
 {
@@ -46,6 +47,8 @@ uint8_t LayerState_Get_Active_Layout()
 
 void LayerState_SetLayout(uint8_t layout)
 {
+  layout_changes += 1;
+
   for(uint8_t l=0; l < LAYOUT_LAYERS_COUNT ; l++) {
     if(keymap_layout_layers[l] == layout)
       LayerState_Set(layout, 1);

@@ -3,6 +3,8 @@
 
 #include <inttypes.h>
 
+extern uint8_t layout_changes;
+
 void LayerState_Init(void);
 
 uint8_t LayerState_Get(uint8_t id);

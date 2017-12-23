@@ -33,6 +33,8 @@ A fully 3D printed computer keyboard.
   - Computer QWERTY, keyboard QWERTY.
   - Computer QWERTY, keyboard Dvoark.
   - Computer Dvoark, keyboard Dvoark.
+  - Computer Dvoark, keyboard QWERTY.
+  - For keyboard Dvorak layouts, Fn will temporarily switch back to QWERTY (easy access to usual keyboard shortcuts).
   - Hardware keypad.
 - Key functions:
   - Regular key press.

@@ -1,3 +1,5 @@
-- Screensaver for remote wake up
 - Yield back control from Display_Update() so key scan can go faster.
+- Screensaver for remote wake up
+- Mark privates with static.
+- Runtime contrast adjustment.
 - Fix compile warnings

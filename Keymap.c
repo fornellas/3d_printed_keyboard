@@ -50,6 +50,16 @@ const uint8_t keymap_layout_layers[LAYOUT_LAYERS_COUNT] = {
   DVORAK_QWERTY_LAYER,
 };
 
+const uint8_t keymap_fn_alt_keymap[LAYER_COUNT] = {
+  [FN_LAYER] = 0,
+  [KEYPAD_LAYER] = 0,
+  [QWERTY_QWERTY_LAYER] = QWERTY_QWERTY_LAYER,
+  [QWERTY_DVORAK_LAYER] = QWERTY_QWERTY_LAYER,
+  [DVORAK_DVORAK_LAYER] = DVORAK_QWERTY_LAYER,
+  [DVORAK_QWERTY_LAYER] = DVORAK_QWERTY_LAYER,
+  [COMMON_LAYER] = 0,
+};
+
 const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {
   [FN_LAYER] = KEYMAP(
     // Left
@@ -224,17 +234,28 @@ u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
 
 void macro_fn(struct Key key)
 {
+  static uint8_t previous_layout;
+  static uint8_t previous_layout_changes;
+
+
   if(key.just_pressed) {
     LayerState_Set(FN_LAYER, 1);
     Display_Set_Fn(1);
     LayerState_Set(KEYPAD_LAYER, 1);
     Display_Set_Keypad(1);
+
+    previous_layout = LayerState_Get_Active_Layout();
+    LayerState_SetLayout(keymap_fn_alt_keymap[previous_layout]);
+    previous_layout_changes = layout_changes;
   }
   if(key.just_released) {
     LayerState_Set(FN_LAYER, 0);
     Display_Set_Fn(0);
     LayerState_Set(KEYPAD_LAYER, keypad_state);
     Display_Set_Keypad(keypad_state);
+
+    if(layout_changes == previous_layout_changes)
+      LayerState_SetLayout(previous_layout);
   }
 }
 
