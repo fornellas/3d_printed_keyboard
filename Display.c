@@ -48,7 +48,7 @@ void Display_Screensaver_Init(void)
 {
   px = (float)rand() / RAND_MAX * u8g_GetWidth(&u8g);
   py = (float)rand() / RAND_MAX * u8g_GetHeight(&u8g);
-  step = (float)rand() / RAND_MAX * 12 + 4;
+  step = (float)rand() / RAND_MAX * 22 + 12;
   start = (float)rand() / RAND_MAX * step;
   last_display_init = Timer_Secs();
 }
