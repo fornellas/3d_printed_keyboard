@@ -1,3 +1,4 @@
+- Fix first key press (eg: 1) does not work, but sequences (eg: Alt+Tab) does.
 - Yield back control from Display_Update() so key scan can go faster.
 - Screensaver for remote wake up
 - Mark privates with static.
