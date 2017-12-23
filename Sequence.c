@@ -10,7 +10,7 @@ void Sequence_Init()
   sequence = NULL;
 }
 
-size_t Sequence_Len(uint16_t *seq)
+static size_t Sequence_Len(uint16_t *seq)
 {
   size_t len = 1;
 
