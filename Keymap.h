@@ -492,7 +492,7 @@ enum keymap_seq {
   SEQ_COUNT,
 };
 
-extern const uint16_t (*keymap_seqs[])[SEQ_COUNT];
+extern const uint16_t *keymap_seqs[SEQ_COUNT];
 
 enum layer_start_status {
   KEYMAP_START_ENABLED,

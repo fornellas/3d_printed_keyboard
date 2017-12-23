@@ -458,7 +458,7 @@ static uint16_t seq_b_tab[] = {
   0,
 };
 
-const uint16_t (*keymap_seqs[])[SEQ_COUNT] = {
+const uint16_t *keymap_seqs[SEQ_COUNT] = {
   [SEQ_SHUFFLE] = seq_shuffle,
   [SEQ_00] = seq_00,
   [SEQ_B_TAB] = seq_b_tab,
