@@ -259,6 +259,21 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
   Sequence_Play(KeyboardReport);
 
+#ifdef SERIAL_DEBUG
+  if(KeyboardReport->Modifier)
+    printf_P(PSTR("Report Modifier: %d\r\n"), KeyboardReport->Modifier);
+  if(KeyboardReport->Reserved)
+    printf_P(PSTR("Report Reserved: %d\r\n"), KeyboardReport->Reserved);
+  for(uint8_t k=0 ; k < MAX_KEYS ; k++){
+    if(KeyboardReport->KeyboardKeyPad[k])
+      printf_P(PSTR("Report KeyboardKeyPad[%d]: %d\r\n"), k, KeyboardReport->KeyboardKeyPad[k]);
+    if(KeyboardReport->GenericDesktop[k])
+      printf_P(PSTR("Report GenericDesktop[%d]: %d\r\n"), k, KeyboardReport->GenericDesktop[k]);
+    if(KeyboardReport->Consumer[k])
+      printf_P(PSTR("Report Consumer[%d]: %d\r\n"), k, KeyboardReport->Consumer[k]);
+  }
+#endif
+
   *ReportSize = sizeof(USB_ExtendedKeyboardReport_Data_t);
   return false;
 }

@@ -83,22 +83,31 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
     if(!LayerState_Get(i))
       continue;
 
+#ifdef SERIAL_DEBUG
+    if(key.state||key.just_pressed||key.just_released){
+      printf_P(PSTR("Key: %dx%d\n\r"), key.row, key.column);
+      printf_P(PSTR("  state: %d\n\r"), key.state);
+      printf_P(PSTR("  just_pressed: %d\n\r"), key.just_pressed);
+      printf_P(PSTR("  just_released: %d\n\r"), key.just_released);
+    }
+#endif
+
     key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
 
     switch(GET_KEY_FN(key_value)){
       case KEY_FN_KEYBOARD_PAGE:
         if(key.state)
-           KeyboardReport_Add_KeyboardKeypad(KeyboardReport, GET_KEY_VALUE(key_value));
+          KeyboardReport_Add_KeyboardKeypad(KeyboardReport, GET_KEY_VALUE(key_value));
         goto finish;
         break;
       case KEY_FN_GENERIC_DESKTOP_PAGE:
         if(key.state)
-           KeyboardReport_Add_GenericDesktop(KeyboardReport, GET_KEY_VALUE(key_value));
+          KeyboardReport_Add_GenericDesktop(KeyboardReport, GET_KEY_VALUE(key_value));
         goto finish;
         break;
       case KEY_FN_CONSUMER_PAGE_PAGE:
         if(key.state)
-           KeyboardReport_Add_Consumer(KeyboardReport, GET_KEY_VALUE(key_value));
+          KeyboardReport_Add_Consumer(KeyboardReport, GET_KEY_VALUE(key_value));
         goto finish;
         break;
       case KEY_FN_NONE:
@@ -107,7 +116,6 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
       case KEY_FN_PASS:
         break;
       case KEY_FN_MACRO:
-        // FIXME warning: function with qualified void return type called
         keymap_macros[GET_KEY_VALUE(key_value)](key);
         goto finish;
         break;
