@@ -146,7 +146,6 @@ int main(void)
     CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
 #endif
     HID_Device_USBTask(&Keyboard_HID_Interface);
-    USB_USBTask();
     Display_Update();
     Device_RemoteWakeup();
   }
