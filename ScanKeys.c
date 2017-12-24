@@ -22,6 +22,7 @@
 #define MCP23017_TIMEOUT_MS 1
 
 uint8_t ScanKeys_Right_Side_Disconnected;
+
 static uint8_t previous_state[SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS] = {};
 
 static void ScanKeys_Init_Left(void)
@@ -117,6 +118,7 @@ void ScanKeys_Init(void)
   ScanKeys_Init_Right();
 }
 
+// FIXME should be static inline, but ScanKeys_Read() shifts columns for left side, likely due to some hard to find buffer overflow
 uint8_t ScanKeys_SetColumnLow(uint8_t column)
 {
   uint8_t Bit;
@@ -164,7 +166,7 @@ uint8_t ScanKeys_SetColumnLow(uint8_t column)
   return 1;
 }
 
-uint8_t ScanKeys_ReadRows(uint8_t column, uint8_t *state)
+static inline uint8_t ScanKeys_ReadRows(uint8_t column, uint8_t *state)
 {
   if(column < SCAN_MATRIX_LEFT_COLUMNS) {
     *state = PINA & 0b01111111;
