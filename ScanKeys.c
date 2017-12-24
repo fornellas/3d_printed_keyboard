@@ -125,7 +125,7 @@ uint8_t ScanKeys_SetColumnLow(uint8_t column)
 
   if(column < SCAN_MATRIX_LEFT_COLUMNS) {
     Bit = SCAN_MATRIX_LEFT_COLUMNS - column - 1;
-    PORTC = 0b11111111 & ~(1 << Bit);
+    PORTC = (PORTC | 0b01111111) & ~(1 << Bit);
   } else {
     uint8_t LatchAddress;
 
@@ -167,7 +167,7 @@ uint8_t ScanKeys_SetColumnLow(uint8_t column)
 uint8_t ScanKeys_ReadRows(uint8_t column, uint8_t *state)
 {
   if(column < SCAN_MATRIX_LEFT_COLUMNS) {
-    *state = PINA;
+    *state = PINA & 0b01111111;
   } else {
     if(!ScanKeys_SetUp_MCP23017())
       return 0;
