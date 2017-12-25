@@ -1,5 +1,7 @@
 ![Top View](/{{ site.github.repository_name }}/pictures/Top.jpeg)
 
+This is a fully 3D printed keyboard designed completely from the ground up.
+
 # History
 
 After working for almost a decade typing behind a keyboard, around 2011 I started feeling wrist pain. Having a whole carreer ahead of me, I decided I had to do something to avoid [RSI](https://en.wikipedia.org/wiki/Repetitive_strain_injury). By that time, I bought myself 2 (TypeMatrix)[http://typematrix.com/] keyboards and started the switch to [Dvorak](https://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard) layout. Six months in with this new setup, I was typing Dvorak 20% faster than when I used QWERTY.
