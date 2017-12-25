@@ -13,7 +13,7 @@
 // Configuraiton
 #define SPLASH_TIMEOUT 2
 #define SCREENSAVER_TIMEOUT 180
-#define CONTRAST 96
+#define CONTRAST 50
 
 #define TOGGLE_WIDTH  24
 #define TOGGLE_HEIGHT  22
