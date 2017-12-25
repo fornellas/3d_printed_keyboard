@@ -28,7 +28,7 @@ This is all great, but obviously there were caveats:
 
 ## Hacking TypeMatrix keyboard
 
-In 2012, I had a sky accident, that got me stuck to a wheel chair for a month and at home for 6 months. Having plenty of time available, I decided fix the firmware issues.
+In 2012, I had a ski accident, that got me stuck to a wheel chair for a month and at home for 6 months. Having plenty of time available, I decided fix the firmware issues.
 At that time, [Arduino Leonardo](https://www.arduino.cc/en/Main/arduinoBoardLeonardo) was introduced, supporting [emulating a keyboard](https://www.arduino.cc/reference/en/language/functions/usb/keyboard/), so it was a perfect fit for doing this. I quickly assembled a prototype:
 
 ![TypeMatrix prototype](/{{ site.github.repository_name }}/pictures/TypeMatrix/Prototype.jpg)
