@@ -1,6 +1,4 @@
-A fully 3D printed computer keyboard.
-
-![Top View](/{{ site.github.repository_name }}/rendered/Top.png)
+![Top View](/{{ site.github.repository_name }}/pictures/Top.jpeg)
 
 ## Hardware
 
