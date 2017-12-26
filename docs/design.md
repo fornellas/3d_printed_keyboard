@@ -10,7 +10,8 @@ You can browse the design [here](https://cad.onshape.com/documents/70ad0c4316c1f
 - The Cherry MX frame is filled with reinforcements to keep it rigid.
 - The Teensy and the OLED screen are very tightly packed, it was challenging to design, but it really paid off.
 - Long keys need [stabilization](https://deskthority.net/wiki/Stabiliser). It took about a dozen prototypes to tune dimensions for the 3D printing process, but it worked very well in the end:
-[![Cherry MX Stabilizer Prototype](http://img.youtube.com/vi/6WdsF6FLru8/0.jpg)](http://www.youtube.com/watch?v=6WdsF6FLru8)
+
+{% include youtubePlayer.html id="6WdsF6FLru8" %}
 
 Never underestimate the amount of design work! The amount of detail to things seemingly simple will surprise you often! 
 
