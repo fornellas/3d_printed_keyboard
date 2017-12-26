@@ -18,8 +18,8 @@ This is a fully 3D printed keyboard completely custom designed from the ground u
 - Electronics
   - [Cherry MX switches](http://cherryamericas.com/product/mx-series-2/).
     - No key [ghosting](http://blog.komar.be/how-to-make-a-keyboard-the-matrix/): one diode per key.
-  - 1.3" OLED screen for full featured status report.
-    - Num Lock, Caps Lock and Scroll Lock.
+  - 1.3" OLED screen for full-featured status report.
+    - Num Lock, Caps Lock, and Scroll Lock.
     - Hardware Keypad.
     - Hardware Fn key.
     - Computer and Keyboard layout configuration (QWERTY, Dvorak).
@@ -34,9 +34,9 @@ This is a fully 3D printed keyboard completely custom designed from the ground u
   - USB Remote wake up support.
   - Independent keyboard and computer layout mapped by hardware:
     - Computer QWERTY, keyboard QWERTY.
-    - Computer QWERTY, keyboard Dvoark.
-    - Computer Dvoark, keyboard Dvoark.
-    - Computer Dvoark, keyboard QWERTY.
+    - Computer QWERTY, keyboard Dvorak.
+    - Computer Dvorak, keyboard Dvorak.
+    - Computer Dvorak, keyboard QWERTY.
     - For Dvorak keyboard layouts, Fn will temporarily switch back to QWERTY (easy access to usual keyboard shortcuts).
     - Hardware keypad.
   - Easy [mapping](https://github.com/fornellas/3d_printed_keyboard/blob/master/Keymap.c#L63) of key functions:

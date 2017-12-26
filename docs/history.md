@@ -1,30 +1,30 @@
 # History
 
-After working for almost a decade typing behind a keyboard, around 2011 I started feeling wrist pain. Having a whole carreer ahead of me, I decided I had to do something to avoid [RSI](https://en.wikipedia.org/wiki/Repetitive_strain_injury). By that time, I bought myself 2 [TypeMatrix](http://typematrix.com/) keyboards and started the switch to [Dvorak](https://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard) layout. Six months in with this new setup, I was typing Dvorak 20% faster than QWERTY.
+After working for almost a decade typing behind a keyboard, around 2011 I started feeling wrist pain. Having a whole career ahead of me, I decided I had to do something to avoid [RSI](https://en.wikipedia.org/wiki/Repetitive_strain_injury). By that time, I bought myself 2 [TypeMatrix](http://typematrix.com/) keyboards and started the switch to [Dvorak](https://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard) layout. Six months in with this new setup, I was typing Dvorak 20% faster than QWERTY.
 
 During those months, I absolutely fell in love with TypeMatrix layout:
 
 - Vertically aligned keys are a breeze to use: no more looking down to reach ANY key.
-- Compact design allows to properly center the keyboard on the desk, while keeping the mouse at a comfortable distance.
-- The hardware keypad means not loosing the keypad.
-- Home / End and Page Up/Down close to the arows keys are very productive.
+- Compact design allows to properly center the keyboard on the desk while keeping the mouse at a comfortable distance.
+- The hardware keypad means not losing the keypad.
+- Home / End and Page Up/Down close to the arrow keys are very productive.
 - Putting Delete, Backspace and Enter at the center means those frequent keys are pressed by the index finger from any hand, decreasing hand movement and load on the pinky finger.
 - Vertically spread Shift keys are very convenient.
 - Hardware implementation of Alt+Tab with a single key press is amazing.
 - Hardware implementation of Ctrl+X/C/V means usual shortcuts are still at left hand with Dvorak.
 
-This is all great, but obviously there were caveats:
+This is all great, but obviously, there were caveats:
 
 - The hardware Dvorak translation works great, but you have to manually enable it at __every__ boot.
 - Although [its spec](http://typematrix.com/2030/tech-specs.php) states its actuation force is 55 g ± 10 g, my keyboards, after a few years of use, only actuate with ~74g on top of the keys. As a comparison, this is close to the heaviest Cherry MX out there (80cN).
-- TypeMatrix provide [silicone skins](http://typematrix.com/skins.php), which sound great, but in significantly increase the actuation force needed, making the previous issue worse.
-- It is a [membrane](https://en.wikipedia.org/wiki/Membrane_keyboard) keyboard. Although rated for [10 million strokes](http://typematrix.com/2030/tech-specs.php), I found my both keyboards failing some keys after mere thousands of key presses. I had to replace both once, and disassembly, clean, close every now and them to fix failing keys.
+- TypeMatrix provides [silicone skins](http://typematrix.com/skins.php), which sound great, but in significantly increase the actuation force needed, making the previous issue worse.
+- It is a [membrane](https://en.wikipedia.org/wiki/Membrane_keyboard) keyboard. Although rated for [10 million strokes](http://typematrix.com/2030/tech-specs.php), I found my both keyboards failing some keys after mere thousands of key presses. I had to replace both once, and disassembly, clean, close every now and then to fix failing keys.
 - The few LED status can be quite cryptic... certainly not showing everything that is there.
 - No way to reprogram the layout. Living in Brazil, I'd like to add hardware Dvorak to an [ABNT2](https://en.wikipedia.org/wiki/Portuguese_keyboard_layout) layout.
 
 ## Hacking TypeMatrix keyboard
 
-In 2012, I had a ski accident, that got me stuck to a wheel chair for a month and at home for 6 months. Having plenty of time available, I decided fix the firmware issues. At that time, [Arduino Leonardo](https://www.arduino.cc/en/Main/arduinoBoardLeonardo) was introduced, supporting [emulating a keyboard](https://www.arduino.cc/reference/en/language/functions/usb/keyboard/), so it was a perfect fit for doing this. I quickly assembled a prototype:
+In 2012, I had a ski accident, that got me stuck in a wheelchair for a month and at home for 6 months. Having plenty of time available, I decided to fix the firmware issues. At that time, [Arduino Leonardo](https://www.arduino.cc/en/Main/arduinoBoardLeonardo) was introduced, supporting [emulating a keyboard](https://www.arduino.cc/reference/en/language/functions/usb/keyboard/), so it was a perfect fit for doing this. I quickly assembled a prototype:
 
 ![TypeMatrix prototype](/{{ site.github.repository_name }}/pictures/TypeMatrix/Prototype.jpg)
 
@@ -53,15 +53,15 @@ Not being able to affordably buy a compatible FPC connector, I cannibalized Type
 
 ## Going further
 
-I kept using this hacked TypeMatrix for years, but I was always envy of things like [Ergodox](https://www.ergodox.io/) (or its [commercial version](https://www.ergodox.io/)) and [Truly Ergonomic](https://www.trulyergonomic.com/). All those guys keep the vertically aligned keys, but brings the angled split layout and curved keys at your fingers. Those things attracted me very much, but I was not willing to give up the TypeMatrix layout, that I grew so fond of it over the years.
+I kept using this hacked TypeMatrix for years, but I was envy of things like [Ergodox](https://www.ergodox.io/) (or its [commercial version](https://www.ergodox.io/)) and [Truly Ergonomic](https://www.trulyergonomic.com/). All those guys keep the vertically aligned keys but bring the angled split layout and curved keys at your fingers. Those things attracted me very much, but I was not willing to give up the TypeMatrix layout, that I grew so fond of it over the years.
 
-In 2016, myself and a friend (thanks Ronaldo!) sketched this design over beers:
+In 2016, myself and a friend (thanks, Ronaldo!) sketched this design over beers:
 
 ![Draft](/{{ site.github.repository_name }}/pictures/Draft/Draft.jpg)
 
-It pretty much keeps TypeMatrix spirit, but gives the two features I was missing.
+It pretty much keeps TypeMatrix spirit but gives the two features I was missing.
 
-It was pretty close, but printing a thing this wide would be a challenge. It is too big for a single print, meaning I'd have to print 3 separate parts, and attach them together somehow. Its mechanical strength would be questionable. Also, I reached the conclusion that fixing the angle between the parts would be a bad idea, since it would not be adjustable. On top of that, I sketched this on... [SketchUp](https://www.sketchup.com/). It is great for achitecture, but terrible for parts design (non parametric and very imprecise).
+It was pretty close, but printing a thing this wide would be a challenge. It is too big for a single print, meaning I'd have to print 3 separate parts and attach them together somehow. Its mechanical strength would be questionable. Also, I reached the conclusion that fixing the angle between the parts would be a bad idea since it would not be adjustable. On top of that, I sketched this on... [SketchUp](https://www.sketchup.com/). It is great for architecture, but terrible for parts design (non-parametric and very imprecise).
 
 ## Going 3D!
 

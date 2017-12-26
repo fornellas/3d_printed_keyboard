@@ -8,11 +8,11 @@ You can browse the design [here](https://cad.onshape.com/documents/70ad0c4316c1f
 
 - Given the geometry limitations of 3D printing, I broke down the frame in 2 parts, that could be easily printed upside down and then screwed in together.
 - The Cherry MX frame is filled with reinforcements to keep it rigid.
-- The Teensy and the OLED screen are very tightily packed, it was challenging to design, but it really payed off.
+- The Teensy and the OLED screen are very tightly packed, it was challenging to design, but it really paid off.
 - Long keys need [stabilization](https://deskthority.net/wiki/Stabiliser). It took about a dozen prototypes to tune dimensions for the 3D printing process, but it worked very well in the end:
 [![Cherry MX Stabilizer Prototype](http://img.youtube.com/vi/6WdsF6FLru8/0.jpg)](http://www.youtube.com/watch?v=6WdsF6FLru8)
 
-Never under estimate the amount of design work! The amount of detail to things seemingly simple will surprise you often! 
+Never underestimate the amount of design work! The amount of detail to things seemingly simple will surprise you often! 
 
 ## Screenshots
 
@@ -28,18 +28,17 @@ All parts were printed with a [Original Prusa i3 MK2S](https://www.prusa3d.com/)
 
 First, there was a LOT of prototyping to find the precise dimensions for the keycaps connection to the Cherry MX switches. On top of finding the correct values, not precise enough first layer calibration let parts with [elephant foot](https://all3dp.com/1/common-3d-printing-problems-troubleshooting-3d-printer-issues/), which also made things harder. Second, the stabilizers (that need to grab on a paper clip). Tedious, but straightforward.
 
-The real challenge came when printing the key caps. I probably printed around two dozen prototypes, playing with print settings, until I found the ones that got me good results:
+The real challenge came when printing the keycaps. I probably printed around two dozen prototypes, playing with print settings, until I found the ones that got me good results:
 
 - 0.1mm layer height and variable layer height to 0.05mm for the top part. Decent speed, decent quality.
 - Moved seam to the rear, where it is not visible. Without it, seams are everywhere and look terrible on a piece so tiny.
 - Played a lot with support settings, until I managed to squeeze them where they were needed (Slic3r supports are a gamble at best). I also tried building custom supports in the model itself, without luck.
 - Tuned the Top/Bottom Fill Pattern to Rectilinear and changed the angle to 90. This gave the top surface a decent look.
 
-Even though, I had a significant failure rate when printing the keycaps, due to adhesion issues. Thoroughly cleaning the print bed with isopropyl alcohol and only printing at the center part of the bed improved success rate a lot. I also set Slic3r to do sequential printing, so I would not loose a whole batch if there was a failure.
+Even though, I had a significant failure rate when printing the keycaps, due to adhesion issues. Thoroughly cleaning the print bed with isopropyl alcohol and only printing at the center part of the bed improved success rate a lot. I also set Slic3r to do sequential printing, so I would not lose a whole batch if there was a failure.
 
 ## Getting the STL Files for Printing
 
 They are available at the [repository](https://github.com/fornellas/3d_printed_keyboard/tree/master/STL) for download.
 
-The source for all 3D models used in this project can be fount at [OnShape](https://cad.onshape.com/documents/70ad0c4316c1f7791e16adf7/w/2614b0b88a96d33de0d37d52/e/1350c0cb06dbf70709189044). From there, STL files can be [easily exported](https://cad.onshape.com/help/Content/exporting-files.htm) as well.
-
+The source for all 3D models used in this project can be found at [OnShape](https://cad.onshape.com/documents/70ad0c4316c1f7791e16adf7/w/2614b0b88a96d33de0d37d52/e/1350c0cb06dbf70709189044). From there, STL files can be [easily exported](https://cad.onshape.com/help/Content/exporting-files.htm) as well.

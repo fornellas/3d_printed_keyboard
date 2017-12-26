@@ -4,7 +4,7 @@
 
 Nowadays we have things like the popular [Quantum Mechanical Keyboard Firmware](https://github.com/qmk/qmk_firmware), but in 2013 when I wrote this [custom firmware](https://github.com/fornellas/TypeMatrix2030) to my hacked [TypeMatrix](typematrix.com) keyboard (know the saga [here](history.html)), it was not an option.
 
-Looking at QMK code, I found it to be similar to what I did in the past: base it on the [LUFA](http://www.fourwalledcubicle.com/LUFA.php) library, build the key map, key scan code and drive the display. But QMK even supports other USB libraries and several keyboard configuration. Given my previous experience with LUFA, I figured the amount of code I'd need to add to QMK to make it work for my case would be almost the same as if I wrote everything just with LUFA. That's what I did.
+Looking at QMK code, I found it to be similar to what I did in the past: base it on the [LUFA](http://www.fourwalledcubicle.com/LUFA.php) library, build the keymap, key scan code and drive the display. But QMK even supports other USB libraries and several keyboard configuration. Given my previous experience with LUFA, I figured the amount of code I'd need to add to QMK to make it work for my case would be almost the same as if I wrote everything just with LUFA. That's what I did.
 
 # Notable Firmware Features
 
@@ -12,7 +12,7 @@ Looking at QMK code, I found it to be similar to what I did in the past: base it
 - Optional Virtual Serial USB Debugging.
 - USB Remote wake up support.
 - Key mapping:
-  - Hardware layout mapping, independent for computer (Dvorak or QWERTY) and keyboard (also Dvorak or QWERTY).
+  - Hardware layout mapping, independent for the computer (Dvorak or QWERTY) and keyboard (also Dvorak or QWERTY).
   - Hardware keypad.
   - Easy [mapping](https://github.com/fornellas/3d_printed_keyboard/blob/master/Keymap.c#L63) of key functions:
     - Regular key press.
