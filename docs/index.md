@@ -1,6 +1,12 @@
+This is a fully 3D printed keyboard completely custom designed from the ground up by [Fabio Pugliese Ornellas](https://github.com/fornellas).
+
 ![Top View](/{{ site.github.repository_name }}/pictures/Top.jpeg)
 
-This is a fully 3D printed keyboard completely custom designed from the ground up by [Fabio Pugliese Ornellas](https://github.com/fornellas).
+# See it in Action
+
+[![Display Demo](http://img.youtube.com/vi/9C59kK4L2dM/0.jpg)](http://www.youtube.com/watch?v=9C59kK4L2dM)
+
+# Learn more
 
 - [History](history.html)
 - [3D Printable Parts](design.html)
