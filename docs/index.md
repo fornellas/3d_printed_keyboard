@@ -13,7 +13,7 @@ This is a fully 3D printed keyboard completely custom designed from the ground u
 - Design
   - Unique ergonomic design inspired by [TypeMatrix](http://typematrix.com/) and [Ergodox](https://www.ergodox.io/).
   - All 3D printable plastic parts.
-  - Custom shaped keys keycaps.
+  - 13 diffirent custom shaped keycaps.
   - Custom designed key stabilizers (for space, enter etc).
 - Electronics
   - [Cherry MX switches](http://cherryamericas.com/product/mx-series-2/).
