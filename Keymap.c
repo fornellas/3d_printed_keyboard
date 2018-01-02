@@ -71,12 +71,12 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     ____, MACRO(MACRO_CUT),            MACRO(MACRO_COPY),           MACRO(MACRO_PASTE),                                       K(MUTE),
     ____, ____,                                                     ____,
     // Right
-    K(INSERT), K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          KGD(SYSTEM_WAKE_UP_OSC), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
-    ____,      ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
-               ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
-    ____,      ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
-               ____,           ____,     ____,                    ____,                    ____,            ____,                 ____,
-               K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,                    ____,            ____,           ____, K(MEDIA_BACKWARD),
+    K(INSERT),      K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          KGD(SYSTEM_WAKE_UP_OSC), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
+    K(VOLUME_UP),   ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+                    ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+    K(VOLUME_DOWN), ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+                    ____,           ____,     ____,                    ____,                    ____,            ____,                 ____,
+                    K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,                    ____,            ____,           ____, K(MEDIA_BACKWARD),
                                          K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
   ),
   [KEYPAD_LAYER] = KEYMAP(
