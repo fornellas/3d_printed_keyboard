@@ -95,25 +95,29 @@ USB_ClassInfo_CDC_Device_t VirtualSerial_CDC_Interface = {
   };
 #endif
 
-void Device_RemoteWakeup_ScanKeys_Callback(struct Key key, void *data)
+void Device_AnyKeyScanKeysCallback(struct Key key, void *data)
 {
-  uint8_t *send_remote_wakeup = (uint8_t *)data;
+  uint8_t *any_key = (uint8_t *)data;
 
   if(key.state)
-    *send_remote_wakeup = 1;
+    *any_key = 1;
 }
 
 
-void Device_RemoteWakeup(void)
+void Device_UnconfiguredScanKeys(void)
 {
-  uint8_t send_remote_wakeup = 0;
+  uint8_t any_key = 0;
 
-  if(DEVICE_STATE_Suspended == USB_DeviceState)
-    if(USB_Device_RemoteWakeupEnabled) {
-      ScanKeys_Read(&Device_RemoteWakeup_ScanKeys_Callback, (void *)&send_remote_wakeup);
-      if(send_remote_wakeup)
-        USB_Device_SendRemoteWakeup();
-    }
+  if(DEVICE_STATE_Configured == USB_DeviceState)
+    return;
+
+  ScanKeys_Read(&Device_AnyKeyScanKeysCallback, (void *)&any_key);
+
+  if(any_key) {
+    Display_Tick();
+    if(DEVICE_STATE_Suspended == USB_DeviceState && USB_Device_RemoteWakeupEnabled)
+      USB_Device_SendRemoteWakeup();
+  }
 }
 
 #ifdef SERIAL_DEBUG
@@ -147,7 +151,7 @@ int main(void)
 #endif
     HID_Device_USBTask(&Keyboard_HID_Interface);
     Display_Update();
-    Device_RemoteWakeup();
+    Device_UnconfiguredScanKeys();
   }
 }
 
