@@ -11,7 +11,6 @@
 #include <u8g.h>
 
 // Configuraiton
-#define SPLASH_TIMEOUT 2
 #define SCREENSAVER_TIMEOUT 180
 #define CONTRAST 50
 
@@ -28,9 +27,9 @@ static u8g_t u8g;
 static uint8_t Display_LEDReport;
 static uint8_t Display_keypad_state;
 static uint8_t Display_Fn_state;
-static uint8_t last_USB_DeviceState;
 static uint8_t mode;
 static uint32_t last_tick;
+static uint8_t last_USB_DeviceState;
 
 /*
  * Initialization
@@ -349,7 +348,7 @@ void Display_PrepareUpdate(void (**draw)(void *), void **context)
 {
   switch(mode){
     case SPLASH_MODE:
-      if(Timer_Secs() > SPLASH_TIMEOUT){
+      if(USB_DeviceState == DEVICE_STATE_Configured){
         Display_Tick();
         mode = STATUS_MODE;
       } else{
