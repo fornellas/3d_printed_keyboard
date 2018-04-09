@@ -108,15 +108,14 @@ void Device_UnconfiguredScanKeys(void)
 {
   uint8_t any_key = 0;
 
-  if(DEVICE_STATE_Configured == USB_DeviceState)
+  if(!(DEVICE_STATE_Suspended == USB_DeviceState && USB_Device_RemoteWakeupEnabled))
     return;
 
   ScanKeys_Read(&Device_AnyKeyScanKeysCallback, (void *)&any_key);
 
   if(any_key) {
     Display_Tick();
-    if(DEVICE_STATE_Suspended == USB_DeviceState && USB_Device_RemoteWakeupEnabled)
-      USB_Device_SendRemoteWakeup();
+    USB_Device_SendRemoteWakeup();
   }
 }
 
