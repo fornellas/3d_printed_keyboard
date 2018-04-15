@@ -284,7 +284,7 @@ void Display_Status(void *in_context)
       *   resumed.
       */
     case DEVICE_STATE_Suspended:
-      if(USB_Device_RemoteWakeupEnabled)
+      if(context->USB_Device_RemoteWakeupEnabled)
         Display_Write_CenteredP(U8G_PSTR("USB suspended:\npress any key to\nwake up"));
       else
         Display_Write_CenteredP(U8G_PSTR("USB\nsuspended"));
