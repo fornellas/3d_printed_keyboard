@@ -5,6 +5,7 @@
 #include "Display.h"
 #include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
+#include <u8g2.h>
 
 #define KEYMAP( \
   /* Left */ \
@@ -196,39 +197,39 @@ void Keymap_Init(void)
   keypad_state = 0;
 }
 
-static const uint8_t qwertyP[] U8G_PROGMEM = "QWERTY";
-static const uint8_t dvorakP[] U8G_PROGMEM = "Dvorak";
-static const uint8_t unknownP[] U8G_PROGMEM = "Unknown";
+static const uint8_t qwertyP[] U8X8_PROGMEM = "QWERTY";
+static const uint8_t dvorakP[] U8X8_PROGMEM = "Dvorak";
+static const uint8_t unknownP[] U8X8_PROGMEM = "Unknown";
 
-u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
+uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
 {
   switch(id) {
     case QWERTY_QWERTY_LAYER:
-      return (u8g_pgm_uint8_t *)qwertyP;
+      return (uint8_t *)qwertyP;
     case QWERTY_DVORAK_LAYER:
-      return (u8g_pgm_uint8_t *)dvorakP;
+      return (uint8_t *)dvorakP;
     case DVORAK_DVORAK_LAYER:
-      return (u8g_pgm_uint8_t *)dvorakP;
+      return (uint8_t *)dvorakP;
     case DVORAK_QWERTY_LAYER:
-      return (u8g_pgm_uint8_t *)qwertyP;
+      return (uint8_t *)qwertyP;
     default:
-      return (u8g_pgm_uint8_t *)unknownP;
+      return (uint8_t *)unknownP;
   }
 }
 
-u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
+uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
 {
   switch(id) {
     case QWERTY_QWERTY_LAYER:
-      return (u8g_pgm_uint8_t *)qwertyP;
+      return (uint8_t *)qwertyP;
     case QWERTY_DVORAK_LAYER:
-      return (u8g_pgm_uint8_t *)qwertyP;
+      return (uint8_t *)qwertyP;
     case DVORAK_QWERTY_LAYER:
-      return (u8g_pgm_uint8_t *)dvorakP;
+      return (uint8_t *)dvorakP;
     case DVORAK_DVORAK_LAYER:
-      return (u8g_pgm_uint8_t *)dvorakP;
+      return (uint8_t *)dvorakP;
     default:
-      return (u8g_pgm_uint8_t *)unknownP;
+      return (uint8_t *)unknownP;
   }
 }
 

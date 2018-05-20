@@ -7,8 +7,8 @@ F_USB        = $(F_CPU)
 OPTIMIZATION = s
 TARGET       = Keyboard
 LUFA_PATH    = lufa/LUFA
-U8GLIB_CSRC_PATH  = u8glib/csrc
-U8GLIB_SFNTSRC_PATH  = u8glib/sfntsrc
+U8G2_CSRC_PATH  = u8g2/csrc
+# $(wildcard $(U8G2_CSRC_PATH)/*.c)
 SRC          = \
 	$(TARGET).c \
 	Counter.c \
@@ -20,18 +20,27 @@ SRC          = \
 	ScanKeys.c \
 	Sequence.c \
 	Timer.c \
-	$(wildcard $(U8GLIB_CSRC_PATH)/*.c) \
-	$(wildcard $(U8GLIB_SFNTSRC_PATH)/*.c) \
 	$(LUFA_SRC_USB) \
 	$(LUFA_SRC_USBCLASS) \
+	$(U8G2_CSRC_PATH)/u8g2_d_setup.c \
+	$(U8G2_CSRC_PATH)/u8g2_font.c \
+	$(U8G2_CSRC_PATH)/u8g2_hvline.c \
+	$(U8G2_CSRC_PATH)/u8g2_d_memory.c \
+	$(U8G2_CSRC_PATH)/u8g2_setup.c \
+	$(U8G2_CSRC_PATH)/u8x8_byte.c \
+	$(U8G2_CSRC_PATH)/u8x8_cad.c \
+	$(U8G2_CSRC_PATH)/u8x8_d_ssd1306_128x64_noname.c \
+	$(U8G2_CSRC_PATH)/u8x8_display.c \
+	$(U8G2_CSRC_PATH)/u8x8_gpio.c \
+	$(U8G2_CSRC_PATH)/u8x8_setup.c \
+	$(U8G2_CSRC_PATH)/u8g2_ll_hvline.c \
 	$(LUFA_SRC_TWI)
 TEENSY_LOADER_PATH = teensy_loader_cli
 TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
 BASE_CC_FLAGS     =  \
 	-DUSE_LUFA_CONFIG_HEADER \
 	-IConfig/ \
-	-I$(U8GLIB_CSRC_PATH) \
-	-I$(U8GLIB_SFNTSRC_PATH) \
+	-I$(U8G2_CSRC_PATH) \
 	-Werror \
 	-fdata-sections
 ifdef SERIAL_DEBUG
