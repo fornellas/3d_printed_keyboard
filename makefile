@@ -32,7 +32,8 @@ BASE_CC_FLAGS     =  \
 	-IConfig/ \
 	-I$(U8GLIB_CSRC_PATH) \
 	-I$(U8GLIB_SFNTSRC_PATH) \
-	-Werror
+	-Werror \
+	-fdata-sections
 ifdef SERIAL_DEBUG
 CC_FLAGS := -DSERIAL_DEBUG $(BASE_CC_FLAGS)
 else
