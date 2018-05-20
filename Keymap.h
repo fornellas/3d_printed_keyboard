@@ -2,7 +2,7 @@
 #define _KEYMAP_H_
 
 #include "ScanKeys.h"
-#include <u8g.h>
+// #include <u8g.h>
 
 
 #define _VALUE_BITS 12
@@ -521,7 +521,7 @@ extern const uint16_t keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS
 
 void Keymap_Init(void);
 
-u8g_pgm_uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t);
-u8g_pgm_uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t);
+uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t);
+uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t);
 
 #endif
