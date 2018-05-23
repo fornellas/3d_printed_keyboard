@@ -36,8 +36,20 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
 
   switch(msg) {
     case U8X8_MSG_BYTE_INIT:
-      SPI_Init(SPI_MODE_MASTER | SPI_SPEED_FCPU_DIV_2);
-      DDRB |= (1<<0); // Revert DC as output...
+      // CS (SS)
+      // DDRB  |= (1 << 0);
+      // PORTB |= (1 << 0);
+      // CLOCK (SCLK)
+      DDRB  |=  (1 << 1);
+      // DATA (MOSI)
+      DDRB  |=  (1 << 2);
+      // (MISO)
+      // DDRB  &= ~(1 << 3);
+      // PORTB |=  (1 << 3);
+      // SPI2X: Double SPI Speed bit
+      SPSR |= (1 << SPI2X);
+      // Enable / Master
+      SPCR  = ((1 << SPE) | (1 << MSTR));
       u8x8_gpio_SetCS(u8x8, u8x8->display_info->chip_disable_level);
       break;
     case U8X8_MSG_BYTE_SET_DC:
@@ -77,6 +89,7 @@ uint8_t u8x8_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
 {
   switch(msg){
     case U8X8_MSG_GPIO_AND_DELAY_INIT:  // called once during init phase of u8g2/u8x8
+      DDRB |= (1<<0); // CS
       DDRB |= (1<<4); // DC
       DDRA |= (1<<7); // RESET
       break;              // can be used to setup pins
