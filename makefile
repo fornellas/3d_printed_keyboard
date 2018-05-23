@@ -8,7 +8,6 @@ OPTIMIZATION = s
 TARGET       = Keyboard
 LUFA_PATH    = lufa/LUFA
 U8G2_CSRC_PATH  = u8g2/csrc
-# $(wildcard $(U8G2_CSRC_PATH)/*.c)
 SRC          = \
 	$(TARGET).c \
 	Counter.c \
@@ -22,18 +21,7 @@ SRC          = \
 	Timer.c \
 	$(LUFA_SRC_USB) \
 	$(LUFA_SRC_USBCLASS) \
-	$(U8G2_CSRC_PATH)/u8g2_d_setup.c \
-	$(U8G2_CSRC_PATH)/u8g2_font.c \
-	$(U8G2_CSRC_PATH)/u8g2_hvline.c \
-	$(U8G2_CSRC_PATH)/u8g2_d_memory.c \
-	$(U8G2_CSRC_PATH)/u8g2_setup.c \
-	$(U8G2_CSRC_PATH)/u8x8_byte.c \
-	$(U8G2_CSRC_PATH)/u8x8_cad.c \
-	$(U8G2_CSRC_PATH)/u8x8_d_ssd1306_128x64_noname.c \
-	$(U8G2_CSRC_PATH)/u8x8_display.c \
-	$(U8G2_CSRC_PATH)/u8x8_gpio.c \
-	$(U8G2_CSRC_PATH)/u8x8_setup.c \
-	$(U8G2_CSRC_PATH)/u8g2_ll_hvline.c \
+	$(wildcard $(U8G2_CSRC_PATH)/*.c) \
 	$(LUFA_SRC_TWI)
 TEENSY_LOADER_PATH = teensy_loader_cli
 TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
@@ -83,3 +71,9 @@ clean: clean_teensy_loader
 # Load Hex to Teensy
 load: $(TARGET).hex $(TEENSY_LOADER)
 	$(TEENSY_LOADER) -mmcu=$(MCU) -w -v $(TARGET).hex
+
+MONITOR_PORT=/dev/serial/by-id/usb-Fabio_Pugliese_Ornellas_3D_Printed_Keyboard-if01
+
+monitor:
+	while ! [ -e $(MONITOR_PORT) ] ; do true ; done
+	screen $(MONITOR_PORT)

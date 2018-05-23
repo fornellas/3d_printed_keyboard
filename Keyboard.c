@@ -44,6 +44,9 @@
 #ifdef SERIAL_DEBUG
 #include <avr/io.h>
 #endif
+#ifdef SERIAL_DEBUG
+#include <util/delay.h>
+#endif
 
 /** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_ExtendedKeyboardReport_Data_t)];
@@ -132,13 +135,25 @@ FILE USBSerialStream;
  */
 int main(void)
 {
+  #ifdef SERIAL_DEBUG
+  stdout = &USBSerialStream;
+  #endif
+
   SetupHardware();
 
-#ifdef SERIAL_DEBUG
+  #ifdef SERIAL_DEBUG
+  _delay_ms(1000);
   /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
   CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
-  stdout = &USBSerialStream;
-#endif
+  printf_P(PSTR("Booting...\r\n"));
+  #endif
+
+  Display_Init();
+  ScanKeys_Init();
+  Keymap_Init();
+  LayerState_Init();
+  Sequence_Init();
+  Counter_Init();
 
   GlobalInterruptEnable();
 
@@ -178,14 +193,8 @@ void SetupHardware()
 #endif
 
   /* Hardware Initialization */
-  Timer_Init();
-  Display_Init();
-  ScanKeys_Init();
-  Keymap_Init();
-  LayerState_Init();
-  Sequence_Init();
-  Counter_Init();
   USB_Init();
+  Timer_Init();
 }
 
 /** Event handler for the library USB Connection event. */
@@ -262,20 +271,20 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
   Sequence_Play(KeyboardReport);
 
-#ifdef SERIAL_DEBUG
-  if(KeyboardReport->Modifier)
-    printf_P(PSTR("Report Modifier: %d\r\n"), KeyboardReport->Modifier);
-  if(KeyboardReport->Reserved)
-    printf_P(PSTR("Report Reserved: %d\r\n"), KeyboardReport->Reserved);
-  for(uint8_t k=0 ; k < MAX_KEYS ; k++){
-    if(KeyboardReport->KeyboardKeyPad[k])
-      printf_P(PSTR("Report KeyboardKeyPad[%d]: %d\r\n"), k, KeyboardReport->KeyboardKeyPad[k]);
-    if(KeyboardReport->GenericDesktop[k])
-      printf_P(PSTR("Report GenericDesktop[%d]: %d\r\n"), k, KeyboardReport->GenericDesktop[k]);
-    if(KeyboardReport->Consumer[k])
-      printf_P(PSTR("Report Consumer[%d]: %d\r\n"), k, KeyboardReport->Consumer[k]);
-  }
-#endif
+// #ifdef SERIAL_DEBUG
+//   if(KeyboardReport->Modifier)
+//     printf_P(PSTR("Report Modifier: %d\r\n"), KeyboardReport->Modifier);
+//   if(KeyboardReport->Reserved)
+//     printf_P(PSTR("Report Reserved: %d\r\n"), KeyboardReport->Reserved);
+//   for(uint8_t k=0 ; k < MAX_KEYS ; k++){
+//     if(KeyboardReport->KeyboardKeyPad[k])
+//       printf_P(PSTR("Report KeyboardKeyPad[%d]: %d\r\n"), k, KeyboardReport->KeyboardKeyPad[k]);
+//     if(KeyboardReport->GenericDesktop[k])
+//       printf_P(PSTR("Report GenericDesktop[%d]: %d\r\n"), k, KeyboardReport->GenericDesktop[k]);
+//     if(KeyboardReport->Consumer[k])
+//       printf_P(PSTR("Report Consumer[%d]: %d\r\n"), k, KeyboardReport->Consumer[k]);
+//   }
+// #endif
 
   *ReportSize = sizeof(USB_ExtendedKeyboardReport_Data_t);
   return false;
