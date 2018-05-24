@@ -36,16 +36,10 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
 
   switch(msg) {
     case U8X8_MSG_BYTE_INIT:
-      // CS (SS)
-      // DDRB  |= (1 << 0);
-      // PORTB |= (1 << 0);
       // CLOCK (SCLK)
       DDRB  |=  (1 << 1);
       // DATA (MOSI)
       DDRB  |=  (1 << 2);
-      // (MISO)
-      // DDRB  &= ~(1 << 3);
-      // PORTB |=  (1 << 3);
       // SPI2X: Double SPI Speed bit
       SPSR |= (1 << SPI2X);
       // Enable / Master
@@ -68,7 +62,7 @@ uint8_t u8x8_byte_4wire_hw_spi(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
         arg_int--;
       }  
       break;
-    case U8X8_MSG_BYTE_END_TRANSFER:      
+    case U8X8_MSG_BYTE_END_TRANSFER:
       u8x8->gpio_and_delay_cb(u8x8, U8X8_MSG_DELAY_NANO, u8x8->display_info->pre_chip_disable_wait_ns, NULL);
       u8x8_gpio_SetCS(u8x8, u8x8->display_info->chip_disable_level);
       break;
