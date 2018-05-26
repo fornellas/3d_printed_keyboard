@@ -12,8 +12,10 @@
 #include <u8x8_avr.h>
 
 // Configuraiton
-#define SCREENSAVER_TIMEOUT 180
 #define CONTRAST 50
+
+#define SCREENSAVER_TIMEOUT 300
+#define SCREENSAVER_CONTRAST (CONTRAST / 2)
 
 #define TOGGLE_WIDTH  24
 #define TOGGLE_HEIGHT  22
@@ -388,6 +390,13 @@ void Display_Screensaver(void *in_context)
 
 void Display_PrepareUpdate(void (**draw)(void *), void **context)
 {
+  uint8_t active_screensaver;
+
+  active_screensaver = Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT;
+
+  if(active_screensaver)
+    mode = SCREENSAVER_MODE;
+
   switch(mode){
     case SPLASH_MODE:
       if(USB_DeviceState == DEVICE_STATE_Configured){
@@ -399,20 +408,16 @@ void Display_PrepareUpdate(void (**draw)(void *), void **context)
         break;
       }
     case STATUS_MODE:
-      if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT) {
-        mode = SCREENSAVER_MODE;
-      } else {
-        *draw = &Display_Status;
-        *context = Display_Status_Context();
-        break;
-      }
+      *draw = &Display_Status;
+      *context = Display_Status_Context();
+      break;
     case SCREENSAVER_MODE:
-      if(Timer_Secs() - last_tick > SCREENSAVER_TIMEOUT) {
-        u8g2_SetContrast(&u8g2, 0);
+      if(active_screensaver) {
+        u8g2_SetContrast(&u8g2, SCREENSAVER_CONTRAST);
         *draw = &Display_Screensaver;
         *context = Display_Screensaver_Context();
         break;
-      } else {
+      }else{
         mode = STATUS_MODE;
         u8g2_SetContrast(&u8g2, CONTRAST);
       }
