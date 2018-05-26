@@ -32,8 +32,6 @@ static uint8_t mode;
 static uint32_t last_tick;
 static uint8_t last_USB_DeviceState;
 
-#define P_CPU_NS (1000000000 / F_CPU)
-
 uint8_t u8x8_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
 {
   // Re-use library for delays
