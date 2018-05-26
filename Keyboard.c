@@ -132,12 +132,12 @@ FILE USBSerialStream;
  */
 int main(void)
 {
+
   SetupHardware();
 
 #ifdef SERIAL_DEBUG
   /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
   CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
-  stdout = &USBSerialStream;
 #endif
 
   GlobalInterruptEnable();

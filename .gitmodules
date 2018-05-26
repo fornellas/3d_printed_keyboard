@@ -1,9 +1,9 @@
 [submodule "lufa"]
 	path = lufa
 	url = https://github.com/abcminiuser/lufa.git
-[submodule "u8glib"]
-	path = u8glib
-	url = https://github.com/olikraus/u8glib.git
 [submodule "teensy_loader_cli"]
 	path = teensy_loader_cli
 	url = https://github.com/PaulStoffregen/teensy_loader_cli.git
+[submodule "u8g2"]
+	path = u8g2
+	url = https://github.com/olikraus/u8g2.git
