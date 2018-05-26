@@ -304,7 +304,7 @@ void Display_Status(void *in_context)
       *   that the device has been enumerated by the host and is ready
       *   for USB communications to begin.
       */
-      
+
     case DEVICE_STATE_Configured:
       if(context->Right_Side_Disconnected) {
         Display_Write_CenteredP(PSTR("Right Side\nDisconnected"));
@@ -365,21 +365,21 @@ void *Display_Screensaver_Context(void)
 
 void Display_Screensaver(void *in_context)
 {
-  // struct ScreensaverContext *context;
+  struct ScreensaverContext *context;
 
-  // context = (struct ScreensaverContext *)in_context;
+  context = (struct ScreensaverContext *)in_context;
 
-  // if(context->step%2) {
-  //   for(uint8_t x=context->start; x < u8g2_GetDisplayWidth(&u8g2) ; x += context->step)
-  //     u8g_DrawLine(&u8g, x, 0, context->px, context->py);
-  //   for(uint8_t x=context->start; x < u8g2_GetDisplayWidth(&u8g2) ; x += context->step)
-  //     u8g_DrawLine(&u8g, x, u8g2_GetDisplayHeight(&u8g2), context->px, context->py);
-  // }else{
-  //   for(uint8_t y=context->start; y < u8g2_GetDisplayHeight(&u8g2) ; y += context->step)
-  //     u8g_DrawLine(&u8g, 0, y, context->px, context->py);
-  //   for(uint8_t y=context->start; y < u8g2_GetDisplayHeight(&u8g2) ; y += context->step)
-  //     u8g_DrawLine(&u8g, u8g2_GetDisplayWidth(&u8g2), y, context->px, context->py);
-  // }
+  if(context->step%2) {
+    for(uint8_t x=context->start; x < u8g2_GetDisplayWidth(&u8g2) ; x += context->step)
+      u8g2_DrawLine(&u8g2, x, 0, context->px, context->py);
+    for(uint8_t x=context->start; x < u8g2_GetDisplayWidth(&u8g2) ; x += context->step)
+      u8g2_DrawLine(&u8g2, x, u8g2_GetDisplayHeight(&u8g2), context->px, context->py);
+  }else{
+    for(uint8_t y=context->start; y < u8g2_GetDisplayHeight(&u8g2) ; y += context->step)
+      u8g2_DrawLine(&u8g2, 0, y, context->px, context->py);
+    for(uint8_t y=context->start; y < u8g2_GetDisplayHeight(&u8g2) ; y += context->step)
+      u8g2_DrawLine(&u8g2, u8g2_GetDisplayWidth(&u8g2), y, context->px, context->py);
+  }
 }
 
 /*
