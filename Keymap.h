@@ -521,7 +521,7 @@ extern const uint16_t keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMNS
 
 void Keymap_Init(void);
 
-uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t);
-uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t);
+char * Keymap_Get_Layer_Keyboard_Name(uint8_t);
+char * Keymap_Get_Layer_Computer_Name(uint8_t);
 
 #endif

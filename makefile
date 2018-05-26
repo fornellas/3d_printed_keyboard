@@ -8,6 +8,7 @@ OPTIMIZATION = s
 TARGET       = Keyboard
 LUFA_PATH    = lufa/LUFA
 U8G2_CSRC_PATH  = u8g2/csrc
+U8G2_AVRLIB_PATH  = u8g2/sys/avr/lib
 SRC          = \
 	$(TARGET).c \
 	Counter.c \
@@ -22,6 +23,7 @@ SRC          = \
 	$(LUFA_SRC_USB) \
 	$(LUFA_SRC_USBCLASS) \
 	$(wildcard $(U8G2_CSRC_PATH)/*.c) \
+	$(wildcard $(U8G2_AVRLIB_PATH)/*.c) \
 	$(LUFA_SRC_TWI)
 TEENSY_LOADER_PATH = teensy_loader_cli
 TEENSY_LOADER = ./$(TEENSY_LOADER_PATH)/teensy_loader_cli
@@ -29,6 +31,7 @@ BASE_CC_FLAGS     =  \
 	-DUSE_LUFA_CONFIG_HEADER \
 	-IConfig/ \
 	-I$(U8G2_CSRC_PATH) \
+	-I$(U8G2_AVRLIB_PATH) \
 	-Werror \
 	-fdata-sections
 ifdef SERIAL_DEBUG

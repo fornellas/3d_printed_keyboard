@@ -197,39 +197,39 @@ void Keymap_Init(void)
   keypad_state = 0;
 }
 
-static const uint8_t qwertyP[] U8X8_PROGMEM = "QWERTY";
-static const uint8_t dvorakP[] U8X8_PROGMEM = "Dvorak";
-static const uint8_t unknownP[] U8X8_PROGMEM = "Unknown";
+static const char qwertyP[] U8X8_PROGMEM = "QWERTY";
+static const char dvorakP[] U8X8_PROGMEM = "Dvorak";
+static const char unknownP[] U8X8_PROGMEM = "Unknown";
 
-uint8_t * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
+char * Keymap_Get_Layer_Keyboard_Name(uint8_t id)
 {
   switch(id) {
     case QWERTY_QWERTY_LAYER:
-      return (uint8_t *)qwertyP;
+      return (char *)qwertyP;
     case QWERTY_DVORAK_LAYER:
-      return (uint8_t *)dvorakP;
+      return (char *)dvorakP;
     case DVORAK_DVORAK_LAYER:
-      return (uint8_t *)dvorakP;
+      return (char *)dvorakP;
     case DVORAK_QWERTY_LAYER:
-      return (uint8_t *)qwertyP;
+      return (char *)qwertyP;
     default:
-      return (uint8_t *)unknownP;
+      return (char *)unknownP;
   }
 }
 
-uint8_t * Keymap_Get_Layer_Computer_Name(uint8_t id)
+char * Keymap_Get_Layer_Computer_Name(uint8_t id)
 {
   switch(id) {
     case QWERTY_QWERTY_LAYER:
-      return (uint8_t *)qwertyP;
+      return (char *)qwertyP;
     case QWERTY_DVORAK_LAYER:
-      return (uint8_t *)qwertyP;
+      return (char *)qwertyP;
     case DVORAK_QWERTY_LAYER:
-      return (uint8_t *)dvorakP;
+      return (char *)dvorakP;
     case DVORAK_DVORAK_LAYER:
-      return (uint8_t *)dvorakP;
+      return (char *)dvorakP;
     default:
-      return (uint8_t *)unknownP;
+      return (char *)unknownP;
   }
 }
 
