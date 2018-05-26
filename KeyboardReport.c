@@ -83,14 +83,14 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
     if(!LayerState_Get(i))
       continue;
 
-// #ifdef SERIAL_DEBUG
-//     if(key.state||key.just_pressed||key.just_released){
-//       printf_P(PSTR("Key: %dx%d\n\r"), key.row, key.column);
-//       printf_P(PSTR("  state: %d\n\r"), key.state);
-//       printf_P(PSTR("  just_pressed: %d\n\r"), key.just_pressed);
-//       printf_P(PSTR("  just_released: %d\n\r"), key.just_released);
-//     }
-// #endif
+#ifdef SERIAL_DEBUG
+    if(key.state||key.just_pressed||key.just_released){
+      printf_P(PSTR("Key: %dx%d\n\r"), key.row, key.column);
+      printf_P(PSTR("  state: %d\n\r"), key.state);
+      printf_P(PSTR("  just_pressed: %d\n\r"), key.just_pressed);
+      printf_P(PSTR("  just_released: %d\n\r"), key.just_released);
+    }
+#endif
 
     key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
 

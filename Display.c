@@ -74,7 +74,7 @@ uint8_t u8x8_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
  */
 
 void Display_Init(void)
-{   
+{
   // u8g2_Setup_sh1106_128x64_vcomh0_1(
   u8g2_Setup_sh1106_128x64_vcomh0_2(
   // u8g2_Setup_sh1106_128x64_vcomh0_f(

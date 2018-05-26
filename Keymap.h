@@ -2,8 +2,6 @@
 #define _KEYMAP_H_
 
 #include "ScanKeys.h"
-// #include <u8g.h>
-
 
 #define _VALUE_BITS 12
 #define _VALUE_MASK 0x0FFF
