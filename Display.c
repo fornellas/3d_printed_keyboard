@@ -88,10 +88,10 @@ uint8_t u8x8_gpio_and_delay(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *ar
       DDRA |= (1<<7); // RESET
       break;              // can be used to setup pins
     case U8X8_MSG_DELAY_NANO:     // delay arg_int * 1 nano second
-      // At 16Mhz, 1 instruction = 62.5ns, no action here.
-      break;    
+      for(int i=0 ; i < arg_int / P_CPU_NS / 2 ; i++);
+      break;
     case U8X8_MSG_DELAY_100NANO:    // delay arg_int * 100 nano seconds
-      // At 16Mhz, 1 instruction = 62.5ns, no action here.
+      for(int i=0 ; i < 10 * (arg_int / P_CPU_NS) / 2; i++);
       break;
     case U8X8_MSG_DELAY_10MICRO:    // delay arg_int * 10 micro seconds
       for(int i=0 ; i < arg_int ; i++)
