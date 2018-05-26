@@ -103,7 +103,6 @@ void Device_AnyKeyScanKeysCallback(struct Key key, void *data)
     *any_key = 1;
 }
 
-
 void Device_UnconfiguredScanKeys(void)
 {
   uint8_t any_key = 0;
@@ -120,12 +119,12 @@ void Device_UnconfiguredScanKeys(void)
   }
 }
 
-#ifdef SERIAL_DEBUG
+  #ifdef SERIAL_DEBUG
 /** Standard file stream for the CDC interface when set up, so that the virtual CDC COM port can be
  *  used like any regular character stream in the C APIs.
  */
 FILE USBSerialStream;
-#endif
+  #endif
 
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
@@ -135,20 +134,20 @@ int main(void)
 
   SetupHardware();
 
-#ifdef SERIAL_DEBUG
+  #ifdef SERIAL_DEBUG
   /* Create a regular character stream for the interface so that it can be used with the stdio.h functions */
   CDC_Device_CreateStream(&VirtualSerial_CDC_Interface, &USBSerialStream);
-#endif
+  #endif
 
   GlobalInterruptEnable();
 
   for (;;)
   {
-#ifdef SERIAL_DEBUG
+    #ifdef SERIAL_DEBUG
     /* Must throw away unused bytes from the host, or it will lock up while waiting for the device */
     while(CDC_Device_ReceiveByte(&VirtualSerial_CDC_Interface) >= 0);
     CDC_Device_USBTask(&VirtualSerial_CDC_Interface);
-#endif
+    #endif
     HID_Device_USBTask(&Keyboard_HID_Interface);
     Display_Update();
     Device_UnconfiguredScanKeys();
@@ -158,14 +157,14 @@ int main(void)
 /** Configures the board hardware and chip peripherals for the demo's functionality. */
 void SetupHardware()
 {
-#if (ARCH == ARCH_AVR8)
+  #if (ARCH == ARCH_AVR8)
   /* Disable watchdog if enabled by bootloader/fuses */
   MCUSR &= ~(1 << WDRF);
   wdt_disable();
 
   /* Disable clock division */
   clock_prescale_set(clock_div_1);
-#elif (ARCH == ARCH_XMEGA)
+  #elif (ARCH == ARCH_XMEGA)
   /* Start the PLL to multiply the 2MHz RC oscillator to 32MHz and switch the CPU core to run from it */
   XMEGACLK_StartPLL(CLOCK_SRC_INT_RC2MHZ, 2000000, F_CPU);
   XMEGACLK_SetCPUClockSource(CLOCK_SRC_PLL);
@@ -175,7 +174,7 @@ void SetupHardware()
   XMEGACLK_StartDFLL(CLOCK_SRC_INT_RC32MHZ, DFLL_REF_INT_USBSOF, F_USB);
 
   PMIC.CTRL = PMIC_LOLVLEN_bm | PMIC_MEDLVLEN_bm | PMIC_HILVLEN_bm;
-#endif
+  #endif
 
   /* Hardware Initialization */
   Timer_Init();
@@ -218,18 +217,18 @@ void EVENT_USB_Device_ConfigurationChanged(void)
   //
   // }
 
-#ifdef SERIAL_DEBUG
+  #ifdef SERIAL_DEBUG
   CDC_Device_ConfigureEndpoints(&VirtualSerial_CDC_Interface);
-#endif
+  #endif
 }
 
 /** Event handler for the library USB Control Request reception event. */
 void EVENT_USB_Device_ControlRequest(void)
 {
   HID_Device_ProcessControlRequest(&Keyboard_HID_Interface);
-#ifdef SERIAL_DEBUG
+  #ifdef SERIAL_DEBUG
   CDC_Device_ProcessControlRequest(&VirtualSerial_CDC_Interface);
-#endif
+  #endif
 }
 
 /** Event handler for the USB device Start Of Frame event. */
@@ -262,7 +261,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
   Sequence_Play(KeyboardReport);
 
-#ifdef SERIAL_DEBUG
+  #ifdef SERIAL_DEBUG
   if(KeyboardReport->Modifier)
     printf_P(PSTR("Report Modifier: %d\r\n"), KeyboardReport->Modifier);
   if(KeyboardReport->Reserved)
@@ -275,7 +274,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
     if(KeyboardReport->Consumer[k])
       printf_P(PSTR("Report Consumer[%d]: %d\r\n"), k, KeyboardReport->Consumer[k]);
   }
-#endif
+  #endif
 
   *ReportSize = sizeof(USB_ExtendedKeyboardReport_Data_t);
   return false;
