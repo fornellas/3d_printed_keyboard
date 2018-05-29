@@ -12,7 +12,7 @@
 #include <u8x8_avr.h>
 
 // Configuraiton
-#define CONTRAST 50
+#define CONTRAST 80
 
 #define SCREENSAVER_TIMEOUT 300
 #define SCREENSAVER_CONTRAST (CONTRAST / 2)
