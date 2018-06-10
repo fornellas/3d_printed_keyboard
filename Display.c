@@ -185,28 +185,23 @@ void Display_Draw_Toggle_Statuses(uint8_t LEDReport, bool Fn_state, bool Keypad_
   );
 
   if(LEDReport != NO_LED_REPORT){
-    uint8_t numlock_x;
-    uint8_t capslock_y;
-
-    numlock_x = keypad_x - TOGGLE_WIDTH;
     Display_Draw_Toggle(
-        numlock_x, 0,
+        keypad_x - TOGGLE_WIDTH, 0,
         TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
         PSTR("1"), LEDReport & HID_KEYBOARD_LED_NUMLOCK
     );
     Display_Draw_Toggle(
-        numlock_x - TOGGLE_WIDTH, 0,
+        u8g2_GetDisplayWidth(&u8g2) / 2 - TOGGLE_WIDTH / 2, 0,
         TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
         PSTR("S"), LEDReport & HID_KEYBOARD_LED_SCROLLLOCK
     );
-    capslock_y = keypad_y + TOGGLE_HEIGHT + 2;
     Display_Draw_Toggle(
-        keypad_x, capslock_y,
+        keypad_x, u8g2_GetDisplayHeight(&u8g2) / 2 - TOGGLE_HEIGHT / 2,
         TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
         PSTR("A"), LEDReport & HID_KEYBOARD_LED_CAPSLOCK
     );
     Display_Draw_Toggle(
-        keypad_x, capslock_y + TOGGLE_HEIGHT + 2,
+        keypad_x, u8g2_GetDisplayHeight(&u8g2) - TOGGLE_HEIGHT,
         TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
         PSTR("N"), !ShiftedNumber_state
     );
