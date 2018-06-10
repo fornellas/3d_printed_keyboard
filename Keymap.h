@@ -2,6 +2,7 @@
 #define _KEYMAP_H_
 
 #include "ScanKeys.h"
+#include "Keyboard.h"
 
 #define _VALUE_BITS 12
 #define _VALUE_MASK 0x0FFF
@@ -483,7 +484,7 @@ enum keymap_macros {
   MACRO_COUNT,
 };
 
-extern void (* const keymap_macros[MACRO_COUNT])(struct Key);
+extern void (* const keymap_macros[MACRO_COUNT])(struct Key, USB_ExtendedKeyboardReport_Data_t *);
 
 enum keymap_seq {
   SEQ_SHUFFLE,
@@ -524,5 +525,7 @@ void Keymap_Init(void);
 
 char * Keymap_Get_Layer_Keyboard_Name(uint8_t);
 char * Keymap_Get_Layer_Computer_Name(uint8_t);
+
+void Keymap_ScannedKeyCallback(struct Key key, uint16_t value);
 
 #endif

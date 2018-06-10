@@ -190,7 +190,7 @@ void SetupHardware()
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
-  Counter_Reset();
+  Keymap_Init();
 }
 
 /** Event handler for the library USB Disconnection event. */
@@ -208,8 +208,6 @@ void EVENT_USB_Device_ConfigurationChanged(void)
   ConfigSuccess &= HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface);
 
   USB_Device_EnableSOFEvents();
-
-  Counter_Reset();
 
   // if(ConfigSuccess) {
   //

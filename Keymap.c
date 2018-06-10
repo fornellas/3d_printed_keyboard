@@ -1,6 +1,7 @@
 #include "Keymap.h"
 #include "ScanKeys.h"
 #include "LayerState.h"
+#include "KeyboardReport.h"
 #include "Sequence.h"
 #include "Display.h"
 #include <LUFA/Drivers/USB/USB.h>
@@ -211,10 +212,12 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
 };
 
 static uint8_t keypad_state;
+static uint8_t shift_state;
 
 void Keymap_Init(void)
 {
   keypad_state = 0;
+  shift_state = 0;
 }
 
 static const char qwertyP[] U8X8_PROGMEM = "QWERTY";
@@ -253,7 +256,7 @@ char * Keymap_Get_Layer_Computer_Name(uint8_t id)
   }
 }
 
-static void macro_fn(struct Key key)
+static void macro_fn(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   static uint8_t previous_layout;
   static uint8_t previous_layout_changes;
@@ -276,7 +279,7 @@ static void macro_fn(struct Key key)
   }
 }
 
-static void macro_keypad(struct Key key)
+static void macro_keypad(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     keypad_state = !keypad_state;
@@ -284,24 +287,26 @@ static void macro_keypad(struct Key key)
   }
 }
 
-static void macro_common_shifted(struct Key key)
+static void macro_common_shifted(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
-  uint16_t seq_shifted[] = {
-    1,
-    HID_KEYBOARD_SC_LEFT_SHIFT,
-    2,
-    HID_KEYBOARD_SC_LEFT_SHIFT,
-    GET_KEY_VALUE(
-      pgm_read_word(&(keymaps[COMMON_LAYER][key.row][key.column]))
-    ),
-    0,
-  };
+  uint16_t KeyCode;
 
-  if(key.just_pressed)
-    Sequence_Register((uint16_t *)seq_shifted);
+  if(!key.state)
+    return;
+
+  KeyCode = GET_KEY_VALUE(
+    pgm_read_word(&(keymaps[COMMON_LAYER][key.row][key.column]))
+  );
+
+  KeyboardReport_Add_KeyboardKeypad(KeyboardReport, KeyCode);
+  
+  if(shift_state)
+    KeyboardReport->Modifier &= ~HID_KEYBOARD_MODIFIER_LEFTSHIFT; // FIXME must be executed after all scan is complete, otherwise, Shift might be set later on
+  else
+    KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTSHIFT;
 }
 
-static void macro_toggle_shifted_number_layer(struct Key key)
+static void macro_toggle_shifted_number_layer(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed)
     LayerState_ToggleLayer(SHIFTED_NUMBER_LAYER);
@@ -326,7 +331,7 @@ static const uint16_t seq_cut_dvorak[] = {
   0,
 };
 
-static void macro_cut(struct Key key)
+static void macro_cut(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -364,7 +369,7 @@ static const uint16_t seq_copy_dvorak[] = {
   0,
 };
 
-static void macro_copy(struct Key key)
+static void macro_copy(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -402,7 +407,7 @@ static const uint16_t seq_paste_dvorak[] = {
   0,
 };
 
-static void macro_paste(struct Key key)
+static void macro_paste(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -444,7 +449,7 @@ static const uint16_t seq_desktop_dvorak[] = {
   0,
 };
 
-static void macro_desktop(struct Key key)
+static void macro_desktop(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -464,7 +469,7 @@ static void macro_desktop(struct Key key)
   }
 }
 
-void (* const keymap_macros[MACRO_COUNT])(struct Key) = {
+void (* const keymap_macros[MACRO_COUNT])(struct Key, USB_ExtendedKeyboardReport_Data_t *) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,
   [MACRO_COMMON_SHIFTED] = &macro_common_shifted,
@@ -505,3 +510,23 @@ const uint16_t *keymap_seqs[SEQ_COUNT] = {
   [SEQ_00] = seq_00,
   [SEQ_B_TAB] = seq_b_tab,
 };
+
+void Keymap_ScannedKeyCallback(struct Key key, uint16_t value)
+{
+  uint16_t keycode;
+
+  if(GET_KEY_FN(value) != KEY_FN_KEYBOARD_PAGE)
+    return;
+
+
+  keycode = GET_KEY_VALUE(value);
+
+  if(keycode != HID_KEYBOARD_SC_LEFT_SHIFT && keycode != HID_KEYBOARD_SC_RIGHT_SHIFT)
+    return;
+
+  if(key.just_pressed)
+    shift_state = 1;
+
+  if(key.just_released)
+    shift_state = 0;
+}

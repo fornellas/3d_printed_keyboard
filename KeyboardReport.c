@@ -94,6 +94,8 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
 
     key_value = pgm_read_word(&(keymaps[i][key.row][key.column]));
 
+    Keymap_ScannedKeyCallback(key, key_value);
+
     switch(GET_KEY_FN(key_value)){
       case KEY_FN_KEYBOARD_PAGE:
         if(key.state)
@@ -116,7 +118,7 @@ void KeyboardReport_ScanKeys_Callback(struct Key key, void *data)
       case KEY_FN_PASS:
         break;
       case KEY_FN_MACRO:
-        keymap_macros[GET_KEY_VALUE(key_value)](key);
+        keymap_macros[GET_KEY_VALUE(key_value)](key, KeyboardReport);
         goto finish;
         break;
       case KEY_FN_LAYOUT:
