@@ -15,4 +15,6 @@ uint8_t LayerState_Get_Active_Layout(void);
 
 void LayerState_SetLayout(uint8_t layout);
 
+void LayerState_ToggleLayer(uint8_t layer);
+
 #endif

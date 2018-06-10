@@ -41,7 +41,7 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [QWERTY_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_QWERTY_LAYER] = KEYMAP_START_LOAD,
-  [SHIFTED_NUMBER_LAYER] = KEYMAP_START_DISABLED, // KEYMAP_START_LOAD FIXME
+  [SHIFTED_NUMBER_LAYER] = KEYMAP_START_DISABLED,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
@@ -77,7 +77,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     K(INSERT),      K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          KGD(SYSTEM_WAKE_UP_OSC), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
     K(VOLUME_UP),   ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
                     ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
-    K(VOLUME_DOWN), ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+    K(VOLUME_DOWN), ____,           ____,     ____,                    ____,                    ____,            ____,           ____, MACRO(MACRO_TOGGLE_SHIFTED_NUMBER_LAYER),
                     ____,           ____,     ____,                    ____,                    ____,            ____,                 ____,
                     K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,                    ____,            ____,           ____, K(MEDIA_BACKWARD),
                                               K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
@@ -261,9 +261,7 @@ static void macro_fn(struct Key key)
 
   if(key.just_pressed) {
     LayerState_Set(FN_LAYER, 1);
-    Display_Set_Fn(1);
     LayerState_Set(KEYPAD_LAYER, 1);
-    Display_Set_Keypad(1);
 
     previous_layout = LayerState_Get_Active_Layout();
     LayerState_SetLayout(keymap_fn_alt_keymap[previous_layout]);
@@ -271,9 +269,7 @@ static void macro_fn(struct Key key)
   }
   if(key.just_released) {
     LayerState_Set(FN_LAYER, 0);
-    Display_Set_Fn(0);
     LayerState_Set(KEYPAD_LAYER, keypad_state);
-    Display_Set_Keypad(keypad_state);
 
     if(layout_changes == previous_layout_changes)
       LayerState_SetLayout(previous_layout);
@@ -285,7 +281,6 @@ static void macro_keypad(struct Key key)
   if(key.just_pressed) {
     keypad_state = !keypad_state;
     LayerState_Set(KEYPAD_LAYER, keypad_state);
-    Display_Set_Keypad(keypad_state);
   }
 }
 
@@ -302,10 +297,16 @@ static void macro_common_shifted(struct Key key)
     0,
   };
 
-  if(key.just_pressed) {
+  if(key.just_pressed)
     Sequence_Register((uint16_t *)seq_shifted);
-  }
 }
+
+static void macro_toggle_shifted_number_layer(struct Key key)
+{
+  if(key.just_pressed)
+    LayerState_ToggleLayer(SHIFTED_NUMBER_LAYER);
+}
+
 
 static const uint16_t seq_cut[] = {
   1,
@@ -467,6 +468,7 @@ void (* const keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,
   [MACRO_COMMON_SHIFTED] = &macro_common_shifted,
+  [MACRO_TOGGLE_SHIFTED_NUMBER_LAYER] = &macro_toggle_shifted_number_layer,
   [MACRO_CUT] = &macro_cut,
   [MACRO_COPY] = &macro_copy,
   [MACRO_PASTE] = &macro_paste,
