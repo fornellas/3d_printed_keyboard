@@ -41,6 +41,7 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [QWERTY_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_QWERTY_LAYER] = KEYMAP_START_LOAD,
+  [SHIFTED_NUMBER_LAYER] = KEYMAP_START_DISABLED, // KEYMAP_START_LOAD FIXME
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
@@ -58,6 +59,7 @@ static const uint8_t keymap_fn_alt_keymap[LAYER_COUNT] = {
   [QWERTY_DVORAK_LAYER] = QWERTY_QWERTY_LAYER,
   [DVORAK_DVORAK_LAYER] = DVORAK_QWERTY_LAYER,
   [DVORAK_QWERTY_LAYER] = DVORAK_QWERTY_LAYER,
+  [SHIFTED_NUMBER_LAYER] = 0,
   [COMMON_LAYER] = 0,
 };
 
@@ -78,7 +80,7 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     K(VOLUME_DOWN), ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
                     ____,           ____,     ____,                    ____,                    ____,            ____,                 ____,
                     K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,                    ____,            ____,           ____, K(MEDIA_BACKWARD),
-                                         K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
+                                              K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
   ),
   [KEYPAD_LAYER] = KEYMAP(
     // Left
@@ -169,6 +171,24 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
           K(P), K(M), K(W), K(E), K(OPENING_BRACKET_AND_OPENING_BRACE), K(BACKSLASH_AND_PIPE),                               ____,
           ____,       ____, ____,                                       ____,                       ____,                    ____,                                 ____,
                       ____, ____,                                       ____,                       ____,                                                          ____
+  ),
+  [SHIFTED_NUMBER_LAYER] = KEYMAP(
+    // Left
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                        ____,
+    ____, MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                        ____,
+          ____,                        ____,                        ____,                        ____,                        ____,
+    ____, ____,                        ____,                        ____,                        ____,
+    ____, ____,                                                     ____,
+    // Right
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                 ____, ____, ____,
+    ____, MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), ____, ____, ____,
+          ____,                        ____,                        ____,                        ____,                        ____,                 ____, ____, ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                 ____, ____, ____,
+          ____,                        ____,                        ____,                        ____,                        ____,                 ____,       ____,
+          ____,                                                     ____,                        ____,                        ____,                 ____, ____, ____,
+                                                                    ____,                        ____,                        ____,                 ____,       ____
   ),
   [COMMON_LAYER] = KEYMAP(
     // Left
@@ -266,6 +286,24 @@ static void macro_keypad(struct Key key)
     keypad_state = !keypad_state;
     LayerState_Set(KEYPAD_LAYER, keypad_state);
     Display_Set_Keypad(keypad_state);
+  }
+}
+
+static void macro_common_shifted(struct Key key)
+{
+  uint16_t seq_shifted[] = {
+    1,
+    HID_KEYBOARD_SC_LEFT_SHIFT,
+    2,
+    HID_KEYBOARD_SC_LEFT_SHIFT,
+    GET_KEY_VALUE(
+      pgm_read_word(&(keymaps[COMMON_LAYER][key.row][key.column]))
+    ),
+    0,
+  };
+
+  if(key.just_pressed) {
+    Sequence_Register((uint16_t *)seq_shifted);
   }
 }
 
@@ -428,6 +466,7 @@ static void macro_desktop(struct Key key)
 void (* const keymap_macros[MACRO_COUNT])(struct Key) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,
+  [MACRO_COMMON_SHIFTED] = &macro_common_shifted,
   [MACRO_CUT] = &macro_cut,
   [MACRO_COPY] = &macro_copy,
   [MACRO_PASTE] = &macro_paste,
