@@ -1,4 +1,5 @@
-#include "Bitmaps.h"
+#include "Logo.xbm"
+#include "Corner.xbm"
 #include "Counter.h"
 #include "Display.h"
 #include "Keymap.h"
@@ -247,10 +248,10 @@ void Display_Splash(void *context)
 {
   u8g2_DrawXBMP(
     &u8g2,
-    ((u8g2_GetDisplayWidth(&u8g2) - (bitmap_logo_width)) / 2),
-    (u8g2_GetDisplayHeight(&u8g2) - bitmap_logo_height) / 2,
-    bitmap_logo_width, bitmap_logo_height,
-    bitmap_logo_bits
+    ((u8g2_GetDisplayWidth(&u8g2) - (Logo_width)) / 2),
+    (u8g2_GetDisplayHeight(&u8g2) - Logo_height) / 2,
+    Logo_width, Logo_height,
+    Logo_bits
   );
 }
 
@@ -342,6 +343,13 @@ void Display_Status(void *in_context)
         u8g2_SetFont(&u8g2, u8g_font_6x10);
         ultoa(context->Counter, str, 10);
         u8g2_DrawStr(&u8g2, u8g2_GetDisplayWidth(&u8g2) / 2 - u8g2_GetStrWidth(&u8g2, str) / 2, u8g2_GetDisplayHeight(&u8g2), str);
+        u8g2_SetBitmapMode(&u8g2, 1);
+        u8g2_DrawXBMP(
+          &u8g2,
+          0, 0,
+          Corner_width, Corner_height,
+          Corner_bits
+        );
       }
       break;
     /**< May be implemented by the user project. This state indicates
