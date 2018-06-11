@@ -212,12 +212,12 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
 };
 
 static uint8_t keypad_state;
-static uint8_t shift_state;
+static uint8_t shifted_number_row;
 
 void Keymap_Init(void)
 {
   keypad_state = 0;
-  shift_state = 0;
+  shifted_number_row = 0;
 }
 
 static const char qwertyP[] U8X8_PROGMEM = "QWERTY";
@@ -289,21 +289,15 @@ static void macro_keypad(struct Key key, USB_ExtendedKeyboardReport_Data_t *Keyb
 
 static void macro_common_shifted(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
-  uint16_t KeyCode;
-
   if(!key.state)
     return;
 
-  KeyCode = GET_KEY_VALUE(
-    pgm_read_word(&(keymaps[COMMON_LAYER][key.row][key.column]))
+  KeyboardReport_Add_KeyboardKeypad(
+    KeyboardReport, 
+    GET_KEY_VALUE(pgm_read_word(&(keymaps[COMMON_LAYER][key.row][key.column])))
   );
-
-  KeyboardReport_Add_KeyboardKeypad(KeyboardReport, KeyCode);
   
-  if(shift_state)
-    KeyboardReport->Modifier &= ~HID_KEYBOARD_MODIFIER_LEFTSHIFT; // FIXME must be executed after all scan is complete, otherwise, Shift might be set later on
-  else
-    KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTSHIFT;
+  shifted_number_row = 1;
 }
 
 static void macro_toggle_shifted_number_layer(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
@@ -511,22 +505,29 @@ const uint16_t *keymap_seqs[SEQ_COUNT] = {
   [SEQ_B_TAB] = seq_b_tab,
 };
 
-void Keymap_ScannedKeyCallback(struct Key key, uint16_t value)
+void Keymap_PostProcess_KeyboardReport(USB_ExtendedKeyboardReport_Data_t* KeyboardReport)
 {
-  uint16_t keycode;
-
-  if(GET_KEY_FN(value) != KEY_FN_KEYBOARD_PAGE)
+  if(!shifted_number_row)
     return;
 
-
-  keycode = GET_KEY_VALUE(value);
-
-  if(keycode != HID_KEYBOARD_SC_LEFT_SHIFT && keycode != HID_KEYBOARD_SC_RIGHT_SHIFT)
+  if(
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTCTRL ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTALT ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTGUI ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTCTRL ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTALT ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTGUI
+  )
     return;
 
-  if(key.just_pressed)
-    shift_state = 1;
+  if(
+    KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTSHIFT ||
+    KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTSHIFT
+  ){
+      KeyboardReport->Modifier &= ~HID_KEYBOARD_MODIFIER_LEFTSHIFT;
+      KeyboardReport->Modifier &= ~HID_KEYBOARD_MODIFIER_RIGHTSHIFT;
+  }else
+    KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTSHIFT;
 
-  if(key.just_released)
-    shift_state = 0;
+  shifted_number_row = 0;
 }

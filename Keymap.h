@@ -526,6 +526,6 @@ void Keymap_Init(void);
 char * Keymap_Get_Layer_Keyboard_Name(uint8_t);
 char * Keymap_Get_Layer_Computer_Name(uint8_t);
 
-void Keymap_ScannedKeyCallback(struct Key key, uint16_t value);
+void Keymap_PostProcess_KeyboardReport(USB_ExtendedKeyboardReport_Data_t*);
 
 #endif

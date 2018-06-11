@@ -259,6 +259,8 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
   Sequence_Play(KeyboardReport);
 
+  Keymap_PostProcess_KeyboardReport(KeyboardReport);
+
   #ifdef SERIAL_DEBUG
   if(KeyboardReport->Modifier)
     printf_P(PSTR("Report Modifier: %d\r\n"), KeyboardReport->Modifier);
