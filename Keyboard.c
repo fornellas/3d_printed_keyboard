@@ -190,7 +190,7 @@ void SetupHardware()
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
-  Counter_Reset();
+  Keymap_Init();
 }
 
 /** Event handler for the library USB Disconnection event. */
@@ -208,8 +208,6 @@ void EVENT_USB_Device_ConfigurationChanged(void)
   ConfigSuccess &= HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface);
 
   USB_Device_EnableSOFEvents();
-
-  Counter_Reset();
 
   // if(ConfigSuccess) {
   //
@@ -260,6 +258,8 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
   ScanKeys_Read(&KeyboardReport_ScanKeys_Callback, (void *)KeyboardReport);
 
   Sequence_Play(KeyboardReport);
+
+  Keymap_PostProcess_KeyboardReport(KeyboardReport);
 
   #ifdef SERIAL_DEBUG
   if(KeyboardReport->Modifier)

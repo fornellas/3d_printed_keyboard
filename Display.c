@@ -1,4 +1,5 @@
-#include "Bitmaps.h"
+#include "Logo.xbm"
+#include "Corner.xbm"
 #include "Counter.h"
 #include "Display.h"
 #include "Keymap.h"
@@ -17,10 +18,6 @@
 #define SCREENSAVER_TIMEOUT 300
 #define SCREENSAVER_CONTRAST (CONTRAST / 2)
 
-#define TOGGLE_WIDTH  24
-#define TOGGLE_HEIGHT  22
-#define TOGGLE_SPACING 2
-
 // Modes
 #define SPLASH_MODE 0
 #define STATUS_MODE 1
@@ -28,8 +25,6 @@
 
 static u8g2_t u8g2;
 static uint8_t Display_LEDReport;
-static uint8_t Display_keypad_state;
-static uint8_t Display_Fn_state;
 static uint8_t mode;
 static uint32_t last_tick;
 static uint8_t last_USB_DeviceState;
@@ -91,8 +86,6 @@ void Display_Init(void)
   u8g2_SetContrast(&u8g2, CONTRAST);
 
   Display_LEDReport = NO_LED_REPORT;
-  Display_keypad_state = 0;
-  Display_Fn_state = 0;
 
   last_USB_DeviceState = USB_DeviceState;
 
@@ -132,7 +125,7 @@ void Display_Write_Box_CenteredP(
     if((newline = strchr(str, '\n')))
       str[newline - str] = '\0';
 
-    draw_x = x_start + x_end / 2 - u8g2_GetStrWidth(&u8g2, str) / 2;
+    draw_x = x_start + x_end / 2 - u8g2_GetStrWidth(&u8g2, str) / 2 - 1;
     u8g2_SetFontRefHeightText(&u8g2);
     int8_t y = y_end / 2 + u8g2_GetFontAscent(&u8g2) / 2 + y_start;
     u8g2_SetFontRefHeightAll(&u8g2);
@@ -158,7 +151,8 @@ void Display_Write_CenteredP(const char *strP)
 
 void Display_Draw_Toggle(
     uint8_t x, uint8_t y,
-    uint8_t width, uint8_t height,
+    uint8_t width,
+    uint8_t height,
     const char *strP,
     uint8_t state
 )
@@ -174,53 +168,74 @@ void Display_Draw_Toggle(
   u8g2_SetDrawColor(&u8g2, 1);
 }
 
-void Display_Draw_LED_Status(uint8_t LEDReport)
+#define TOGGLE_WIDTH  24
+#define TOGGLE_HEIGHT  18
+
+void Display_Draw_Toggle_Statuses(uint8_t LEDReport, bool Fn_state, bool Keypad_state, bool ShiftedNumber_state)
 {
+  uint8_t keypad_x;
+  uint8_t keypad_y;
+  u8g2_SetFont(&u8g2, u8g_font_helvB12);
+
+  keypad_x = u8g2_GetDisplayWidth(&u8g2) - TOGGLE_WIDTH;
+  keypad_y = 0;
+  Display_Draw_Toggle(
+      keypad_x, keypad_y,
+      TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+      PSTR("K"), Keypad_state
+  );
+
   if(LEDReport != NO_LED_REPORT){
     Display_Draw_Toggle(
-        0 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+        keypad_x - TOGGLE_WIDTH, 0,
+        TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
         PSTR("1"), LEDReport & HID_KEYBOARD_LED_NUMLOCK
     );
     Display_Draw_Toggle(
-        1 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+        u8g2_GetDisplayWidth(&u8g2) / 2 - TOGGLE_WIDTH / 2, 0,
+        TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+        PSTR("S"), LEDReport & HID_KEYBOARD_LED_SCROLLLOCK
+    );
+    Display_Draw_Toggle(
+        keypad_x, u8g2_GetDisplayHeight(&u8g2) / 2 - TOGGLE_HEIGHT / 2,
+        TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
         PSTR("A"), LEDReport & HID_KEYBOARD_LED_CAPSLOCK
     );
     Display_Draw_Toggle(
-        2 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
-        PSTR("S"), LEDReport & HID_KEYBOARD_LED_SCROLLLOCK
+        keypad_x, u8g2_GetDisplayHeight(&u8g2) - TOGGLE_HEIGHT,
+        TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
+        PSTR("N"), !ShiftedNumber_state
     );
   }
   Display_Draw_Toggle(
-      3 * (TOGGLE_WIDTH - 2 + TOGGLE_SPACING), 0, TOGGLE_WIDTH - 2, TOGGLE_HEIGHT,
-      PSTR("K"), Display_keypad_state
-  );
-  Display_Draw_Toggle(
-      4 * (TOGGLE_WIDTH + TOGGLE_SPACING) - 8, 0, TOGGLE_WIDTH + 8, TOGGLE_HEIGHT,
-      PSTR("Fn"), Display_Fn_state
+      0, u8g2_GetDisplayHeight(&u8g2) - TOGGLE_HEIGHT,
+      TOGGLE_WIDTH, TOGGLE_HEIGHT,
+      PSTR("Fn"), Fn_state
   );
 }
 
 void Display_Draw_Layout_Status(const char *KeyboardLayerName, const char *ComputerLayerName)
 {
-  uint8_t y;
-  uint8_t x_icon;
-  uint8_t x_text;
+  uint8_t keyboard_x_start;
+  uint8_t keyboard_y_start;
+  uint8_t keyboard_x_end;
+  uint8_t keyboard_y_end;
 
-  u8g2_SetFont(&u8g2, u8g_font_helvB10);
-
-  x_icon = 20;
-  y = TOGGLE_HEIGHT + 3;
-  u8g2_DrawXBMP(&u8g2, x_icon, y, bitmap_keyboard_width, bitmap_keyboard_height, bitmap_keyboard_bits);
-  x_text = x_icon + bitmap_keyboard_width;
+  u8g2_SetFont(&u8g2, u8g_font_helvB12);
+  keyboard_x_start = 0;
+  keyboard_y_start = TOGGLE_HEIGHT / 2;
+  keyboard_x_end = u8g2_GetDisplayWidth(&u8g2);
+  keyboard_y_end = TOGGLE_HEIGHT + u8g2_GetFontAscent(&u8g2) - u8g2_GetFontDescent(&u8g2);
   Display_Write_Box_CenteredP(
-    x_text, y, u8g2_GetDisplayWidth(&u8g2) - x_text - x_icon, bitmap_keyboard_height,
+    keyboard_x_start, keyboard_y_start,
+    keyboard_x_end, keyboard_y_end,
     KeyboardLayerName
   );
 
-  y = y + bitmap_computer_height + 3;
-  u8g2_DrawXBMP(&u8g2, x_icon, y, bitmap_computer_width, bitmap_computer_height, bitmap_computer_bits);
+  u8g2_SetFont(&u8g2, u8g_font_helvB10);
   Display_Write_Box_CenteredP(
-    x_text, y, u8g2_GetDisplayWidth(&u8g2) - x_text - x_icon, bitmap_keyboard_height,
+    keyboard_x_start, keyboard_y_end + 4,
+    keyboard_x_end, 8,
     ComputerLayerName
   );
 }
@@ -233,10 +248,10 @@ void Display_Splash(void *context)
 {
   u8g2_DrawXBMP(
     &u8g2,
-    ((u8g2_GetDisplayWidth(&u8g2) - (bitmap_logo_width)) / 2),
-    (u8g2_GetDisplayHeight(&u8g2) - bitmap_logo_height) / 2,
-    bitmap_logo_width, bitmap_logo_height,
-    bitmap_logo_bits
+    ((u8g2_GetDisplayWidth(&u8g2) - (Logo_width)) / 2),
+    (u8g2_GetDisplayHeight(&u8g2) - Logo_height) / 2,
+    Logo_width, Logo_height,
+    Logo_bits
   );
 }
 
@@ -249,6 +264,9 @@ struct StatusContext
     char * KeyboardLayerName;
     char * ComputerLayerName;
     uint32_t Counter;
+    bool Fn_state;
+    bool Keypad_state;
+    bool ShiftedNumber_state;
 };
 
 void *Display_Status_Context(void)
@@ -262,6 +280,9 @@ void *Display_Status_Context(void)
   context.KeyboardLayerName = Keymap_Get_Layer_Keyboard_Name(LayerState_Get_Active_Layout());
   context.ComputerLayerName = Keymap_Get_Layer_Computer_Name(LayerState_Get_Active_Layout());
   context.Counter = Counter_Get();
+  context.Fn_state = LayerState_Get(FN_LAYER);
+  context.Keypad_state = LayerState_Get(KEYPAD_LAYER);
+  context.ShiftedNumber_state = LayerState_Get(SHIFTED_NUMBER_LAYER);
 
   return (void *)&context;
 }
@@ -272,13 +293,12 @@ void Display_Status(void *in_context)
 
   context = (struct StatusContext *)in_context;
 
-  u8g2_SetFont(&u8g2, u8g_font_helvB10);
-
   switch(context->USB_DeviceState){
     /**< Internally implemented by the library. This state indicates
       *   that the device is not currently connected to a host.
       */
     case DEVICE_STATE_Unattached:
+      u8g2_SetFont(&u8g2, u8g_font_helvB10);
       Display_Write_CenteredP(PSTR("USB\ndisconnected"));
       break;
     /**< Internally implemented by the library. This state indicates
@@ -286,6 +306,7 @@ void Display_Status(void *in_context)
       *   yet begun.
       */
     case DEVICE_STATE_Powered:
+      u8g2_SetFont(&u8g2, u8g_font_helvB10);
       Display_Write_CenteredP(PSTR("USB connected,\nwaiting for\nenumeration"));
       break;
     /**< Internally implemented by the library. This state indicates
@@ -293,6 +314,7 @@ void Display_Status(void *in_context)
       *   now waiting for the host to begin the enumeration process.
       */
     case DEVICE_STATE_Default:
+      u8g2_SetFont(&u8g2, u8g_font_helvB10);
       Display_Write_CenteredP(PSTR("USB bus reset,\nwaiting for\nenumeration"));
       break;
     /**< Internally implemented by the library. This state indicates
@@ -300,6 +322,7 @@ void Display_Status(void *in_context)
       *   yet configured.
       */
     case DEVICE_STATE_Addressed:
+      u8g2_SetFont(&u8g2, u8g_font_helvB10);
       Display_Write_CenteredP(PSTR("USB addressed,\nwaiting for\nconfiguration"));
       break;
     /**< May be implemented by the user project. This state indicates
@@ -309,17 +332,24 @@ void Display_Status(void *in_context)
 
     case DEVICE_STATE_Configured:
       if(context->Right_Side_Disconnected) {
+        u8g2_SetFont(&u8g2, u8g_font_helvB10);
         Display_Write_CenteredP(PSTR("Right Side\nDisconnected"));
       } else {
         char str[20];
 
-        u8g2_SetFont(&u8g2, u8g_font_helvB14);
-        Display_Draw_LED_Status(context->LEDReport);
+        Display_Draw_Toggle_Statuses(context->LEDReport, context->Fn_state, context->Keypad_state, context->ShiftedNumber_state);
         Display_Draw_Layout_Status(context->KeyboardLayerName, context->ComputerLayerName);
 
         u8g2_SetFont(&u8g2, u8g_font_6x10);
         ultoa(context->Counter, str, 10);
         u8g2_DrawStr(&u8g2, u8g2_GetDisplayWidth(&u8g2) / 2 - u8g2_GetStrWidth(&u8g2, str) / 2, u8g2_GetDisplayHeight(&u8g2), str);
+        u8g2_SetBitmapMode(&u8g2, 1);
+        u8g2_DrawXBMP(
+          &u8g2,
+          0, 0,
+          Corner_width, Corner_height,
+          Corner_bits
+        );
       }
       break;
     /**< May be implemented by the user project. This state indicates
@@ -328,12 +358,14 @@ void Display_Status(void *in_context)
       *   resumed.
       */
     case DEVICE_STATE_Suspended:
+      u8g2_SetFont(&u8g2, u8g_font_helvB10);
       if(context->USB_Device_RemoteWakeupEnabled)
         Display_Write_CenteredP(PSTR("USB suspended:\npress any key to\nwake up"));
       else
         Display_Write_CenteredP(PSTR("USB\nsuspended"));
       break;
     default:
+      u8g2_SetFont(&u8g2, u8g_font_helvB10);
       Display_Write_CenteredP(PSTR("USB\nunknown\nstate"));
       break;
   }
@@ -456,16 +488,6 @@ void Display_Update(void)
 void Display_Set_LEDReport(uint8_t ReportData)
 {
   Display_LEDReport = ReportData;
-}
-
-void Display_Set_Keypad(uint8_t new_keypad_state)
-{
-  Display_keypad_state = new_keypad_state;
-}
-
-void Display_Set_Fn(uint8_t new_Fn_state)
-{
-  Display_Fn_state = new_Fn_state;
 }
 
 void Display_Tick(void)

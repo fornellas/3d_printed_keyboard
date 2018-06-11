@@ -1,6 +1,7 @@
 #include "Keymap.h"
 #include "ScanKeys.h"
 #include "LayerState.h"
+#include "KeyboardReport.h"
 #include "Sequence.h"
 #include "Display.h"
 #include <LUFA/Drivers/USB/USB.h>
@@ -41,6 +42,7 @@ const uint8_t layer_initial_state[LAYER_COUNT] = {
   [QWERTY_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_DVORAK_LAYER] = KEYMAP_START_LOAD,
   [DVORAK_QWERTY_LAYER] = KEYMAP_START_LOAD,
+  [SHIFTED_NUMBER_LAYER] = KEYMAP_START_LOAD,
   [COMMON_LAYER] = KEYMAP_START_ENABLED,
 };
 
@@ -58,6 +60,7 @@ static const uint8_t keymap_fn_alt_keymap[LAYER_COUNT] = {
   [QWERTY_DVORAK_LAYER] = QWERTY_QWERTY_LAYER,
   [DVORAK_DVORAK_LAYER] = DVORAK_QWERTY_LAYER,
   [DVORAK_QWERTY_LAYER] = DVORAK_QWERTY_LAYER,
+  [SHIFTED_NUMBER_LAYER] = 0,
   [COMMON_LAYER] = 0,
 };
 
@@ -75,10 +78,10 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
     K(INSERT),      K(MEDIA_EJECT), K(POWER), K(MEDIA_SLEEP),          KGD(SYSTEM_WAKE_UP_OSC), K(PRINT_SCREEN), K(SCROLL_LOCK), ____, K(NUM_LOCK),
     K(VOLUME_UP),   ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
                     ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
-    K(VOLUME_DOWN), ____,           ____,     ____,                    ____,                    ____,            ____,           ____, ____,
+    K(VOLUME_DOWN), ____,           ____,     ____,                    ____,                    ____,            ____,           ____, MACRO(MACRO_TOGGLE_SHIFTED_NUMBER_LAYER),
                     ____,           ____,     ____,                    ____,                    ____,            ____,                 ____,
                     K(MUTE),                  K(MEDIA_PREVIOUS_TRACK), ____,                    ____,            ____,           ____, K(MEDIA_BACKWARD),
-                                         K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
+                                              K(MEDIA_NEXT_TRACK),     ____,                    ____,            ____,                 K(MEDIA_FORWARD)
   ),
   [KEYPAD_LAYER] = KEYMAP(
     // Left
@@ -170,6 +173,24 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
           ____,       ____, ____,                                       ____,                       ____,                    ____,                                 ____,
                       ____, ____,                                       ____,                       ____,                                                          ____
   ),
+  [SHIFTED_NUMBER_LAYER] = KEYMAP(
+    // Left
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                        ____,
+    ____, MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                        ____,
+          ____,                        ____,                        ____,                        ____,                        ____,
+    ____, ____,                        ____,                        ____,                        ____,
+    ____, ____,                                                     ____,
+    // Right
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                 ____, ____, ____,
+    ____, MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), MACRO(MACRO_COMMON_SHIFTED), ____, ____, ____,
+          ____,                        ____,                        ____,                        ____,                        ____,                 ____, ____, ____,
+    ____, ____,                        ____,                        ____,                        ____,                        ____,                 ____, ____, ____,
+          ____,                        ____,                        ____,                        ____,                        ____,                 ____,       ____,
+          ____,                                                     ____,                        ____,                        ____,                 ____, ____, ____,
+                                                                    ____,                        ____,                        ____,                 ____,       ____
+  ),
   [COMMON_LAYER] = KEYMAP(
     // Left
     K(ESCAPE),                       K(F1),                K(F2),          K(F3),             K(F4),           K(F5),               K(DELETE),
@@ -191,10 +212,12 @@ const uint16_t PROGMEM keymaps[LAYER_COUNT][SCAN_MATRIX_ROWS][SCAN_MATRIX_COLUMN
 };
 
 static uint8_t keypad_state;
+static uint8_t shifted_number_row;
 
 void Keymap_Init(void)
 {
   keypad_state = 0;
+  shifted_number_row = 0;
 }
 
 static const char qwertyP[] U8X8_PROGMEM = "QWERTY";
@@ -233,7 +256,7 @@ char * Keymap_Get_Layer_Computer_Name(uint8_t id)
   }
 }
 
-static void macro_fn(struct Key key)
+static void macro_fn(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   static uint8_t previous_layout;
   static uint8_t previous_layout_changes;
@@ -241,9 +264,7 @@ static void macro_fn(struct Key key)
 
   if(key.just_pressed) {
     LayerState_Set(FN_LAYER, 1);
-    Display_Set_Fn(1);
     LayerState_Set(KEYPAD_LAYER, 1);
-    Display_Set_Keypad(1);
 
     previous_layout = LayerState_Get_Active_Layout();
     LayerState_SetLayout(keymap_fn_alt_keymap[previous_layout]);
@@ -251,23 +272,40 @@ static void macro_fn(struct Key key)
   }
   if(key.just_released) {
     LayerState_Set(FN_LAYER, 0);
-    Display_Set_Fn(0);
     LayerState_Set(KEYPAD_LAYER, keypad_state);
-    Display_Set_Keypad(keypad_state);
 
     if(layout_changes == previous_layout_changes)
       LayerState_SetLayout(previous_layout);
   }
 }
 
-static void macro_keypad(struct Key key)
+static void macro_keypad(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     keypad_state = !keypad_state;
     LayerState_Set(KEYPAD_LAYER, keypad_state);
-    Display_Set_Keypad(keypad_state);
   }
 }
+
+static void macro_common_shifted(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
+{
+  if(!key.state)
+    return;
+
+  KeyboardReport_Add_KeyboardKeypad(
+    KeyboardReport, 
+    GET_KEY_VALUE(pgm_read_word(&(keymaps[COMMON_LAYER][key.row][key.column])))
+  );
+  
+  shifted_number_row = 1;
+}
+
+static void macro_toggle_shifted_number_layer(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
+{
+  if(key.just_pressed)
+    LayerState_ToggleLayer(SHIFTED_NUMBER_LAYER);
+}
+
 
 static const uint16_t seq_cut[] = {
   1,
@@ -287,7 +325,7 @@ static const uint16_t seq_cut_dvorak[] = {
   0,
 };
 
-static void macro_cut(struct Key key)
+static void macro_cut(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -325,7 +363,7 @@ static const uint16_t seq_copy_dvorak[] = {
   0,
 };
 
-static void macro_copy(struct Key key)
+static void macro_copy(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -363,7 +401,7 @@ static const uint16_t seq_paste_dvorak[] = {
   0,
 };
 
-static void macro_paste(struct Key key)
+static void macro_paste(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -405,7 +443,7 @@ static const uint16_t seq_desktop_dvorak[] = {
   0,
 };
 
-static void macro_desktop(struct Key key)
+static void macro_desktop(struct Key key, USB_ExtendedKeyboardReport_Data_t *KeyboardReport)
 {
   if(key.just_pressed) {
     switch(LayerState_Get_Active_Layout()) {
@@ -425,9 +463,11 @@ static void macro_desktop(struct Key key)
   }
 }
 
-void (* const keymap_macros[MACRO_COUNT])(struct Key) = {
+void (* const keymap_macros[MACRO_COUNT])(struct Key, USB_ExtendedKeyboardReport_Data_t *) = {
   [MACRO_FN] = &macro_fn,
   [MACRO_KEYPAD] = &macro_keypad,
+  [MACRO_COMMON_SHIFTED] = &macro_common_shifted,
+  [MACRO_TOGGLE_SHIFTED_NUMBER_LAYER] = &macro_toggle_shifted_number_layer,
   [MACRO_CUT] = &macro_cut,
   [MACRO_COPY] = &macro_copy,
   [MACRO_PASTE] = &macro_paste,
@@ -464,3 +504,30 @@ const uint16_t *keymap_seqs[SEQ_COUNT] = {
   [SEQ_00] = seq_00,
   [SEQ_B_TAB] = seq_b_tab,
 };
+
+void Keymap_PostProcess_KeyboardReport(USB_ExtendedKeyboardReport_Data_t* KeyboardReport)
+{
+  if(!shifted_number_row)
+    return;
+
+  if(
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTCTRL ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTALT ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTGUI ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTCTRL ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTALT ||
+      KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTGUI
+  )
+    return;
+
+  if(
+    KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_LEFTSHIFT ||
+    KeyboardReport->Modifier & HID_KEYBOARD_MODIFIER_RIGHTSHIFT
+  ){
+      KeyboardReport->Modifier &= ~HID_KEYBOARD_MODIFIER_LEFTSHIFT;
+      KeyboardReport->Modifier &= ~HID_KEYBOARD_MODIFIER_RIGHTSHIFT;
+  }else
+    KeyboardReport->Modifier |= HID_KEYBOARD_MODIFIER_LEFTSHIFT;
+
+  shifted_number_row = 0;
+}

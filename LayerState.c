@@ -56,3 +56,11 @@ void LayerState_SetLayout(uint8_t layout)
       LayerState_Set(keymap_layout_layers[l], 0);
   }
 }
+
+void LayerState_ToggleLayer(uint8_t layer)
+{
+  if(LayerState_Get(layer))
+    LayerState_Set(layer, 0);
+  else
+    LayerState_Set(layer, 1);
+}

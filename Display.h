@@ -11,10 +11,6 @@ void Display_Update(void);
 
 void Display_Set_LEDReport(uint8_t);
 
-void Display_Set_Keypad(uint8_t);
-
-void Display_Set_Fn(uint8_t);
-
 void Display_Tick(void);
 
 #endif
