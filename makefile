@@ -33,7 +33,11 @@ BASE_CC_FLAGS     =  \
 	-I$(U8G2_CSRC_PATH) \
 	-I$(U8G2_AVRLIB_PATH) \
 	-Werror \
-	-fdata-sections
+	-fdata-sections \
+	-DSCK_DDR=DDRB \
+	-DSCK_BIT=1 \
+	-DMOSI_DDR=DDRB \
+	-DMOSI_BIT=2
 ifdef SERIAL_DEBUG
 CC_FLAGS := -DSERIAL_DEBUG $(BASE_CC_FLAGS)
 else
