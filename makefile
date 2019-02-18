@@ -8,7 +8,7 @@ OPTIMIZATION = s
 TARGET       = Keyboard
 LUFA_PATH    = lufa/LUFA
 U8G2_CSRC_PATH  = u8g2/csrc
-U8G2_AVRLIB_PATH  = u8g2/sys/avr/lib
+U8G2_AVRLIB_PATH  = u8g2/sys/avr/avr-libc/lib
 SRC          = \
 	$(TARGET).c \
 	Counter.c \
